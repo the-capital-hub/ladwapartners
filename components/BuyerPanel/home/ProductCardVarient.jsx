@@ -5,22 +5,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShoppingCart, Heart, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useIsAuthenticated } from "@/store/authStore";
 
 function ProductCardVarient({ product, variant = "vertical" }) {
-        console.log("Product:", product);
-        const router = useRouter();
+	console.log("Product:", product);
+	const router = useRouter();
+	const isAuthenticated = useIsAuthenticated()
 
-        const handleViewProduct = () => {
-                router.push(`/products/${product?.id || product?._id}`);
-        };
+	const handleViewProduct = () => {
+		router.push(`/products/${product?.id || product?._id}`);
+	};
 
-        if (variant === "horizontal") {
-                return (
-                        <Card
-                                onClick={handleViewProduct}
-                                className="w-full hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer"
-                        >
-                                <CardContent className="p-0 flex justify-between h-full">
+	if (variant === "horizontal") {
+		return (
+			<Card
+				onClick={handleViewProduct}
+				className="w-full hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer"
+			>
+				<CardContent className="p-0 flex justify-between h-full">
 					{/* Left side - Product Info */}
 					<div className="flex-1 p-4 md:p-6 flex flex-col justify-between">
 						<div>
@@ -39,35 +41,34 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 									</p>
 								</div>
 							</div>
-
-							<div className="flex flex-col mb-4">
-								<p className="flex font-bold text-xl md:text-2xl mb-2">
-									{product?.price}
-								</p>
-								{product?.originalPrice && (
-									<p className="text-gray-500 line-through text-sm">
-										{product?.originalPrice}
-										<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
-											25% OFF
-										</span>
+							{isAuthenticated && (
+								<div className="flex flex-col mb-4">
+									<p className="flex font-bold text-xl md:text-2xl mb-2">
+										{product?.price}
 									</p>
-								)}
-							</div>
+									{product?.originalPrice && (
+										<p className="text-gray-500 line-through text-sm">
+											{product?.originalPrice}
+											<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
+												25% OFF
+											</span>
+										</p>
+									)}
+								</div>)}
 
 							{product?.colors && (
 								<div className="flex space-x-1">
 									{product?.colors.map((color, i) => (
 										<div
 											key={i}
-											className={`w-3 h-3 rounded-full ${
-												color === "blue"
+											className={`w-3 h-3 rounded-full ${color === "blue"
 													? "bg-blue-500"
 													: color === "black"
-													? "bg-black"
-													: color === "red"
-													? "bg-red-500"
-													: "bg-orange-500"
-											}`}
+														? "bg-black"
+														: color === "red"
+															? "bg-red-500"
+															: "bg-orange-500"
+												}`}
 										/>
 									))}
 								</div>
@@ -107,12 +108,12 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 	}
 
 	// Default vertical variant
-        return (
-                <Card
-                        onClick={handleViewProduct}
-                        className="w-full h-full hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-                >
-                        <CardContent className="h-full relative p-0 flex flex-col">
+	return (
+		<Card
+			onClick={handleViewProduct}
+			className="w-full h-full hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+		>
+			<CardContent className="h-full relative p-0 flex flex-col">
 				{/* Product Info Header */}
 				<div className="flex justify-between items-start p-4 md:p-6 flex-shrink-0">
 					<div className="flex-1">
@@ -124,34 +125,34 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 								{product?.subtitle}
 							</p>
 						)}
-						<div className="flex items-center mt-2">
-							<p className="font-bold text-lg md:text-xl">{product?.price}</p>
-							{product?.originalPrice && (
-								<>
-									<p className="text-gray-500 line-through ml-2 text-sm">
-										{product?.originalPrice}
-									</p>
-									<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
-										25% OFF
-									</span>
-								</>
-							)}
-						</div>
+						{isAuthenticated && (
+							<div className="flex items-center mt-2">
+								<p className="font-bold text-lg md:text-xl">{product?.price}</p>
+								{product?.originalPrice && (
+									<>
+										<p className="text-gray-500 line-through ml-2 text-sm">
+											{product?.originalPrice}
+										</p>
+										<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
+											25% OFF
+										</span>
+									</>
+								)}
+							</div>)}
 					</div>
 					{product?.colors && (
 						<div className="flex space-x-1 flex-shrink-0 ml-2">
 							{product?.colors.map((color, i) => (
 								<div
 									key={i}
-									className={`w-3 h-3 rounded-full ${
-										color === "blue"
+									className={`w-3 h-3 rounded-full ${color === "blue"
 											? "bg-blue-500"
 											: color === "black"
-											? "bg-black"
-											: color === "red"
-											? "bg-red-500"
-											: "bg-orange-500"
-									}`}
+												? "bg-black"
+												: color === "red"
+													? "bg-red-500"
+													: "bg-orange-500"
+										}`}
 								/>
 							))}
 						</div>

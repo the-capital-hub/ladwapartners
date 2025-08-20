@@ -3,128 +3,172 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import {
-	ArrowRight,
-	ChevronLeft,
-	ChevronRight,
-	ChevronDown,
-} from "lucide-react";
-import { HeroImg } from "@/public/images/home";
+import hero1 from "@/public/images/home/hero1.png";
+import hero2 from "@/public/images/home/her02.png";
+import hero3 from "@/public/images/home/hero3.png";
+import mobileimg from "@/public/images/home/heroimg.png";
+import { Outfit } from "next/font/google";
+
+const outfit = Outfit({
+	variable: "--font-outift",
+	subsets: ["latin"]
+})
 
 export default function HeroSection() {
-	const sidebarCategories = [
-		"SAFETY FIRST",
-		"FIRST AID KIT",
-		"HOME SAFETY",
-		"CAR SAFETY",
-	];
-
 	return (
-		<section className="relative bg-gray-100 overflow-hidden max-h-fit lg:max-h-[calc(100vh-136px)] h-full px-10">
-			<div className="h-full flex flex-col lg:flex-row">
-				{/* Main Hero Content */}
-				<div className="h-full flex-1 py-8 lg:py-10 relative">
-					<motion.h1
-						initial={{ opacity: 0, y: 30 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className="text-3xl md:text-4xl lg:text-8xl font-black leading-tight mb-6 lg:mb-8 absolute top-0 left-10 transform -translate-x-1/2 -translate-y-1/2 hidden md:block"
-					>
-						SAFETY GEAR,
-					</motion.h1>
-					<motion.h1
-						initial={{ opacity: 0, y: 30 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className="text-3xl md:text-4xl lg:text-8xl font-black leading-tight mb-6 lg:mb-8 absolute top-28 right-16 transform -translate-x-1/2 -translate-y-1/2 z-10 hidden md:block"
-					>
-						SERIO
-						<span className="text-black/50 stroke-white">US</span>{" "}
-						<span className="text-black/50 stroke-white">P</span>
-						ROTECTION
-					</motion.h1>
+		<section className="relative w-full min-h-screen flex items-center justify-center text-white overflow-hidden">
 
-					<motion.h1
-						initial={{ opacity: 0, y: 30 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className="text-3xl text-center font-black leading-tight mb-6 lg:mb-8 block md:hidden"
-					>
-						SAFETY GEAR, SERIOUS PROTECTION
-					</motion.h1>
+			<div className="absolute inset-0 pointer-events-none w-screen left-1/2 transform -translate-x-1/2 hidden md:block">
+				{/* First Section - Highest */}
+				<div
+					className="absolute h-[90%] left-0 border-r border-white/10"
+					style={{
+						top: '0px',
+						bottom: '80px',
+						width: '33.333%',
+						backgroundColor: 'rgba(255, 255, 255, 0.08)',
+					}}
+				>
+					<Image src={hero1} alt="HeroImage" className="h-full w-full object-cover" />
+					{/* Black overlay */}
+					<div className="absolute inset-0 bg-black/60"></div>
+				</div>
 
-					<div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-						<div className="flex flex-col items-center lg:items-start lg:space-y-4 order-3 lg:order-1">
-							{sidebarCategories.map((category, index) => (
-								<motion.div
-									key={category}
-									initial={{ opacity: 0, x: -20 }}
-									animate={{ opacity: 1, x: 0 }}
-									transition={{ delay: index * 0.1 }}
-								>
-									<p
-										className={`text-lg lg:text-2xl font-bold whitespace-nowrap lg:whitespace-normal ${
-											index === 0 ? "text-black" : "text-gray-300"
-										}`}
-									>
-										{category}
-									</p>
-								</motion.div>
-							))}
-						</div>
+				{/* Second Section - Medium height */}
+				<div
+					className="absolute h-[85%] border-r border-r-[50%] border-white/30"
+					style={{
+						top: '0px',
+						bottom: '100px',
+						left: '33.333%',
+						width: '33.333%',
+						backgroundColor: 'rgba(255, 255, 255, 0.05)',
+						borderRight: '1px solid rgba(255, 255, 255, 0.3)'
+					}}
+				>
+					<Image src={hero2} alt="HeroImage" className="h-full w-full object-cover" />
 
-						<div className="order-2 lg:order-3">
-							<motion.div
-								initial={{ opacity: 0, y: 20 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 0.3, duration: 0.8 }}
-								className="flex flex-col mb-0"
-							>
-								<p className="text-center md:text-left text-gray-600 mb-6 max-w-md text-sm md:text-base">
-									Safety is the most basic yet the most important rule of life.
-									It is the sum of safety precautions that determines the safety
-									of the people working near you.
-								</p>
-								<Button className="bg-black text-white px-6 md:px-8 py-2 md:py-3 rounded-full w-full md:w-fit">
-									BUY NOW
-									<ArrowRight className="ml-2 h-4 w-4" />
-								</Button>
-							</motion.div>
-						</div>
-
-						<motion.div
-							initial={{ opacity: 0, scale: 0.8 }}
-							animate={{ opacity: 1, scale: 1 }}
-							transition={{ delay: 0.5, duration: 0.8 }}
-							className="relative order-1 lg:order-2"
-						>
-							<Image
-								src={HeroImg.src}
-								width={600}
-								height={600}
-								alt="Safety Professional"
-								className="w-full h-auto max-h-96 lg:max-h-none object-cover rounded-lg lg:rounded-none"
-							/>
-						</motion.div>
+					<div className="absolute inset-0 bg-black/60"></div>
+					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
+						<span className="text-[#FFB82D] text-xl font-bold">SAFETY FIRST</span>
 					</div>
 				</div>
+
+				{/* Third Section - Smallest */}
+				<div
+					className="absolute h-[81%]"
+					style={{
+						top: '0px',
+						bottom: '200px',
+						left: '66.666%',
+						width: '33.334%',
+						backgroundColor: 'rgba(255, 255, 255, 0.05)',
+					}}
+				>
+					<Image src={hero3} alt="HeroImage" className="h-full w-full object-cover" />
+					<div className="absolute inset-0 bg-black/60"></div>
+					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
+						<span className="text-white text-xl font-bold">FIRST AID KIT</span>
+					</div>
+				</div>
+
+				<div
+					style={{
+						position: 'absolute',
+						bottom: '160px',
+						left: '33.333%',
+						width: '33.333%',
+						height: '1px',
+						backgroundColor: 'rgba(255, 255, 255, 0.3)'
+					}}
+				></div>
+				<div
+					style={{
+						position: 'absolute',
+						bottom: '185px',
+						left: '66.666%',
+						width: '33.334%',
+						height: '1px',
+						backgroundColor: 'rgba(255, 255, 255, 0.3)'
+					}}
+				></div>
 			</div>
 
-			{/* Scroll Down Indicator */}
-			<motion.div
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ delay: 1 }}
-				className="flex justify-center lg:absolute bottom-4 lg:bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce"
-			>
-				<Button
-					variant="outline"
-					size="icon"
-					className="rounded-full bg-black text-white"
-				>
-					<ChevronDown className="h-4 w-4" />
-				</Button>
-			</motion.div>
+			{/* Mobile background image */}
+			<div className="absolute inset-0 md:hidden">
+				<Image src={mobileimg} alt="HeroImage" className="h-full w-full object-cover" />
+				{/* Black overlay for mobile */}
+				<div className="absolute inset-0 bg-black/60"></div>
+			</div>
+
+			{/* Content */}
+			<div className="relative z-20 max-w-7xl w-full px-4 md:px-6 lg:px-12 grid grid-cols-1 gap-8 mx-auto">
+				<div className="flex flex-col justify-center space-y-4 md:space-y-6">
+					<motion.span
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6 }}
+						className={`bg-white/10 border border-t-[#FFB82D] text-xs md:text-sm font-medium px-3 py-1 md:px-4 md:py-1 rounded-full w-fit ${outfit.className}`}
+					>
+						#1 Platform for Road Safety
+					</motion.span>
+
+					<motion.h1
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8 }}
+						className="text-2xl md:text-3xl lg:text-6xl font-extrabold leading-tight"
+					>
+						DELIVERING SUPERIOR ROAD <br className="hidden md:block" />
+						<span className="md:hidden">CONSTRUCTION SOLUTIONS</span>
+						<span className="hidden md:inline">CONSTRUCTION SOLUTIONS</span>
+					</motion.h1>
+
+					<motion.p
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8 }}
+						className={`${outfit.className} text-white text-lg md:text-3xl max-w-3xl`}>
+						Trusted Global Brand in Road and Safety Innovation.
+					</motion.p>
+
+					<motion.p
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8 }}
+						className={`${outfit.className} text-sm md:text-base mt-4 md:mt-10 max-w-xl`}>
+						Safety is the most basic yet the most important rule of life. It is the sum of
+						safety precautions that determines the safety of the people working
+						near you.
+					</motion.p>
+
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8 }}
+						className={`${outfit.className} flex flex-wrap items-center gap-4`}>
+						<Button className="bg-[#FFB82D] hover:bg-yellow-600 text-black font-semibold px-4 py-2 md:px-6 md:py-2 rounded-md text-sm md:text-base">
+							Get Started
+						</Button>
+					</motion.div>
+
+					{/* Stats */}
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8 }}
+						className="flex items-center gap-6 md:gap-10 pt-4">
+						<div>
+							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">8K+</h3>
+							<p className="text-white text-sm md:text-base">Project Completed</p>
+						</div>
+						<div>
+							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">5.5K+</h3>
+							<p className="text-white text-sm md:text-base">Customers Happy</p>
+						</div>
+					</motion.div>
+				</div>
+			</div>
 		</section>
 	);
 }

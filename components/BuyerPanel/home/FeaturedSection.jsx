@@ -15,8 +15,8 @@ export default function FeaturedSection({
 }) {
 	return (
 		<section className="py-8 md:py-16 bg-gray-50">
-			<div className="px-10">
-				{/* Top Selling Products */}
+			{/* <div className="px-10">
+				
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -28,12 +28,12 @@ export default function FeaturedSection({
 					</h2>
 					<ProductCarousel products={topSellingProducts} showDots={true} />
 				</motion.div>
-			</div>
+			</div> */}
 
-			<div className="px-10">
-				{/* Best Selling Product */}
+			{/* <div className="px-10">
+				
 				{bestSellingProduct && <FeaturedProduct product={bestSellingProduct} />}
-			</div>
+			</div> */}
 
 			<Image
 				src={BannerImg}
