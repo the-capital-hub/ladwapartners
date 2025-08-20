@@ -1,6 +1,7 @@
 "use client";
 
 import Header from "@/components/BuyerPanel/Header.jsx";
+import NavigationBar from "@/components/BuyerPanel/NavigationBar";
 import Footer from "@/components/BuyerPanel/Footer.jsx";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +17,13 @@ export default function BuyersPanelLayout({ children }) {
       <Header
         onMenuToggle={() => setIsMenuOpen(!isMenuOpen)}
         isMenuOpen={isMenuOpen}
-       
+
+      />
+
+      {/* Category Navigation */}
+      <NavigationBar
+        isMenuOpen={isMenuOpen}
+        onMenuClose={() => setIsMenuOpen(false)}
       />
 
       {/* Main Content */}
