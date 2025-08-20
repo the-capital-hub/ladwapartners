@@ -296,9 +296,10 @@ export default function AdminCustomersPage() {
 									</TableHead>
 									<TableHead>Customer</TableHead>
 									<TableHead>Contact</TableHead>
-									<TableHead>Status</TableHead>
-									<TableHead>Joined</TableHead>
-									<TableHead>Last Login</TableHead>
+                                                                        <TableHead>Status</TableHead>
+                                                                        <TableHead>GST Verified</TableHead>
+                                                                        <TableHead>Joined</TableHead>
+                                                                        <TableHead>Last Login</TableHead>
 									<TableHead>Actions</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -348,17 +349,18 @@ export default function AdminCustomersPage() {
 												)}
 											</div>
 										</TableCell>
-										<TableCell>
-											<Badge className={getStatusColor(customer.status)}>
-												{customer.status}
-											</Badge>
-										</TableCell>
-										<TableCell>
-											<div className="flex items-center gap-2 text-sm">
-												<Calendar className="w-3 h-3 text-gray-400" />
-												{formatDate(customer.createdAt)}
-											</div>
-										</TableCell>
+                                                                                <TableCell>
+                                                                                        <Badge className={getStatusColor(customer.status)}>
+                                                                                                {customer.status}
+                                                                                        </Badge>
+                                                                                </TableCell>
+                                                                                <TableCell>{customer.gstVerified ? "Yes" : "No"}</TableCell>
+                                                                                <TableCell>
+                                                                                        <div className="flex items-center gap-2 text-sm">
+                                                                                                <Calendar className="w-3 h-3 text-gray-400" />
+                                                                                                {formatDate(customer.createdAt)}
+                                                                                        </div>
+                                                                                </TableCell>
 										<TableCell>
 											<div className="text-sm text-gray-600">
 												{customer.lastLogin
