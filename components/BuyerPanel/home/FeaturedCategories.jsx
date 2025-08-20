@@ -20,7 +20,7 @@ export default function FeaturedCategories() {
                                         viewport={{ once: true }}
                                         className="max-w-3xl mx-auto"
                                 >
-                                        <p className="text-yellow-500 text-sm font-medium mb-2 uppercase">
+                                        <p className="text-3xl md:text-4xl mb-8 lg:text-4xl xl:text-5xl font-bold text-gray-900 leading-tight whitespace-nowrap">
                                                 Featured Categories
                                         </p>
                                         <p className="text-gray-700 mb-8">

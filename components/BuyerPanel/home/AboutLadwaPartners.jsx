@@ -63,7 +63,7 @@ const AboutLadwaPartners = () => {
           {/* Badge */}
           <motion.div variants={itemVariants}>
             <span className="bg-[#FFB82D] text-black text-xs md:text-sm font-semibold px-4 py-2 rounded-full inline-block">
-              About Safety Online
+              About LADWA Partners
             </span>
           </motion.div>
 

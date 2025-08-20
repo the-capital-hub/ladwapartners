@@ -140,7 +140,7 @@ export default function Footer() {
 					{/* Copyright */}
 					<div className="border-t border-white/20 mt-12 pt-8 text-center">
 						<p className="font-semibold tracking-widexwhite">
-							© Copyright Safety Online 2025. All rights reserved
+							© Copyright LADWA Partners 2025. All rights reserved
 						</p>
 					</div>
 				</div>

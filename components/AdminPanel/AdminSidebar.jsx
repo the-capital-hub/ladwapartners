@@ -47,7 +47,7 @@ import {
 	Palette,
 	Cog,
 } from "lucide-react";
-import Logo from "@/public/SafetyLogo.png";
+import Logo from "@/public/ladwapartners.png";
 import { useIsAuthenticated } from "@/store/adminAuthStore.js";
 
 const menuItems = [

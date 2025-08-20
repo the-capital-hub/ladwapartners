@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "@/public/SafetyLogo.png";
+import Logo from "@/public/ladwapartners.png";
 
 import { Button } from "@/components/ui/button";
 import { Menu, ShoppingCart, Heart, User, X } from "lucide-react";
@@ -61,9 +61,17 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 					)}
 				</Button>
 
-				<Link href="/" className="flex text-white font-semibold items-center jutify-center space-x-2">
-					<span>LADWA</span>
-					<span>Partners</span>
+				<Link
+					href="/"
+					className="flex items-center justify-center space-x-2 text-black font-semibold"
+				>
+					<Image
+						src={Logo}
+						alt="Ladwa Partners Logo"
+						width={40} // adjust size as needed
+						height={40}
+						className="h-10 w-auto"
+					/>
 				</Link>
 			</div>
 

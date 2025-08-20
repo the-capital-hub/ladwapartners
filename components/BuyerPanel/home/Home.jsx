@@ -78,6 +78,11 @@ export default function HomePage() {
                         <FeaturedCategories />
                         {/* <ProductShowcase products={discountedProducts} /> */}
                         <AboutLadwaPartners/>
+						<FeaturedSection
+							topSellingProducts={topSellingProducts}
+							bestSellingProduct={bestSellingProduct}
+							featuredProducts={featuredProducts}
+						/>
                         {/* <TrustedCompanies /> */}
                         <AboutUsLadwaPartners/>
 
@@ -96,11 +101,7 @@ export default function HomePage() {
 			<ResearchAndDevelopment/>
 			<WithOur/>
 
-			<FeaturedSection
-				topSellingProducts={topSellingProducts}
-				bestSellingProduct={bestSellingProduct}
-				featuredProducts={featuredProducts}
-			/>
+			
 {/* 
 			<SearchSection
 				searchQuery={searchQuery}
