@@ -32,7 +32,7 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 
 	return (
 		<>
-			<header className="absolute top-0 left-0 w-full z-50 bg-white/10 border-b border-white/80">
+                        <header className="sticky top-0 w-full z-50 bg-white/10 border-b border-white/80">
 	<div className="px-4 lg:px-10">
 		{/* Top Bar */}
 		<div className="flex items-center justify-between py-3">
