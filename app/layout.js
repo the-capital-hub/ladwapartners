@@ -8,7 +8,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-	title: "Safety Equipment Store - Professional Safety Gear",
+	title: "LADWA Partners - Professional Safety Gear",
 	description:
 		"Your trusted source for professional safety equipment, protective gear, and industrial safety solutions.",
 };
