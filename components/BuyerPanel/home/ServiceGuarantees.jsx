@@ -33,8 +33,10 @@ export default function ServiceGuarantees() {
 				const IconComponent = service.icon;
 				return (
 					<div key={service.title} className="text-center">
-						<div className="w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
-							<IconComponent className="h-6 w-6 md:h-8 md:w-8 text-white" />
+						<div >
+						<div className="w-12 h-12 md:w-16 md:h-16 bg-neutral-500 rounded-full flex items-center justify-center mx-auto mb-4">
+							<IconComponent className="h-10 w-10 p-1 md:h-12 md:w-12 text-white bg-black rounded-full md:p-3" />
+						</div>
 						</div>
 						<h3 className="font-bold mb-2 text-sm md:text-base">
 							{service.title}

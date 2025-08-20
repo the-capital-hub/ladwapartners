@@ -71,7 +71,7 @@ export default function ProductCard({ product }) {
 							<Heart className="h-4 w-4" />
 						</Button>
 					</div>
-					<Button className="bg-black text-white text-sm">BUY NOW</Button>
+					<Button className="bg-black text-white text-sm ">BUY NOW</Button>
 				</div>
 			</CardContent>
 		</Card>

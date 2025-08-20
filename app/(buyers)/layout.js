@@ -6,20 +6,26 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function BuyersPanelLayout({ children }) {
-	const pathname = usePathname();
-	const showFooter = pathname === "/home" || pathname === "/cart";
-	const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const showFooter = pathname === "/home" || pathname === "/cart";
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-	return (
-		<>
-			<Header
-				onMenuToggle={() => setIsMenuOpen(!isMenuOpen)}
-				isMenuOpen={isMenuOpen}
-			/>
-			<main className="min-h-[calc(100vh-68px)] hide-scrollbar">
-				{children}
-			</main>
-			{showFooter && <Footer />}
-		</>
-	);
+  return (
+    <div className="relative">
+      {/* Navbar fixed over HeroSection */}
+      <Header
+        onMenuToggle={() => setIsMenuOpen(!isMenuOpen)}
+        isMenuOpen={isMenuOpen}
+       
+      />
+
+      {/* Main Content */}
+      <main className="min-h-[calc(100vh-68px)] hide-scrollbar">
+        {children}
+      </main>
+
+      {/* Footer only on specific pages */}
+      {showFooter && <Footer />}
+    </div>
+  );
 }

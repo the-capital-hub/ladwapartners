@@ -2,6 +2,13 @@
 
 import { motion } from "framer-motion";
 import { Truck, Headphones, Heart, Shield } from "lucide-react";
+import { Kanit } from "next/font/google";
+
+const kan = Kanit({
+	weight: ["200", "400", "600"],
+	variable: "--font-kanit",
+	subsets: ["latin"],
+});
 
 export default function SupportSection() {
 	const supportItems = [
@@ -28,7 +35,12 @@ export default function SupportSection() {
 	];
 
 	return (
-		<section className="py-8 md:py-16 bg-gray-50">
+		<section className="py-8 md:py-8 bg-gray-50 mt-8">
+			<div>
+				<h1 className={`${kan.className} text-[#16213E] text-4xl font-bold text-center mb-5`}>
+					We Supported By
+				</h1>
+			</div>
 			<div className="px-10">
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
 					{supportItems.map((item, index) => {
@@ -40,7 +52,7 @@ export default function SupportSection() {
 								whileInView={{ opacity: 1, y: 0 }}
 								viewport={{ once: true }}
 								transition={{ delay: index * 0.1 }}
-								className="text-center bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+								className="text-center bg-gray-100 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
 							>
 								<div className="w-12 h-12 md:w-16 md:h-16 bg-black rounded-full flex items-center justify-center mx-auto mb-4">
 									<IconComponent className="h-6 w-6 md:h-8 md:w-8 text-white" />

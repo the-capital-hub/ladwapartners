@@ -1,15 +1,20 @@
 "use client";
 
 import { useState } from "react";
+
 import { useHomeData } from "@/hooks/useHomeData";
-import NavigationBar from "@/components/BuyerPanel/NavigationBar.jsx";
+// import NavigationBar from "@/components/BuyerPanel/NavigationBar.jsx";
 import HeroSection from "@/components/BuyerPanel/home/HeroSection.jsx";
-import ProductShowcase from "@/components/BuyerPanel/home/ProductShowcase.jsx";
-import TrustedCompanies from "@/components/BuyerPanel/home/TrustedCompanies.jsx";
-import CategorySection from "@/components/BuyerPanel/home/CategorySection.jsx";
+// import ProductShowcase from "@/components/BuyerPanel/home/ProductShowcase.jsx";
+// import TrustedCompanies from "@/components/BuyerPanel/home/TrustedCompanies.jsx";
+// import CategorySection from "@/components/BuyerPanel/home/CategorySection.jsx";
 import SupportSection from "@/components/BuyerPanel/home/SupportSection.jsx";
 import FeaturedSection from "@/components/BuyerPanel/home/FeaturedSection.jsx";
-import SearchSection from "@/components/BuyerPanel/home/SearchSection.jsx";
+// import SearchSection from "@/components/BuyerPanel/home/SearchSection.jsx";
+import AboutLadwaPartners from "./AboutLadwaPartners";
+import AboutUsLadwaPartners from "./AboutUsLadwaPartners";
+import ResearchAndDevelopment from "./ResearchAndDevelopment";
+import WithOur from "./WithOur";
 
 export default function HomePage() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -17,14 +22,14 @@ export default function HomePage() {
 	const [currentPage, setCurrentPage] = useState(1);
 
 	const {
-		discountedProducts,
+		// discountedProducts,
 		topSellingProducts,
 		bestSellingProduct,
 		featuredProducts,
-		categoryProducts,
-		categories,
-		pagination,
-		isLoading,
+		// categoryProducts,
+		// categories,
+		// pagination,
+		// isLoading,
 		error,
 		refetch,
 	} = useHomeData(selectedCategory, searchQuery, currentPage);
@@ -33,21 +38,21 @@ export default function HomePage() {
 	console.log("best selling product", bestSellingProduct);
 	console.log("featured products", featuredProducts);
 
-	const handleSearch = (query) => {
-		setSearchQuery(query);
-		setCurrentPage(1);
-	};
+	// const handleSearch = (query) => {
+	// 	setSearchQuery(query);
+	// 	setCurrentPage(1);
+	// };
 
-	const handleCategoryChange = (category) => {
-		setSelectedCategory(category);
-		setCurrentPage(1);
-	};
+	// const handleCategoryChange = (category) => {
+	// 	setSelectedCategory(category);
+	// 	setCurrentPage(1);
+	// };
 
-	const handleLoadMore = () => {
-		if (pagination?.hasNextPage) {
-			setCurrentPage((prev) => prev + 1);
-		}
-	};
+	// const handleLoadMore = () => {
+	// 	if (pagination?.hasNextPage) {
+	// 		setCurrentPage((prev) => prev + 1);
+	// 	}
+	// };
 
 	if (error) {
 		return (
@@ -67,12 +72,14 @@ export default function HomePage() {
 
 	return (
 		<div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
-			<NavigationBar />
+			{/* <NavigationBar /> */}
 			<HeroSection />
-			<ProductShowcase products={discountedProducts} />
-			<TrustedCompanies />
+			{/* <ProductShowcase products={discountedProducts} /> */}
+			<AboutLadwaPartners/>
+			{/* <TrustedCompanies /> */}
+			<AboutUsLadwaPartners/>
 
-			<CategorySection
+			{/* <CategorySection
 				products={categoryProducts}
 				categories={categories}
 				searchQuery={searchQuery}
@@ -82,19 +89,21 @@ export default function HomePage() {
 				pagination={pagination}
 				onLoadMore={handleLoadMore}
 				isLoading={isLoading}
-			/>
+			/> */}
 			<SupportSection />
+			<ResearchAndDevelopment/>
+			<WithOur/>
 
 			<FeaturedSection
 				topSellingProducts={topSellingProducts}
 				bestSellingProduct={bestSellingProduct}
 				featuredProducts={featuredProducts}
 			/>
-
+{/* 
 			<SearchSection
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
-			/>
+			/> */}
 		</div>
 	);
 }
