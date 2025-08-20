@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useHomeData } from "@/hooks/useHomeData";
 // import NavigationBar from "@/components/BuyerPanel/NavigationBar.jsx";
 import HeroSection from "@/components/BuyerPanel/home/HeroSection.jsx";
+import FeaturedCategories from "@/components/BuyerPanel/home/FeaturedCategories.jsx";
 // import ProductShowcase from "@/components/BuyerPanel/home/ProductShowcase.jsx";
 // import TrustedCompanies from "@/components/BuyerPanel/home/TrustedCompanies.jsx";
 // import CategorySection from "@/components/BuyerPanel/home/CategorySection.jsx";
@@ -71,13 +72,14 @@ export default function HomePage() {
 	}
 
 	return (
-		<div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
-			{/* <NavigationBar /> */}
-			<HeroSection />
-			{/* <ProductShowcase products={discountedProducts} /> */}
-			<AboutLadwaPartners/>
-			{/* <TrustedCompanies /> */}
-			<AboutUsLadwaPartners/>
+                <div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
+                        {/* <NavigationBar /> */}
+                        <HeroSection />
+                        <FeaturedCategories />
+                        {/* <ProductShowcase products={discountedProducts} /> */}
+                        <AboutLadwaPartners/>
+                        {/* <TrustedCompanies /> */}
+                        <AboutUsLadwaPartners/>
 
 			{/* <CategorySection
 				products={categoryProducts}
