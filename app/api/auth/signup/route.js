@@ -1,53 +1,144 @@
 import { dbConnect } from "@/lib/dbConnect";
 import User from "@/model/User.js";
 import Verification from "@/model/Verification.js";
+import {
+        verifyGSTIN,
+        lookupGSTINFromPAN,
+        check206AB,
+        namesMatch,
+} from "@/lib/gst";
 
 export async function POST(req) {
-	await dbConnect();
-	const { email, mobile, password, firstName, lastName } = await req.json();
+        await dbConnect();
+        const {
+                email,
+                mobile,
+                password,
+                firstName,
+                lastName,
+                legalName,
+                tradeName,
+                pan,
+                gstin,
+                termsAccepted,
+        } = await req.json();
 
-	// Validation
-	if ((!email && !mobile) || !password) {
-		return Response.json(
-			{ message: "Email or mobile and password required" },
-			{ status: 400 }
-		);
-	}
+        if ((!email && !mobile) || !password) {
+                return Response.json(
+                        { message: "Email or mobile and password required" },
+                        { status: 400 }
+                );
+        }
 
-	// Check if user already exists
-	const existingUser = await User.findOne({
-		$or: [{ email }, { mobile }],
-	});
+        if (!termsAccepted) {
+                return Response.json(
+                        { message: "Terms must be accepted" },
+                        { status: 400 }
+                );
+        }
 
-	if (existingUser) {
-		return Response.json({ message: "User already exists" }, { status: 409 });
-	}
+        const existingUser = await User.findOne({
+                $or: [{ email }, { mobile }],
+        });
 
-	// If using email, check if it's verified
-	if (email) {
-		const verification = await Verification.findOne({ email });
+        if (existingUser) {
+                return Response.json({ message: "User already exists" }, { status: 409 });
+        }
 
-		if (!verification) {
-			return Response.json({ message: "Email not verified" }, { status: 403 });
-		}
+        if (email) {
+                const verification = await Verification.findOne({ email });
 
-		// Delete verification record after registration
-		// await Verification.deleteOne({ email });
-	}
+                if (!verification) {
+                        return Response.json({ message: "Email not verified" }, { status: 403 });
+                }
+        }
 
-	const lastLogin = Date.now();
+        let gstInfo = null;
+        let status = "PENDING";
+        let verified = false;
+        const compliance = {};
+        let selectedGstin = gstin;
 
-	// Create and save new user
-	const newUser = new User({
-		email,
-		mobile,
-		password,
-		firstName,
-		lastName,
-		lastLogin,
-		isVerified: true,
-	});
-	await newUser.save();
+        try {
+                if (selectedGstin) {
+                        gstInfo = await verifyGSTIN(selectedGstin);
+                } else if (pan) {
+                        const lookup = await lookupGSTINFromPAN(pan);
+                        const active = lookup?.gstins?.filter(
+                                (g) => g.status === "Active"
+                        );
+                        if (active && active.length === 1) {
+                                selectedGstin = active[0].gstin;
+                                gstInfo = await verifyGSTIN(selectedGstin);
+                        } else if (active && active.length > 1) {
+                                gstInfo = { options: active };
+                                status = "PENDING";
+                        } else {
+                                status = "REJECTED";
+                        }
+                }
 
-	return Response.json({ message: "Registration successful" });
+                if (gstInfo && gstInfo.status) {
+                        if (
+                                gstInfo.status === "Active" &&
+                                (!pan || gstInfo.pan === pan) &&
+                                namesMatch(gstInfo.legalName, legalName) &&
+                                namesMatch(gstInfo.tradeName, tradeName)
+                        ) {
+                                verified = true;
+                                status = "APPROVED";
+                                if (pan) {
+                                        const ab = await check206AB(pan);
+                                        if (ab) compliance["206AB"] = ab;
+                                }
+                        } else {
+                                status = "REJECTED";
+                        }
+                }
+        } catch (err) {
+                return Response.json(
+                        { message: "GST verification failed", error: err.message },
+                        { status: 502 }
+                );
+        }
+
+        const lastLogin = Date.now();
+
+        const newUser = new User({
+                email,
+                mobile,
+                password,
+                firstName,
+                lastName,
+                legalName,
+                tradeName,
+                pan,
+                gstin: selectedGstin,
+                gstStatus: gstInfo?.status,
+                gstType: gstInfo?.type,
+                gstStateCode: gstInfo?.stateCode,
+                gstLastFiling: gstInfo?.lastFiling,
+                gstVerified: verified,
+                gstVerificationStatus: status,
+                complianceFlags: compliance,
+                termsAccepted,
+                lastLogin,
+                isVerified: true,
+        });
+        await newUser.save();
+
+        return Response.json({
+                dealerId: newUser._id,
+                status,
+                gst: {
+                        gstin: newUser.gstin,
+                        status: newUser.gstStatus,
+                        type: newUser.gstType,
+                        stateCode: newUser.gstStateCode,
+                        legalName: newUser.legalName,
+                        tradeName: newUser.tradeName,
+                        lastFiling: newUser.gstLastFiling,
+                },
+                complianceFlags: compliance,
+        });
 }

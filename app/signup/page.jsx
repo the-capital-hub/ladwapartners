@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	Card,
 	CardContent,
@@ -21,24 +22,30 @@ import LoginModel from "@/public/images/login/LoginModel.png";
 
 const SignupPage = () => {
 	const [step, setStep] = useState(1); // 1: signup form, 2: email verification
-	const [formData, setFormData] = useState({
-		firstName: "",
-		lastName: "",
-		email: "",
-		mobile: "",
-		password: "",
-		confirmPassword: "",
-	});
+        const [formData, setFormData] = useState({
+                firstName: "",
+                lastName: "",
+                email: "",
+                mobile: "",
+                legalName: "",
+                tradeName: "",
+                pan: "",
+                gstin: "",
+                password: "",
+                confirmPassword: "",
+                terms: false,
+        });
 	const [verificationCode, setVerificationCode] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const router = useRouter();
 
-	const handleInputChange = (e) => {
-		setFormData({
-			...formData,
-			[e.target.name]: e.target.value,
-		});
-	};
+        const handleInputChange = (e) => {
+                const { name, value, type, checked } = e.target;
+                setFormData((prev) => ({
+                        ...prev,
+                        [name]: type === "checkbox" ? checked : value,
+                }));
+        };
 
 	const handleSendVerification = async (e) => {
 		e.preventDefault();
@@ -80,9 +87,13 @@ const SignupPage = () => {
 		}
 	};
 
-	const handleVerifyAndSignup = async (e) => {
-		e.preventDefault();
-		setIsLoading(true);
+        const handleVerifyAndSignup = async (e) => {
+                e.preventDefault();
+                if (!formData.terms) {
+                        toast.error("Please accept the terms and conditions");
+                        return;
+                }
+                setIsLoading(true);
 
 		try {
 			// First verify the email
@@ -106,23 +117,34 @@ const SignupPage = () => {
 					headers: {
 						"Content-Type": "application/json",
 					},
-					body: JSON.stringify({
-						firstName: formData.firstName,
-						lastName: formData.lastName,
-						email: formData.email,
-						mobile: formData.mobile,
-						password: formData.password,
-					}),
-				});
+                                        body: JSON.stringify({
+                                                firstName: formData.firstName,
+                                                lastName: formData.lastName,
+                                                email: formData.email,
+                                                mobile: formData.mobile,
+                                                legalName: formData.legalName,
+                                                tradeName: formData.tradeName,
+                                                pan: formData.pan,
+                                                gstin: formData.gstin,
+                                                termsAccepted: formData.terms,
+                                                password: formData.password,
+                                        }),
+                                });
 
 				const signupData = await signupResponse.json();
 
-				if (signupResponse.ok) {
-					toast.success("Account created successfully!");
-					router.push("/login");
-				} else {
-					toast.error(signupData.message || "Signup failed");
-				}
+                                if (signupResponse.ok) {
+                                        if (signupData.status === "APPROVED") {
+                                                toast.success("Account approved successfully!");
+                                                router.push("/login");
+                                        } else if (signupData.status === "PENDING") {
+                                                toast("Application pending manual review");
+                                        } else {
+                                                toast.error(signupData.message || "Signup rejected");
+                                        }
+                                } else {
+                                        toast.error(signupData.message || "Signup failed");
+                                }
 			} else {
 				toast.error(verifyData.message || "Invalid verification code");
 			}
@@ -318,31 +340,90 @@ const SignupPage = () => {
 											/>
 										</motion.div>
 
-										<motion.div variants={itemVariants} className="space-y-2">
-											<Label
-												htmlFor="mobile"
-												className="text-gray-700 font-medium"
-											>
-												Mobile Number (Optional)
-											</Label>
-											<Input
-												id="mobile"
-												name="mobile"
-												type="tel"
-												placeholder="Enter Mobile Number"
-												value={formData.mobile}
-												onChange={handleInputChange}
-												className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-											/>
-										</motion.div>
+                                                                               <motion.div variants={itemVariants} className="space-y-2">
+                                                                                       <Label
+                                                                                               htmlFor="mobile"
+                                                                                               className="text-gray-700 font-medium"
+                                                                                       >
+                                                                                               Mobile Number (Optional)
+                                                                                       </Label>
+                                                                                       <Input
+                                                                                               id="mobile"
+                                                                                               name="mobile"
+                                                                                               type="tel"
+                                                                                               placeholder="Enter Mobile Number"
+                                                                                               value={formData.mobile}
+                                                                                               onChange={handleInputChange}
+                                                                                               className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                       />
+                                                                               </motion.div>
 
-										<motion.div variants={itemVariants} className="space-y-2">
-											<Label
-												htmlFor="password"
-												className="text-gray-700 font-medium"
-											>
-												Password
-											</Label>
+                                                                               <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
+                                                                                        <div className="space-y-2">
+                                                                                                <Label htmlFor="legalName" className="text-gray-700 font-medium">
+                                                                                                        Legal Name
+                                                                                                </Label>
+                                                                                                <Input
+                                                                                                        id="legalName"
+                                                                                                        name="legalName"
+                                                                                                        placeholder="Legal Name"
+                                                                                                        value={formData.legalName}
+                                                                                                        onChange={handleInputChange}
+                                                                                                        className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                        required
+                                                                                                />
+                                                                                        </div>
+                                                                                        <div className="space-y-2">
+                                                                                                <Label htmlFor="tradeName" className="text-gray-700 font-medium">
+                                                                                                        Trade Name
+                                                                                                </Label>
+                                                                                                <Input
+                                                                                                        id="tradeName"
+                                                                                                        name="tradeName"
+                                                                                                        placeholder="Trade Name"
+                                                                                                        value={formData.tradeName}
+                                                                                                        onChange={handleInputChange}
+                                                                                                        className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                />
+                                                                                        </div>
+                                                                               </motion.div>
+
+                                                                               <motion.div variants={itemVariants} className="space-y-2">
+                                                                                        <Label htmlFor="pan" className="text-gray-700 font-medium">
+                                                                                                PAN
+                                                                                        </Label>
+                                                                                        <Input
+                                                                                                id="pan"
+                                                                                                name="pan"
+                                                                                                placeholder="PAN"
+                                                                                                value={formData.pan}
+                                                                                                onChange={handleInputChange}
+                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                required
+                                                                                        />
+                                                                               </motion.div>
+
+                                                                               <motion.div variants={itemVariants} className="space-y-2">
+                                                                                        <Label htmlFor="gstin" className="text-gray-700 font-medium">
+                                                                                                GSTIN (Optional)
+                                                                                        </Label>
+                                                                                        <Input
+                                                                                                id="gstin"
+                                                                                                name="gstin"
+                                                                                                placeholder="GSTIN"
+                                                                                                value={formData.gstin}
+                                                                                                onChange={handleInputChange}
+                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                        />
+                                                                               </motion.div>
+
+                                                                               <motion.div variants={itemVariants} className="space-y-2">
+                                                                                       <Label
+                                                                                               htmlFor="password"
+                                                                                               className="text-gray-700 font-medium"
+                                                                                       >
+                                                                                               Password
+                                                                                       </Label>
 											<Input
 												id="password"
 												name="password"
@@ -355,13 +436,13 @@ const SignupPage = () => {
 											/>
 										</motion.div>
 
-										<motion.div variants={itemVariants} className="space-y-2">
-											<Label
-												htmlFor="confirmPassword"
-												className="text-gray-700 font-medium"
-											>
-												Confirm Password
-											</Label>
+                                                                               <motion.div variants={itemVariants} className="space-y-2">
+                                                                                       <Label
+                                                                                               htmlFor="confirmPassword"
+                                                                                               className="text-gray-700 font-medium"
+                                                                                       >
+                                                                                               Confirm Password
+                                                                                       </Label>
 											<Input
 												id="confirmPassword"
 												name="confirmPassword"
@@ -372,7 +453,23 @@ const SignupPage = () => {
 												className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
 												required
 											/>
-										</motion.div>
+                                                                               </motion.div>
+
+                                                                               <motion.div variants={itemVariants} className="flex items-center space-x-2">
+                                                                                        <Checkbox
+                                                                                                id="terms"
+                                                                                                checked={formData.terms}
+                                                                                                onCheckedChange={(checked) =>
+                                                                                                        setFormData((prev) => ({
+                                                                                                                ...prev,
+                                                                                                                terms: checked,
+                                                                                                        }))
+                                                                                                }
+                                                                                        />
+                                                                                        <Label htmlFor="terms" className="text-sm text-gray-700">
+                                                                                                I accept the terms and conditions
+                                                                                        </Label>
+                                                                               </motion.div>
 
 										<motion.div variants={itemVariants}>
 											<Button
