@@ -47,7 +47,6 @@ const LoginPage = () => {
 				const userResponse = await fetch("/api/auth/me");
 				if (userResponse.ok) {
 					const userData = await userResponse.json();
-					console.log(userData)
 					setUser(userData.user);
 				}
 
