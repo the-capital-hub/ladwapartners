@@ -13,6 +13,11 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 	const isAuthenticated = useIsAuthenticated()
 
 	const handleViewProduct = () => {
+
+		if (!isAuthenticated) {
+			router.push("/login");
+			return;
+		}
 		router.push(`/products/${product?.id || product?._id}`);
 	};
 
@@ -41,33 +46,40 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 									</p>
 								</div>
 							</div>
-							{isAuthenticated && (
-								<div className="flex flex-col mb-4">
-									<p className="flex font-bold text-xl md:text-2xl mb-2">
-										{product?.price}
-									</p>
-									{product?.originalPrice && (
-										<p className="text-gray-500 line-through text-sm">
-											{product?.originalPrice}
-											<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
-												25% OFF
-											</span>
+							<div className="flex flex-col mb-4">
+								{isAuthenticated ? (
+									<>
+										<p className="flex font-bold text-xl md:text-2xl mb-2">
+											₹{product?.price}
 										</p>
-									)}
-								</div>)}
-
+										{product?.originalPrice && (
+											<div className="flex items-center">
+												<p className="text-gray-500 line-through text-sm">
+													₹{product?.originalPrice}
+												</p>
+												<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
+													25% OFF
+												</span></div>
+										)}
+									</>
+								) : (
+									<p className="text-base text-gray-700 italic">
+										Please login to see price
+									</p>
+								)}
+							</div>
 							{product?.colors && (
 								<div className="flex space-x-1">
 									{product?.colors.map((color, i) => (
 										<div
 											key={i}
 											className={`w-3 h-3 rounded-full ${color === "blue"
-													? "bg-blue-500"
-													: color === "black"
-														? "bg-black"
-														: color === "red"
-															? "bg-red-500"
-															: "bg-orange-500"
+												? "bg-blue-500"
+												: color === "black"
+													? "bg-black"
+													: color === "red"
+														? "bg-red-500"
+														: "bg-orange-500"
 												}`}
 										/>
 									))}
@@ -125,20 +137,29 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 								{product?.subtitle}
 							</p>
 						)}
-						{isAuthenticated && (
-							<div className="flex items-center mt-2">
-								<p className="font-bold text-lg md:text-xl">{product?.price}</p>
-								{product?.originalPrice && (
-									<>
-										<p className="text-gray-500 line-through ml-2 text-sm">
-											{product?.originalPrice}
+						<div className="flex flex-col mb-4">
+							{isAuthenticated ? (
+								<>
+									<p className="flex font-bold text-xl md:text-2xl mb-2">
+										₹{product?.price}
+									</p>
+									{product?.originalPrice && (
+										<div className="flex items-center">
+										<p className="text-gray-500 line-through text-sm">
+											₹{product?.originalPrice}
 										</p>
-										<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
-											25% OFF
-										</span>
-									</>
-								)}
-							</div>)}
+											<span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded ml-2">
+												25% OFF
+											</span>
+										</div>
+									)}
+								</>
+							) : (
+								<p className="text-base text-gray-700 italic">
+									Please login to see price
+								</p>
+							)}
+						</div>
 					</div>
 					{product?.colors && (
 						<div className="flex space-x-1 flex-shrink-0 ml-2">
@@ -146,12 +167,12 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 								<div
 									key={i}
 									className={`w-3 h-3 rounded-full ${color === "blue"
-											? "bg-blue-500"
-											: color === "black"
-												? "bg-black"
-												: color === "red"
-													? "bg-red-500"
-													: "bg-orange-500"
+										? "bg-blue-500"
+										: color === "black"
+											? "bg-black"
+											: color === "red"
+												? "bg-red-500"
+												: "bg-orange-500"
 										}`}
 								/>
 							))}
@@ -197,7 +218,9 @@ function ProductCardVarient({ product, variant = "vertical" }) {
 							<Heart className="h-3 w-3 sm:h-4 sm:w-4" />
 						</Button>
 					</div>
-					<Button className="bg-black text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 hover:bg-gray-800 transition-colors rounded-full">
+					<Button
+						disbaled={!isAuthenticated}
+						className="bg-black text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 hover:bg-gray-800 transition-colors rounded-full">
 						BUY NOW
 						<ArrowRight className="h-4 w-4" />
 					</Button>

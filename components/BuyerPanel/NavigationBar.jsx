@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +16,7 @@ import { useProductStore } from "@/store/productStore.js";
 
 export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
@@ -50,19 +52,29 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
     if (searchQuery.trim()) {
       setGlobalSearch(searchQuery);
       router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
+      setMobileSearchOpen(false); // close after search on mobile
     }
   };
 
   return (
-    <nav className={`${isMenuOpen ? "block" : "hidden"} lg:block bg-white border-t shadow-sm`}>
+    <nav
+      className={`${
+        isMenuOpen ? "block" : "hidden"
+      } lg:block bg-white border-t shadow-sm`}
+    >
       <div className="px-4 lg:px-10">
         <div className="flex items-center justify-between py-4">
+          {/* Categories */}
           <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap">
             {visibleCategories.map((category) => (
               <Button
                 key={category.id}
                 variant="ghost"
-                className={currentCategory === category.id ? "bg-black text-white" : "hover:bg-gray-100"}
+                className={
+                  currentCategory === category.id
+                    ? "bg-black text-white"
+                    : "hover:bg-gray-100"
+                }
                 onClick={() => handleCategoryClick(category.id)}
               >
                 {category.label}
@@ -90,21 +102,54 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
             )}
           </div>
 
+          {/* Desktop Search */}
           <form
             onSubmit={handleSearch}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-4"
+            className="hidden sm:flex items-center space-x-4"
           >
             <div className="relative">
               <Input
                 placeholder="Search products..."
-                className="w-full sm:w-64 pr-10"
+                className="w-64 pr-10"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             </div>
           </form>
+
+          {/* Mobile Search Icon */}
+          <button
+            className="sm:hidden p-2 rounded-md hover:bg-gray-100"
+            onClick={() => setMobileSearchOpen((prev) => !prev)}
+          >
+            <Search className="h-5 w-5 text-gray-600" />
+          </button>
         </div>
+
+        {/* Mobile Search Box (Dropdown style) */}
+        <AnimatePresence>
+          {mobileSearchOpen && (
+            <motion.form
+              onSubmit={handleSearch}
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="sm:hidden overflow-hidden px-2 pb-2"
+            >
+              <div className="relative py-2">
+                <Input
+                  placeholder="Search products..."
+                  className="w-full md:w-64"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              </div>
+            </motion.form>
+          )}
+        </AnimatePresence>
       </div>
     </nav>
   );
