@@ -47,16 +47,19 @@ export async function POST(request) {
                                 const parsedPrice = Number.parseFloat(price);
                                 const parsedMrp = Number.parseFloat(mrp);
 
-                                if (
-                                        !title ||
-                                        !category ||
-                                        !sku ||
-                                        Number.isNaN(parsedPrice) ||
-                                        Number.isNaN(parsedMrp)
-                                ) {
+
+                                const missingFields = [];
+                                if (!title) missingFields.push("title");
+                                if (!category) missingFields.push("category");
+                                if (!sku) missingFields.push("sku");
+                                if (Number.isNaN(parsedPrice)) missingFields.push("price");
+                                if (Number.isNaN(parsedMrp)) missingFields.push("mrp");
+
+                                if (missingFields.length > 0) {
                                         results.failed.push({
                                                 data: productData,
-                                                error: "Missing or invalid required fields",
+                                                error: `Missing or invalid required fields: ${missingFields.join(", ")}`,
+
                                         });
                                         continue;
                                 }
