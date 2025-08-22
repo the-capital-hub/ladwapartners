@@ -168,6 +168,28 @@ function ProductCardVarient({ product, variant = "vertical" }) {
                                         </div>
                                 </div>
 
+
+                                {/* Action Buttons */}
+                                <div className="flex justify-between items-center px-4 md:px-6 pb-4">
+                                        <div className="flex space-x-2">
+                                                <Button variant="outline" size="icon" className="rounded-full w-8 h-8 sm:w-10 sm:h-10">
+                                                        <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" />
+                                                </Button>
+                                                <Button variant="outline" size="icon" className="rounded-full w-8 h-8 sm:w-10 sm:h-10">
+                                                        <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
+                                                </Button>
+                                        </div>
+                                        <Button disabled={!isAuthenticated} className="bg-black text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 hover:bg-gray-800 transition-colors rounded-full">
+                                                BUY NOW
+                                                <ArrowRight className="h-4 w-4" />
+                                        </Button>
+                                </div>
+                </CardContent>
+                </Card>
+        );
+}
+
+
                                 {/* Action Buttons */}
                                 <div className="flex justify-between items-center px-4 md:px-6 pb-4">
                                         <div className="flex space-x-2">
