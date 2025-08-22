@@ -74,7 +74,7 @@ export default function ProductCard({ product, compact = false }) {
           <img
             src={
               product.image ||
-              "https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png"
+              "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
             }
             alt={product.title}
             className={`w-full ${
