@@ -309,7 +309,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 						</div>
 
                                                {/* Actions */}
-                                               <div className="flex items-center justify-between gap-2">
+                                               <div className="flex items-center justify-between gap-2 flex-wrap">
                                                        <div className="flex gap-2">
                                                                <Button
                                                                        variant="outline"
@@ -330,7 +330,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
                                                                </Button>
                                                        </div>
 
-                                                       <div className="flex items-center gap-2">
+                                                       <div className="flex items-center gap-2 flex-wrap">
                                                                <div className="flex items-center border rounded-full">
                                                                        <Button
                                                                                variant="ghost"
@@ -353,7 +353,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
                                                                <Button
                                                                        onClick={handleBuyNow}
                                                                        disabled={!product.inStock || isLoading}
-                                                                       className="bg-black text-white hover:bg-gray-800 rounded-full flex-1 max-w-[120px]"
+                                                                       className="bg-black text-white hover:bg-gray-800 rounded-full flex-shrink-0 whitespace-nowrap"
                                                                        size="sm"
                                                                >
                                                                        Buy Now
