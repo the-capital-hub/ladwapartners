@@ -1,5 +1,6 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Product from "@/model/Product";
+import Category from "@/model/Category";
 import cloudinary from "@/lib/cloudnary.js";
 
 export async function PUT(request) {
@@ -31,21 +32,47 @@ export async function PUT(request) {
 		// Extract product data from formData
 		const title = formData.get("title");
 		const description = formData.get("description");
-		const longDescription = formData.get("longDescription");
-		const category = formData.get("category");
-		const price = parseFloat(formData.get("price"));
-		const salePrice = formData.get("salePrice")
-			? parseFloat(formData.get("salePrice"))
-			: 0;
-		const stocks = parseInt(formData.get("stocks"));
-		const discount = formData.get("discount")
-			? parseFloat(formData.get("discount"))
-			: 0;
-		const type = formData.get("type");
-		const published = formData.get("published") === "true";
+                const longDescription = formData.get("longDescription");
+                const category = formData.get("category");
+                const subCategory = formData.get("subCategory");
+                const sku = formData.get("sku");
+                const mrp = formData.get("mrp")
+                        ? parseFloat(formData.get("mrp"))
+                        : undefined;
+                const mainImageLink = formData.get("mainImageLink");
+                const lengthVal = formData.get("length");
+                const widthVal = formData.get("width");
+                const heightVal = formData.get("height");
+                const weightVal = formData.get("weight");
+                const colour = formData.get("colour");
+                const material = formData.get("material");
+                const brand = formData.get("brand");
+                const size = formData.get("size");
+                const price = parseFloat(formData.get("price"));
+                const salePrice = formData.get("salePrice")
+                        ? parseFloat(formData.get("salePrice"))
+                        : 0;
+                const stocks = parseInt(formData.get("stocks"));
+                const discount = formData.get("discount")
+                        ? parseFloat(formData.get("discount"))
+                        : 0;
+                const type = formData.get("type");
+                const published = formData.get("published") === "true";
 
-		// Parse features
-		let features = [];
+                // Ensure category exists in master table
+                if (category) {
+                        const existingCategory = await Category.findOne({ slug: category });
+                        if (!existingCategory) {
+                                const name = category.replace(/-/g, " ");
+                                await Category.create({
+                                        name,
+                                        description: `${name} category`,
+                                });
+                        }
+                }
+
+                // Parse features
+                let features = [];
 		try {
 			const featuresString = formData.get("features");
 			if (featuresString) {
@@ -56,8 +83,8 @@ export async function PUT(request) {
 			features = [];
 		}
 
-		// Handle images
-		let imageUrls = [];
+                // Handle images
+                let imageUrls = [];
 
 		// Get existing images that should be kept
 		const existingImages = formData.getAll("existingImages");
@@ -120,14 +147,30 @@ export async function PUT(request) {
 			}
 		}
 
-		// Update product fields
-		product.title = title;
-		product.description = description;
-		product.longDescription = longDescription || description;
-		product.category = category;
-		product.price = price;
-		product.salePrice = salePrice;
-		product.stocks = stocks;
+                // Update product fields
+                product.title = title;
+                product.description = description;
+                product.longDescription = longDescription || description;
+                product.category = category;
+                product.subCategory = subCategory;
+                product.sku = sku;
+                if (mrp !== undefined && !Number.isNaN(mrp)) product.mrp = mrp;
+                product.mainImageLink = mainImageLink;
+                const parsedLength = lengthVal ? parseFloat(lengthVal) : undefined;
+                const parsedWidth = widthVal ? parseFloat(widthVal) : undefined;
+                const parsedHeight = heightVal ? parseFloat(heightVal) : undefined;
+                const parsedWeight = weightVal ? parseFloat(weightVal) : undefined;
+                if (!Number.isNaN(parsedLength)) product.length = parsedLength;
+                if (!Number.isNaN(parsedWidth)) product.width = parsedWidth;
+                if (!Number.isNaN(parsedHeight)) product.height = parsedHeight;
+                if (!Number.isNaN(parsedWeight)) product.weight = parsedWeight;
+                product.colour = colour;
+                product.material = material;
+                product.brand = brand;
+                product.size = size;
+                product.price = price;
+                product.salePrice = salePrice;
+                product.stocks = stocks;
 		product.discount = discount;
 		product.type = type;
 		product.published = published;
