@@ -200,6 +200,7 @@ export const useProductStore = create(
                                         };
                                 })(),
 
+
 				addToCart: async (productId, quantity = 1) => {
 					try {
 						const response = await fetch(
