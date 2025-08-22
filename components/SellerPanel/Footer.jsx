@@ -8,7 +8,7 @@ export default function Footer() {
 		support: {
 			title: "Support",
 			links: [
-				{ label: "help@safetyonline.in", href: "mailto:help@safetyonline.in" },
+				{ label: "help@ladwapartners.com", href: "mailto:help@ladwapartners.com" },
 				{ label: "9945234161", href: "#" },
 			],
 		},
@@ -102,7 +102,7 @@ export default function Footer() {
 						{/* Download App */}
 						<div>
 							<h3 className="text-xl font-bold mb-4">Download App</h3>
-							<p className="mb-4">Save $3 with App New User Only</p>
+							{/* <p className="mb-4">Save $3 with App New User Only</p> */}
 							<div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row space-y-4 sm:space-y-0 sm:space-x-4 lg:space-x-0 lg:space-y-4 xl:space-y-0 xl:space-x-4 mb-6">
 								<Image
 									src={Barcode}

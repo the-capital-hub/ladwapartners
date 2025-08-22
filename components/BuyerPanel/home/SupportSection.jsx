@@ -25,7 +25,7 @@ export default function SupportSection() {
 		{
 			icon: Heart,
 			title: "Email Us",
-			description: "hello@safetyonline.in",
+			description: "hello@ladwapartners.com",
 		},
 		{
 			icon: Shield,
