@@ -30,12 +30,14 @@ import { useCartStore } from "@/store/cartStore";
 import ProductCard from "@/components/BuyerPanel/products/ProductCard.jsx";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { useIsAuthenticated } from "@/store/authStore";
 
 export default function ProductDetail({ product, relatedProducts = [] }) {
 	const [selectedImage, setSelectedImage] = useState(0);
 	const [quantity, setQuantity] = useState(1);
 	const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
 	const router = useRouter();
+	const isAuthenticated = useIsAuthenticated();
 	const { addItem, isLoading } = useCartStore();
 
 	// Mock reviews data - you can replace this with real reviews from the API
@@ -124,21 +126,22 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 		}
 	};
 
-	const colors = [
-		"bg-blue-500",
-		"bg-black",
-		"bg-red-500",
-		"bg-orange-500",
-		"bg-gray-500",
-	];
+
+
+	// const colors = [
+	// 	"bg-blue-500",
+	// 	"bg-black",
+	// 	"bg-red-500",
+	// 	"bg-orange-500",
+	// 	"bg-gray-500",
+	// ];
 
 	const renderStars = (rating) => {
 		return Array.from({ length: 5 }, (_, i) => (
 			<Star
 				key={i}
-				className={`w-4 h-4 ${
-					i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-				}`}
+				className={`w-4 h-4 ${i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+					}`}
 			/>
 		));
 	};
@@ -209,11 +212,10 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 									<button
 										key={index}
 										onClick={() => setSelectedImage(index)}
-										className={`relative w-20 h-20 border-2 rounded-lg overflow-hidden flex-shrink-0 ${
-											selectedImage === index
-												? "border-black"
-												: "border-gray-200 hover:border-gray-400"
-										}`}
+										className={`relative w-20 h-20 border-2 rounded-lg overflow-hidden flex-shrink-0 ${selectedImage === index
+											? "border-black"
+											: "border-gray-200 hover:border-gray-400"
+											}`}
 									>
 										<Image
 											src={
@@ -255,26 +257,32 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 									({reviews.length} Reviews)
 								</span>
 							</div>
+							{isAuthenticated ? (<>
+								<p className="text-xl lg:text-2xl font-semibold text-black mb-2">
+									₹ {product.price.toLocaleString()}
+								</p>
 
+								{/* Discounted price and discount percentage */}
+								{product.originalPrice > product.price && (
+									<div className="flex items-center mb-4">
+										<span className="text-gray-500 line-through mr-2">
+											₹ {product.originalPrice.toLocaleString()}
+										</span>
+										<span className="text-green-500">
+											{product.discountPercentage}% off
+										</span>
+									</div>
+								)}
+							</>) : <>
+								<p className="text-red-600 font-medium">
+									Please login to see price
+								</p>
+							</>}
 							{/* Product price */}
-							<p className="text-xl lg:text-2xl font-semibold text-black mb-2">
-								₹ {product.price.toLocaleString()}
-							</p>
 
-							{/* Discounted price and discount percentage */}
-							{product.originalPrice > product.price && (
-								<div className="flex items-center mb-4">
-									<span className="text-gray-500 line-through mr-2">
-										₹ {product.originalPrice.toLocaleString()}
-									</span>
-									<span className="text-green-500">
-										{product.discountPercentage}% off
-									</span>
-								</div>
-							)}
 						</div>
 
-						{/* Product Colors */}
+						{/* Product Colors
 						<div className="w-fit flex space-x-2 p-3 bg-gray-200 rounded-lg">
 							{colors.map((color, i) => (
 								<div
@@ -282,7 +290,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 									className={`w-6 h-6 rounded-full border border-gray-200 cursor-pointer ${color}`}
 								/>
 							))}
-						</div>
+						</div> */}
 
 						{/* Quantity and Add to Cart */}
 						<div className="space-y-4">
@@ -293,7 +301,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 										variant="ghost"
 										size="icon"
 										onClick={() => handleQuantityChange(-1)}
-										disabled={quantity <= 1}
+										 disabled={!isAuthenticated || quantity <= 1}
 									>
 										<Minus className="h-4 w-4" />
 									</Button>
@@ -302,7 +310,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 										variant="ghost"
 										size="icon"
 										onClick={() => handleQuantityChange(1)}
-										disabled={quantity >= product.stocks}
+										disabled={quantity >= product.stocks || !isAuthenticated}
 									>
 										<Plus className="h-4 w-4" />
 									</Button>
@@ -312,21 +320,21 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 								</span>
 							</div>
 
-							<div className="flex flex-col sm:flex-row gap-4">
+							<div className="flex flex-col md:flex-row gap-4">
 								<Button
 									onClick={handleAddToCart}
-									disabled={!product.inStock || isLoading}
-									className="flex-1 bg-black text-white hover:bg-gray-800"
-									size="lg"
+									disabled={!product.inStock || isLoading || !isAuthenticated}
+									className="flex-1 bg-black text-white hover:bg-gray-800 "
+
 								>
 									<ShoppingCart className="h-5 w-5 mr-2" />
 									Add to Cart
 								</Button>
 								<Button
 									onClick={handleBuyNow}
-									disabled={!product.inStock}
+									disabled={!product.inStock || !isAuthenticated}
 									className="flex-1 bg-green-600 text-white hover:bg-green-700"
-									size="lg"
+
 								>
 									Buy Now
 								</Button>
@@ -343,9 +351,8 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 						{/* Stock Status */}
 						<div className="flex items-center space-x-2">
 							<div
-								className={`w-3 h-3 rounded-full ${
-									product.inStock ? "bg-green-500" : "bg-red-500"
-								}`}
+								className={`w-3 h-3 rounded-full ${product.inStock ? "bg-green-500" : "bg-red-500"
+									}`}
 							/>
 							<span
 								className={product.inStock ? "text-green-600" : "text-red-600"}
@@ -355,6 +362,34 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 						</div>
 					</motion.div>
 				</div>
+				{product.features && product.features.length > 0 && (
+					<motion.div
+						className="mb-10"
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.5, delay: 0.5 }}
+					>
+						<h2 className="text-2xl font-bold mb-8">Product Features</h2>
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+							{product.features.map((feature, index) => (
+								<Card key={index} className="bg-white rounded-xl p-6 shadow-sm">
+									<h3 className="font-semibold text-lg mb-3">
+										{feature.title}
+									</h3>
+									<p className="text-gray-600">{feature.description}</p>
+								</Card>
+							))}
+						</div>
+						{product.longDescription && (
+							<Card className="bg-white rounded-xl p-6 shadow-sm">
+								<h2 className="text-2xl font-bold mb-4">Product Description</h2>
+								<p className="text-gray-600 leading-relaxed">
+									{product.longDescription}
+								</p>
+							</Card>
+						)}
+					</motion.div>
+				)}
 
 				{/* Delivery Details and Offers */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">
@@ -369,7 +404,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 							<CardContent className="p-6">
 								<h2 className="text-2xl font-bold mb-6">Delivery Details</h2>
 
-								{/* Location Check */}
+								{/* Location Check
 								<div className="bg-white rounded-lg p-4 mb-6 flex items-center justify-between">
 									<div className="flex items-center space-x-3">
 										<MapPin className="h-6 w-6 text-gray-600" />
@@ -382,7 +417,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 
 								<p className="text-gray-700 mb-6">
 									Check serviceability at your location
-								</p>
+								</p> */}
 
 								{/* Delivery Options */}
 								<div className="space-y-4">
@@ -447,7 +482,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 										</div>
 									</div>
 
-									<div className="flex items-start space-x-3">
+									{/* <div className="flex items-start space-x-3">
 										<div className="bg-green-600 p-1 rounded">
 											<div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center">
 												<div className="w-2 h-2 bg-green-600 rounded-sm"></div>
@@ -471,7 +506,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 												</Badge>
 											</div>
 										</div>
-									</div>
+									</div> */}
 
 									<div className="flex items-start space-x-3">
 										<div className="bg-green-600 p-1 rounded">
@@ -488,7 +523,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 								</div>
 
 								{/* Buy More & Save More */}
-								<div>
+								{/* <div>
 									<h3 className="text-xl font-bold mb-4">
 										Buy More & Save More
 									</h3>
@@ -521,41 +556,14 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 											</div>
 										))}
 									</div>
-								</div>
+								</div> */}
 							</CardContent>
 						</Card>
 					</motion.div>
 				</div>
 
 				{/* Product Features */}
-				{product.features && product.features.length > 0 && (
-					<motion.div
-						className="mb-10"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.5 }}
-					>
-						<h2 className="text-2xl font-bold mb-8">Product Features</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-							{product.features.map((feature, index) => (
-								<Card key={index} className="bg-white rounded-xl p-6 shadow-sm">
-									<h3 className="font-semibold text-lg mb-3">
-										{feature.title}
-									</h3>
-									<p className="text-gray-600">{feature.description}</p>
-								</Card>
-							))}
-						</div>
-						{product.longDescription && (
-							<Card className="bg-white rounded-xl p-6 shadow-sm">
-								<h2 className="text-2xl font-bold mb-4">Product Description</h2>
-								<p className="text-gray-600 leading-relaxed">
-									{product.longDescription}
-								</p>
-							</Card>
-						)}
-					</motion.div>
-				)}
+
 
 				{/* Reviews & Ratings Section */}
 				<motion.div
@@ -643,23 +651,6 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 					</Card>
 				</motion.div>
 
-				{/* Related Products */}
-				{relatedProducts.length > 0 && (
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.7 }}
-						className="mb-10"
-					>
-						<h2 className="text-2xl font-bold mb-8">Related Products</h2>
-						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-							{relatedProducts.map((relatedProduct) => (
-								<ProductCard key={relatedProduct.id} product={relatedProduct} />
-							))}
-						</div>
-					</motion.div>
-				)}
-
 				{/* Benefits and Warranty Section */}
 				<motion.div
 					className="mb-10"
@@ -715,6 +706,25 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 						</Card>
 					</div>
 				</motion.div>
+
+				{/* Related Products */}
+				{relatedProducts.length > 0 && (
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.5, delay: 0.7 }}
+						className="mb-10"
+					>
+						<h2 className="text-2xl font-bold mb-8">Related Products</h2>
+						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+							{relatedProducts.map((relatedProduct) => (
+								<ProductCard key={relatedProduct.id} product={relatedProduct} />
+							))}
+						</div>
+					</motion.div>
+				)}
+
+
 			</div>
 		</div>
 	);

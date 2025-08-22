@@ -32,7 +32,7 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 
 	return (
 		<>
-                        <header className="sticky top-0 w-full z-50 bg-white/10 border-b border-white/80">
+                        <header className="sticky top-0 w-full z-50 bg-white/40 border-b border-white/80">
 	<div className="px-4 lg:px-10">
 		{/* Top Bar */}
 		<div className="flex items-center justify-between py-3">
@@ -68,9 +68,8 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 					<Image
 						src={Logo}
 						alt="Ladwa Partners Logo"
-						width={40} // adjust size as needed
-						height={40}
-						className="h-10 w-auto"
+						width={150} 
+
 					/>
 				</Link>
 			</div>
@@ -104,9 +103,9 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 									height={40}
 									className="h-6 w-6 md:h-8 md:w-8 rounded-full"
 								/>
-								<div className="hidden md:block text-white">
+								<div className="hidden md:block text-black">
 									<p className="text-sm font-medium">{fullName}</p>
-									<p className="text-xs text-gray-300">{email}</p>
+									<p className="text-xs text-gray-400">{email}</p>
 								</div>
 							</div>
 						</Link>

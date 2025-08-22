@@ -7,21 +7,30 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Heart, Eye, ArrowRight, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
-import { toast } from "react-hot-toast";
+import { useIsAuthenticated } from "@/store/authStore";
 import Image from "next/image";
 
 export default function ProductCard({ product, viewMode = "grid" }) {
 	const router = useRouter();
 	const { addItem, isLoading } = useCartStore();
+	const  isAuthenticated  = useIsAuthenticated(); 
 
 	const handleViewProduct = () => {
+		if (!isAuthenticated) {
+			router.push("/login");
+			return;
+		}
 		router.push(`/products/${product.id || product._id}`);
 	};
 
 	const handleAddToCart = async (e) => {
 		e.stopPropagation();
 
-		// Use the unified addItem function
+		if (!isAuthenticated) {
+			router.push("/login");
+			return;
+		}
+
 		await addItem({
 			id: product.id || product._id,
 			name: product.title,
@@ -36,18 +45,24 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 	const handleBuyNow = async (e) => {
 		e.stopPropagation();
 
-		// Redirect to checkout with buy now parameters
+		if (!isAuthenticated) {
+			router.push("/login");
+			return;
+		}
+
 		router.push(`/checkout?buyNow=true&id=${product.id || product._id}&qty=1`);
 	};
 
-        if (viewMode === "list") {
-                return (
-                        <Card
-                                onClick={handleViewProduct}
-                                className="hover:shadow-lg transition-all duration-300 cursor-pointer group"
-                        >
-                                <CardContent className="p-6">
-                                        <div className="flex flex-col sm:flex-row gap-6">
+	/* ---------------- LIST VIEW ---------------- */
+	if (viewMode === "list") {
+		return (
+			<Card
+				onClick={handleViewProduct}
+				className="hover:shadow-lg transition-all duration-300 cursor-pointer group"
+			>
+				<CardContent className="p-6">
+					<div className="flex flex-col sm:flex-row gap-6">
+						{/* Image */}
 						<div className="relative w-full sm:w-48 h-48 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
 							<Image
 								src={
@@ -55,7 +70,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 									product.image ||
 									"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png"
 								}
-								alt={product.title}
+								alt={product?.title || "product image"}
 								fill
 								className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
 								onClick={handleViewProduct}
@@ -72,6 +87,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 							)}
 						</div>
 
+						{/* Content */}
 						<div className="flex-1 space-y-4">
 							<div onClick={handleViewProduct}>
 								<h3 className="text-xl font-semibold hover:text-blue-600 transition-colors">
@@ -93,18 +109,25 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 								</div>
 							</div>
 
+							{/* Price + Stock */}
 							<div className="flex items-center justify-between">
 								<div className="space-y-1">
-									<div className="flex items-center gap-2">
-										<p className="text-2xl font-bold">
-											₹{(product.salePrice || product.price).toLocaleString()}
-										</p>
-										{product.price > (product.salePrice || product.price) && (
-											<p className="text-lg text-gray-500 line-through">
-												₹{product.price.toLocaleString()}
+									{isAuthenticated ? (
+										<div className="flex items-center gap-2">
+											<p className="text-2xl font-bold">
+												₹{(product.salePrice || product.price).toLocaleString()}
 											</p>
-										)}
-									</div>
+											{product.price > (product.salePrice || product.price) && (
+												<p className="text-lg text-gray-500 line-through">
+													₹{product.price.toLocaleString()}
+												</p>
+											)}
+										</div>
+									) : (
+										<p className="text-red-600 font-medium">
+											Please login to see price
+										</p>
+									)}
 									<p
 										className={`text-sm ${
 											product.inStock ? "text-green-600" : "text-red-600"
@@ -114,17 +137,19 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 									</p>
 								</div>
 
+								{/* Actions */}
 								<div className="flex items-center gap-2">
 									<Button
 										variant="outline"
 										size="icon"
 										className="rounded-full bg-transparent"
+										disabled={!isAuthenticated}
 									>
 										<Heart className="h-4 w-4" />
 									</Button>
 									<Button
 										onClick={handleAddToCart}
-										disabled={!product.inStock || isLoading}
+										disabled={!product.inStock || isLoading || !isAuthenticated}
 										variant="outline"
 										className="rounded-full bg-transparent"
 									>
@@ -148,17 +173,15 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 		);
 	}
 
+	/* ---------------- GRID VIEW ---------------- */
 	return (
-                <motion.div
-                        whileHover={{ y: -5 }}
-                        transition={{ duration: 0.2 }}
-                        className="h-full"
-                >
-                        <Card
-                                onClick={handleViewProduct}
-                                className="hover:shadow-xl transition-all duration-300 cursor-pointer group h-full flex flex-col"
-                        >
-                                <CardContent className="p-0 flex-1 flex flex-col">
+		<motion.div whileHover={{ y: -5 }} transition={{ duration: 0.2 }} className="h-full">
+			<Card
+				onClick={handleViewProduct}
+				className="hover:shadow-xl transition-all duration-300 cursor-pointer group h-full flex flex-col"
+			>
+				<CardContent className="p-0 flex-1 flex flex-col">
+					{/* Image */}
 					<div className="relative overflow-hidden">
 						<div className="relative h-64 bg-gray-50 rounded-t-xl overflow-hidden">
 							<Image
@@ -185,7 +208,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 								)}
 							</div>
 
-							{/* Quick view overlay */}
+							{/* Quick view */}
 							<div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
 								<Button
 									variant="secondary"
@@ -199,6 +222,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 						</div>
 					</div>
 
+					{/* Content */}
 					<div className="p-6 flex-1 flex flex-col">
 						<div className="flex-1" onClick={handleViewProduct}>
 							<h3 className="font-semibold text-lg mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
@@ -212,28 +236,30 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 							<div className="flex items-center gap-2 mb-3">
 								<div className="flex items-center">
 									{[...Array(5)].map((_, i) => (
-										<Star
-											key={i}
-											className="h-3 w-3 fill-yellow-400 text-yellow-400"
-										/>
+										<Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
 									))}
 								</div>
 								<span className="text-xs text-gray-500">(4.5)</span>
 							</div>
 						</div>
 
-						{/* Price */}
+						{/* Price + Stock */}
 						<div className="space-y-2 mb-4">
-							<div className="flex items-center gap-2">
-								<p className="text-xl font-bold">
-									₹{(product.salePrice || product.price).toLocaleString()}
-								</p>
-								{product.price > (product.salePrice || product.price) && (
-									<p className="text-sm text-gray-500 line-through">
-										₹{product.price.toLocaleString()}
+							{isAuthenticated ? (
+								<div className="flex items-center gap-2">
+									<p className="text-xl font-bold">
+										₹{(product.salePrice || product.price).toLocaleString()}
 									</p>
-								)}
-							</div>
+									{product.price > (product.salePrice || product.price) && (
+										<p className="text-sm text-gray-500 line-through">
+											₹{product.price.toLocaleString()}
+										</p>
+									)}
+								</div>
+							) : (
+								<p className="text-red-600 font-medium">Please login to see price</p>
+							)}
+
 							<p
 								className={`text-xs ${
 									product.inStock ? "text-green-600" : "text-red-600"
@@ -250,6 +276,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 									variant="outline"
 									size="icon"
 									className="rounded-full border-gray-300 hover:border-gray-400 bg-transparent"
+									disabled={!isAuthenticated}
 								>
 									<Heart className="h-4 w-4" />
 								</Button>
@@ -257,7 +284,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 									variant="outline"
 									size="icon"
 									onClick={handleAddToCart}
-									disabled={!product.inStock || isLoading}
+									disabled={!product.inStock || isLoading || !isAuthenticated}
 									className="rounded-full border-gray-300 hover:border-gray-400 bg-transparent"
 								>
 									<ShoppingCart className="h-4 w-4" />
