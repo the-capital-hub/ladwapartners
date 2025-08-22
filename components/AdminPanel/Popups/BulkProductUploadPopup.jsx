@@ -22,14 +22,24 @@ export function BulkUploadPopup({ open, onOpenChange }) {
         const [uploadResults, setUploadResults] = useState(null);
 
         const parseCSV = (text) => {
+                const splitLine = (line) =>
+                        line
+                                .match(/("([^"]|"")*"|[^,]+)/g)
+                                ?.map((v) =>
+                                        v
+                                                .replace(/^"|"$/g, "")
+                                                .replace(/""/g, '"')
+                                                .trim()
+                                ) || [];
+
                 const lines = text.trim().split(/\r?\n/);
-                const headers = lines[0].split(",").map((h) => h.trim());
+                const headers = splitLine(lines[0]);
 
                 return lines
                         .slice(1)
                         .filter((line) => line.trim())
                         .map((line) => {
-                                const values = line.split(",").map((v) => v.trim());
+                                const values = splitLine(line);
                                 const obj = {};
                                 headers.forEach((h, i) => {
                                         obj[h] = values[i];
@@ -120,7 +130,12 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "L",
                         "https://example.com/extra1.jpg|https://example.com/extra2.jpg",
                 ];
-                const csv = [headers.join(","), sampleRow.join(",")].join("\n");
+                const escapeCsv = (val) =>
+                        `"${String(val).replace(/"/g, '""')}"`;
+                const csv = [
+                        headers.map(escapeCsv).join(","),
+                        sampleRow.map(escapeCsv).join(","),
+                ].join("\n");
                 const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");
