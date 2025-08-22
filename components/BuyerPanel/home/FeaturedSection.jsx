@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import ProductCard from "@/components/BuyerPanel/home/ProductCard.jsx";
+import ProductCarousel from "@/components/BuyerPanel/home/ProductCarousel.jsx";
 import ServiceGuarantees from "@/components/BuyerPanel/home/ServiceGuarantees.jsx";
 
 export default function FeaturedSection({
@@ -12,7 +13,7 @@ export default function FeaturedSection({
   return (
     <section className="py-8 md:py-16 bg-gray-50">
       <div className="px-10">
-        {/* Featured Products Grid */}
+        {/* Featured Products */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -23,19 +24,24 @@ export default function FeaturedSection({
             Featured Products
           </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-fr">
-            {featuredProducts.slice(0, 6).map((product, index) => (
+          {/* Desktop Grid */}
+          <div className="hidden sm:grid sm:grid-cols-4 gap-4">
+            {featuredProducts.slice(0, 8).map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={index === 0 ? "sm:col-span-2 sm:row-span-2" : ""}
               >
                 <ProductCard product={product} compact />
               </motion.div>
             ))}
+          </div>
+
+          {/* Mobile Carousel */}
+          <div className="sm:hidden">
+            <ProductCarousel products={featuredProducts.slice(0, 8)} />
           </div>
         </motion.div>
 
