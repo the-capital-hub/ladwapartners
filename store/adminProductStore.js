@@ -88,8 +88,35 @@ export const useAdminProductStore = create((set, get) => ({
 				"longDescription",
 				productData.longDescription || productData.description
 			);
-			formData.append("category", productData.category);
-			formData.append("price", productData.price.toString());
+                        formData.append("category", productData.category);
+                        formData.append("subCategory", productData.subCategory || "");
+                        formData.append("sku", productData.sku || "");
+                        formData.append("mrp", productData.mrp ? productData.mrp.toString() : "");
+                        formData.append(
+                                "mainImageLink",
+                                productData.mainImageLink || ""
+                        );
+                        formData.append(
+                                "length",
+                                productData.length ? productData.length.toString() : ""
+                        );
+                        formData.append(
+                                "width",
+                                productData.width ? productData.width.toString() : ""
+                        );
+                        formData.append(
+                                "height",
+                                productData.height ? productData.height.toString() : ""
+                        );
+                        formData.append(
+                                "weight",
+                                productData.weight ? productData.weight.toString() : ""
+                        );
+                        formData.append("colour", productData.colour || "");
+                        formData.append("material", productData.material || "");
+                        formData.append("brand", productData.brand || "");
+                        formData.append("size", productData.size || "");
+                        formData.append("price", productData.price.toString());
 			formData.append("salePrice", (productData.salePrice || 0).toString());
 			formData.append("stocks", productData.stocks.toString());
 			formData.append("discount", (productData.discount || 0).toString());
@@ -158,14 +185,44 @@ export const useAdminProductStore = create((set, get) => ({
 			formData.append("productId", productId);
 
 			// Add all text fields
-			formData.append("title", updateData.title);
-			formData.append("description", updateData.description);
-			formData.append(
-				"longDescription",
-				updateData.longDescription || updateData.description
-			);
-			formData.append("category", updateData.category);
-			formData.append("price", updateData.price.toString());
+                        formData.append("title", updateData.title);
+                        formData.append("description", updateData.description);
+                        formData.append(
+                                "longDescription",
+                                updateData.longDescription || updateData.description
+                        );
+                        formData.append("category", updateData.category);
+                        formData.append("subCategory", updateData.subCategory || "");
+                        formData.append("sku", updateData.sku || "");
+                        formData.append(
+                                "mrp",
+                                updateData.mrp ? updateData.mrp.toString() : ""
+                        );
+                        formData.append(
+                                "mainImageLink",
+                                updateData.mainImageLink || ""
+                        );
+                        formData.append(
+                                "length",
+                                updateData.length ? updateData.length.toString() : ""
+                        );
+                        formData.append(
+                                "width",
+                                updateData.width ? updateData.width.toString() : ""
+                        );
+                        formData.append(
+                                "height",
+                                updateData.height ? updateData.height.toString() : ""
+                        );
+                        formData.append(
+                                "weight",
+                                updateData.weight ? updateData.weight.toString() : ""
+                        );
+                        formData.append("colour", updateData.colour || "");
+                        formData.append("material", updateData.material || "");
+                        formData.append("brand", updateData.brand || "");
+                        formData.append("size", updateData.size || "");
+                        formData.append("price", updateData.price.toString());
 			formData.append("salePrice", (updateData.salePrice || 0).toString());
 			formData.append("stocks", updateData.stocks.toString());
 			formData.append("discount", (updateData.discount || 0).toString());

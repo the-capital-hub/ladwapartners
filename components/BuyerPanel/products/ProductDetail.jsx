@@ -383,16 +383,95 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 								</Card>
 							))}
 						</div>
-						{product.longDescription && (
-							<Card className="bg-white rounded-xl p-6 shadow-sm">
-								<h2 className="text-2xl font-bold mb-4">Product Description</h2>
-								<p className="text-gray-600 leading-relaxed">
-									{product.longDescription}
-								</p>
-							</Card>
-						)}
-					</motion.div>
-				)}
+                                                {product.longDescription && (
+                                                        <Card className="bg-white rounded-xl p-6 shadow-sm">
+                                                                <h2 className="text-2xl font-bold mb-4">Product Description</h2>
+                                                                <p className="text-gray-600 leading-relaxed">
+                                                                        {product.longDescription}
+                                                                </p>
+                                                        </Card>
+                                                )}
+
+                                                {(product.sku ||
+                                                        product.mrp ||
+                                                        product.subCategory ||
+                                                        product.mainImageLink ||
+                                                        product.length ||
+                                                        product.width ||
+                                                        product.height ||
+                                                        product.weight ||
+                                                        product.colour ||
+                                                        product.material ||
+                                                        product.brand ||
+                                                        product.size) && (
+                                                        <Card className="bg-white rounded-xl p-6 shadow-sm mt-6">
+                                                                <h2 className="text-2xl font-bold mb-4">Specifications</h2>
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-gray-600">
+                                                                        {product.sku && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">SKU:</span> {product.sku}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.mrp && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">MRP:</span> ₹{product.mrp}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.subCategory && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Sub Category:</span> {product.subCategory}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.mainImageLink && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Main Image:</span> {product.mainImageLink}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.length && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Length:</span> {product.length}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.width && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Width:</span> {product.width}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.height && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Height:</span> {product.height}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.weight && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Weight:</span> {product.weight}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.colour && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Colour:</span> {product.colour}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.material && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Material:</span> {product.material}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.brand && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Brand:</span> {product.brand}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.size && (
+                                                                                <p>
+                                                                                        <span className="font-medium text-gray-900">Size:</span> {product.size}
+                                                                                </p>
+                                                                        )}
+                                                                </div>
+                                                        </Card>
+                                                )}
+                                        </motion.div>
+                                )}
 
 				{/* Delivery Details and Offers */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">

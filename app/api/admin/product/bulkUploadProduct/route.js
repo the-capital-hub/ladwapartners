@@ -2,6 +2,7 @@
 
 import { dbConnect } from "@/lib/dbConnect";
 import Product from "@/model/Product";
+import Category from "@/model/Category";
 import cloudinary from "@/lib/cloudnary.js";
 
 export async function POST(request) {
@@ -62,6 +63,18 @@ export async function POST(request) {
 
                                         });
                                         continue;
+                                }
+
+                                // Ensure category exists in master table
+                                if (category) {
+                                        const existingCategory = await Category.findOne({ slug: category });
+                                        if (!existingCategory) {
+                                                const name = category.replace(/-/g, " ");
+                                                await Category.create({
+                                                        name,
+                                                        description: `${name} category`,
+                                                });
+                                        }
                                 }
 
                                 let featureImageUrl = "";
