@@ -44,10 +44,19 @@ export async function POST(request) {
                                         size,
                                 } = productData;
 
-                                if (!title || !category || !sku || !price || !mrp) {
+                                const parsedPrice = Number.parseFloat(price);
+                                const parsedMrp = Number.parseFloat(mrp);
+
+                                if (
+                                        !title ||
+                                        !category ||
+                                        !sku ||
+                                        Number.isNaN(parsedPrice) ||
+                                        Number.isNaN(parsedMrp)
+                                ) {
                                         results.failed.push({
                                                 data: productData,
-                                                error: "Missing required fields",
+                                                error: "Missing or invalid required fields",
                                         });
                                         continue;
                                 }
@@ -64,6 +73,23 @@ export async function POST(request) {
                                         }
                                 }
 
+                                const parsedLength =
+                                        length !== undefined && length !== ""
+                                                ? Number.parseFloat(length)
+                                                : undefined;
+                                const parsedWidth =
+                                        width !== undefined && width !== ""
+                                                ? Number.parseFloat(width)
+                                                : undefined;
+                                const parsedHeight =
+                                        height !== undefined && height !== ""
+                                                ? Number.parseFloat(height)
+                                                : undefined;
+                                const parsedWeight =
+                                        weight !== undefined && weight !== ""
+                                                ? Number.parseFloat(weight)
+                                                : undefined;
+
                                 const product = new Product({
                                         title,
                                         description: description || "",
@@ -71,14 +97,22 @@ export async function POST(request) {
                                         category,
                                         subCategory,
                                         sku,
-                                        price: Number.parseFloat(price),
-                                        mrp: Number.parseFloat(mrp),
+                                        price: parsedPrice,
+                                        mrp: parsedMrp,
                                         featureImage: featureImageUrl,
                                         mainImageLink,
-                                        length: length ? Number.parseFloat(length) : undefined,
-                                        width: width ? Number.parseFloat(width) : undefined,
-                                        height: height ? Number.parseFloat(height) : undefined,
-                                        weight: weight ? Number.parseFloat(weight) : undefined,
+                                        length: Number.isNaN(parsedLength)
+                                                ? undefined
+                                                : parsedLength,
+                                        width: Number.isNaN(parsedWidth)
+                                                ? undefined
+                                                : parsedWidth,
+                                        height: Number.isNaN(parsedHeight)
+                                                ? undefined
+                                                : parsedHeight,
+                                        weight: Number.isNaN(parsedWeight)
+                                                ? undefined
+                                                : parsedWeight,
                                         colour,
                                         material,
                                         brand,
