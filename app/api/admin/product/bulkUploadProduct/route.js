@@ -47,6 +47,7 @@ export async function POST(request) {
                                 const parsedPrice = Number.parseFloat(price);
                                 const parsedMrp = Number.parseFloat(mrp);
 
+
                                 const missingFields = [];
                                 if (!title) missingFields.push("title");
                                 if (!category) missingFields.push("category");
@@ -58,6 +59,7 @@ export async function POST(request) {
                                         results.failed.push({
                                                 data: productData,
                                                 error: `Missing or invalid required fields: ${missingFields.join(", ")}`,
+
                                         });
                                         continue;
                                 }
