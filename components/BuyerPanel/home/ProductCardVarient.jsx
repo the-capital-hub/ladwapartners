@@ -1,15 +1,19 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ShoppingCart, Heart, ArrowRight } from "lucide-react";
+import { ShoppingCart, Heart, ArrowRight, Minus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useIsAuthenticated } from "@/store/authStore";
+import { useCartStore } from "@/store/cartStore";
 
 function ProductCardVarient({ product, variant = "vertical" }) {
   const router = useRouter();
   const isAuthenticated = useIsAuthenticated();
+  const { addItem, isLoading } = useCartStore();
+  const [quantity, setQuantity] = useState(1);
 
   const handleViewProduct = () => {
     if (!isAuthenticated) {
@@ -17,6 +21,42 @@ function ProductCardVarient({ product, variant = "vertical" }) {
       return;
     }
     router.push(`/products/${product?.id || product?._id}`);
+  };
+
+  const changeQuantity = (e, delta) => {
+    e.stopPropagation();
+    setQuantity((q) => Math.max(1, q + delta));
+  };
+
+  const handleAddToCart = async (e) => {
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+    await addItem(
+      {
+        id: product?.id || product?._id,
+        name: product?.title,
+        description: product?.description,
+        price: product?.salePrice || product?.price,
+        originalPrice: product?.price,
+        image: product?.image,
+        inStock: product?.inStock,
+      },
+      quantity
+    );
+  };
+
+  const handleBuyNow = (e) => {
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+    router.push(
+      `/checkout?buyNow=true&id=${product?.id || product?._id}&qty=${quantity}`
+    );
   };
 
   if (variant === "horizontal") {
@@ -91,17 +131,47 @@ function ProductCardVarient({ product, variant = "vertical" }) {
             {/* Action Buttons */}
             <div className="flex justify-between items-center">
               <div className="flex space-x-2">
-                <Button variant="outline" size="icon" className="rounded-full">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={handleAddToCart}
+                  disabled={isLoading}
+                >
                   <ShoppingCart className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="icon" className="rounded-full">
                   <Heart className="h-4 w-4" />
                 </Button>
               </div>
-              <Button className="bg-black text-white hover:bg-gray-800 transition-colors rounded-full">
-                BUY NOW
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center border rounded-full">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={(e) => changeQuantity(e, -1)}
+                  >
+                    <Minus className="h-3 w-3" />
+                  </Button>
+                  <span className="px-2 text-sm">{quantity}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={(e) => changeQuantity(e, 1)}
+                  >
+                    <Plus className="h-3 w-3" />
+                  </Button>
+                </div>
+                <Button
+                  onClick={handleBuyNow}
+                  className="bg-black text-white hover:bg-gray-800 transition-colors rounded-full"
+                >
+                  BUY NOW
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -215,6 +285,8 @@ function ProductCardVarient({ product, variant = "vertical" }) {
               variant="outline"
               size="icon"
               className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
+              onClick={handleAddToCart}
+              disabled={isLoading}
             >
               <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
@@ -226,13 +298,34 @@ function ProductCardVarient({ product, variant = "vertical" }) {
               <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
           </div>
-          <Button
-            disabled={!isAuthenticated}
-            className="bg-black text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 hover:bg-gray-800 transition-colors rounded-full"
-          >
-            BUY NOW
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center border rounded-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={(e) => changeQuantity(e, -1)}
+              >
+                <Minus className="h-3 w-3" />
+              </Button>
+              <span className="px-2 text-sm">{quantity}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6"
+                onClick={(e) => changeQuantity(e, 1)}
+              >
+                <Plus className="h-3 w-3" />
+              </Button>
+            </div>
+            <Button
+              onClick={handleBuyNow}
+              className="bg-black text-white text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 hover:bg-gray-800 transition-colors rounded-full"
+            >
+              BUY NOW
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

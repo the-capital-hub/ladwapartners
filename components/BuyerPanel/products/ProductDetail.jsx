@@ -98,16 +98,19 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 	const handleAddToCart = async (e) => {
 		e.stopPropagation();
 
-		// Use the unified addItem function
-		await addItem({
-			id: product.id || product._id,
-			name: product.title,
-			description: product.description,
-			price: product.salePrice || product.price,
-			originalPrice: product.price,
-			image: product.images?.[0] || product.image,
-			inStock: product.inStock,
-		});
+               // Use the unified addItem function
+               await addItem(
+                       {
+                               id: product.id || product._id,
+                               name: product.title,
+                               description: product.description,
+                               price: product.salePrice || product.price,
+                               originalPrice: product.price,
+                               image: product.images?.[0] || product.image,
+                               inStock: product.inStock,
+                       },
+                       quantity
+               );
 	};
 
 	const handleBuyNow = async (e) => {

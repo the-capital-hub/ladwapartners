@@ -22,7 +22,7 @@ export default function FeaturedBanner() {
         const product = featuredProducts[current];
 
         const handleAddToCart = () => {
-                addItem(product);
+                addItem(product, 1);
         };
 
         const handleRedirect = () => {
