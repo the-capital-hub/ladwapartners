@@ -157,9 +157,28 @@ export const useProductStore = create(
 					await get().fetchProducts();
 				},
 
-				getProductById: (id) => {
-					return get().products.find((product) => product.id === id);
-				},
+                                getProductById: (id) => {
+                                        return get().products.find((product) => product.id === id);
+                                },
+
+                                // Get up to four featured products optionally filtered by current category
+                                getFeaturedProducts: () => {
+                                        const { products, currentCategory } = get();
+
+                                        let featured = products.filter(
+                                                (product) =>
+                                                        product?.featured === true ||
+                                                        product?.type === "featured"
+                                        );
+
+                                        if (currentCategory !== "all") {
+                                                featured = featured.filter(
+                                                        (product) => product.category === currentCategory
+                                                );
+                                        }
+
+                                        return featured.slice(0, 4);
+                                },
 
 				addToCart: async (productId, quantity = 1) => {
 					try {
