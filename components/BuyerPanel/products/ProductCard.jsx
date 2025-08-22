@@ -1,19 +1,34 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Heart, Eye, ArrowRight, Star } from "lucide-react";
+import {
+        ShoppingCart,
+        Heart,
+        Eye,
+        ArrowRight,
+        Star,
+        Minus,
+        Plus,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import { useIsAuthenticated } from "@/store/authStore";
 import Image from "next/image";
 
 export default function ProductCard({ product, viewMode = "grid" }) {
-	const router = useRouter();
-	const { addItem, isLoading } = useCartStore();
-	const  isAuthenticated  = useIsAuthenticated(); 
+       const router = useRouter();
+       const { addItem, isLoading } = useCartStore();
+       const isAuthenticated = useIsAuthenticated();
+       const [quantity, setQuantity] = useState(1);
+
+       const changeQuantity = (e, delta) => {
+               e.stopPropagation();
+               setQuantity((q) => Math.max(1, q + delta));
+       };
 
 	const handleViewProduct = () => {
 		if (!isAuthenticated) {
@@ -31,15 +46,18 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 			return;
 		}
 
-		await addItem({
-			id: product.id || product._id,
-			name: product.title,
-			description: product.description,
-			price: product.salePrice || product.price,
-			originalPrice: product.price,
-			image: product.images?.[0] || product.image,
-			inStock: product.inStock,
-		});
+               await addItem(
+                       {
+                               id: product.id || product._id,
+                               name: product.title,
+                               description: product.description,
+                               price: product.salePrice || product.price,
+                               originalPrice: product.price,
+                               image: product.images?.[0] || product.image,
+                               inStock: product.inStock,
+                       },
+                       quantity
+               );
 	};
 
 	const handleBuyNow = async (e) => {
@@ -50,7 +68,9 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 			return;
 		}
 
-		router.push(`/checkout?buyNow=true&id=${product.id || product._id}&qty=1`);
+               router.push(
+                       `/checkout?buyNow=true&id=${product.id || product._id}&qty=${quantity}`
+               );
 	};
 
 	/* ---------------- LIST VIEW ---------------- */
@@ -137,34 +157,53 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 									</p>
 								</div>
 
-								{/* Actions */}
-								<div className="flex items-center gap-2">
-									<Button
-										variant="outline"
-										size="icon"
-										className="rounded-full bg-transparent"
-										disabled={!isAuthenticated}
-									>
-										<Heart className="h-4 w-4" />
-									</Button>
-									<Button
-										onClick={handleAddToCart}
-										disabled={!product.inStock || isLoading || !isAuthenticated}
-										variant="outline"
-										className="rounded-full bg-transparent"
-									>
-										<ShoppingCart className="h-4 w-4 mr-2" />
-										Add to Cart
-									</Button>
-									<Button
-										onClick={handleBuyNow}
-										disabled={!product.inStock || isLoading}
-										className="bg-black text-white hover:bg-gray-800 rounded-full"
-									>
-										Buy Now
-										<ArrowRight className="ml-2 h-4 w-4" />
-									</Button>
-								</div>
+                                                               {/* Actions */}
+                                                               <div className="flex items-center gap-2 flex-wrap">
+                                                                       <div className="flex items-center border rounded-full">
+                                                                               <Button
+                                                                                       variant="ghost"
+                                                                                       size="icon"
+                                                                                       className="h-6 w-6"
+                                                                                       onClick={(e) => changeQuantity(e, -1)}
+                                                                               >
+                                                                                       <Minus className="h-3 w-3" />
+                                                                               </Button>
+                                                                               <span className="px-2 text-sm">{quantity}</span>
+                                                                               <Button
+                                                                                       variant="ghost"
+                                                                                       size="icon"
+                                                                                       className="h-6 w-6"
+                                                                                       onClick={(e) => changeQuantity(e, 1)}
+                                                                               >
+                                                                                       <Plus className="h-3 w-3" />
+                                                                               </Button>
+                                                                       </div>
+                                                                       <Button
+                                                                               variant="outline"
+                                                                               size="icon"
+                                                                               className="rounded-full bg-transparent"
+                                                                               disabled={!isAuthenticated}
+                                                                       >
+                                                                               <Heart className="h-4 w-4" />
+                                                                       </Button>
+                                                                       <Button
+                                                                               onClick={handleAddToCart}
+                                                                               disabled={!product.inStock || isLoading || !isAuthenticated}
+                                                                               variant="outline"
+                                                                               className="rounded-full bg-transparent"
+                                                                       >
+                                                                               <ShoppingCart className="h-4 w-4 mr-2" />
+                                                                               Add to Cart
+                                                                       </Button>
+                                                                       <Button
+                                                                               onClick={handleBuyNow}
+                                                                               disabled={!product.inStock || isLoading}
+                                                                               className="bg-black text-white hover:bg-gray-800 rounded-full"
+                                                                       >
+                                                                               Buy Now
+                                                                               <ArrowRight className="ml-2 h-4 w-4" />
+                                                                       </Button>
+                                                               </div>
 							</div>
 						</div>
 					</div>
@@ -269,38 +308,59 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 							</p>
 						</div>
 
-						{/* Actions */}
-						<div className="flex items-center justify-between gap-2">
-							<div className="flex gap-2">
-								<Button
-									variant="outline"
-									size="icon"
-									className="rounded-full border-gray-300 hover:border-gray-400 bg-transparent"
-									disabled={!isAuthenticated}
-								>
-									<Heart className="h-4 w-4" />
-								</Button>
-								<Button
-									variant="outline"
-									size="icon"
-									onClick={handleAddToCart}
-									disabled={!product.inStock || isLoading || !isAuthenticated}
-									className="rounded-full border-gray-300 hover:border-gray-400 bg-transparent"
-								>
-									<ShoppingCart className="h-4 w-4" />
-								</Button>
-							</div>
+                                               {/* Actions */}
+                                               <div className="flex items-center justify-between gap-2">
+                                                       <div className="flex gap-2">
+                                                               <Button
+                                                                       variant="outline"
+                                                                       size="icon"
+                                                                       className="rounded-full border-gray-300 hover:border-gray-400 bg-transparent"
+                                                                       disabled={!isAuthenticated}
+                                                               >
+                                                                       <Heart className="h-4 w-4" />
+                                                               </Button>
+                                                               <Button
+                                                                       variant="outline"
+                                                                       size="icon"
+                                                                       onClick={handleAddToCart}
+                                                                       disabled={!product.inStock || isLoading || !isAuthenticated}
+                                                                       className="rounded-full border-gray-300 hover:border-gray-400 bg-transparent"
+                                                               >
+                                                                       <ShoppingCart className="h-4 w-4" />
+                                                               </Button>
+                                                       </div>
 
-							<Button
-								onClick={handleBuyNow}
-								disabled={!product.inStock || isLoading}
-								className="bg-black text-white hover:bg-gray-800 rounded-full flex-1 max-w-[120px]"
-								size="sm"
-							>
-								Buy Now
-								<ArrowRight className="ml-1 h-3 w-3" />
-							</Button>
-						</div>
+                                                       <div className="flex items-center gap-2">
+                                                               <div className="flex items-center border rounded-full">
+                                                                       <Button
+                                                                               variant="ghost"
+                                                                               size="icon"
+                                                                               className="h-6 w-6"
+                                                                               onClick={(e) => changeQuantity(e, -1)}
+                                                                       >
+                                                                               <Minus className="h-3 w-3" />
+                                                                       </Button>
+                                                               <span className="px-2 text-sm">{quantity}</span>
+                                                                       <Button
+                                                                               variant="ghost"
+                                                                               size="icon"
+                                                                               className="h-6 w-6"
+                                                                               onClick={(e) => changeQuantity(e, 1)}
+                                                                       >
+                                                                               <Plus className="h-3 w-3" />
+                                                                       </Button>
+                                                               </div>
+                                                               <Button
+                                                                       onClick={handleBuyNow}
+                                                                       disabled={!product.inStock || isLoading}
+                                                                       className="bg-black text-white hover:bg-gray-800 rounded-full flex-1 max-w-[120px]"
+                                                                       size="sm"
+                                                               >
+                                                                       Buy Now
+                                                                       <ArrowRight className="ml-1 h-3 w-3" />
+                                                               </Button>
+                                                       </div>
+                                               </div>
 					</div>
 				</CardContent>
 			</Card>
