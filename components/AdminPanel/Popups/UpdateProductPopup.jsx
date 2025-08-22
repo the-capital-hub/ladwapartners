@@ -282,19 +282,19 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
 								/>
 							</div>
 
-							<div className="md:col-span-2">
-								<ImageUpload
-									images={formData.images}
-									onImagesChange={(images) =>
-										setFormData({ ...formData, images })
-									}
-									maxImages={5}
-									label="Product Images"
-									required={false}
-								/>
-							</div>
+                                                          <div className="md:col-span-2">
+                                                                <ImageUpload
+                                                                        images={formData.images}
+                                                                        onImagesChange={(images) =>
+                                                                                setFormData({ ...formData, images })
+                                                                        }
+                                                                        maxImages={5}
+                                                                        label="Product Images"
+                                                                        required={false}
+                                                                />
+                                                          </div>
 
-                                                        <div>
+                                                          <div>
                                                                 <Label htmlFor="category">Category *</Label>
                                                                 <Input
                                                                         id="category"
@@ -309,16 +309,16 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                                                         className="mt-1"
                                                                         required
                                                                 />
-                                                                <datalist id="admin-category-list">
-                                                                        {categories.map((cat) => (
-                                                                                <option key={cat._id} value={cat.slug}>
-                                                                                        {cat.name}
-                                                                                </option>
-                                                                        ))}
-                                                                </datalist>
-                                                        </div>
+                                                                  <datalist id="admin-category-list">
+                                                                          {categories.map((cat) => (
+                                                                                  <option key={cat._id} value={cat.slug}>
+                                                                                          {cat.name}
+                                                                                  </option>
+                                                                          ))}
+                                                                  </datalist>
+                                                          </div>
 
-                                                        <div>
+                                                          <div>
                                                                 <Label htmlFor="subCategory">Sub Category</Label>
                                                                 <Input
                                                                         id="subCategory"
@@ -505,9 +505,7 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                                                 />
                                                         </div>
 
-                    </div>
-
-							<div>
+                                                        <div>
 								<Label>Product Type</Label>
 								<Select
 									value={formData.type}
