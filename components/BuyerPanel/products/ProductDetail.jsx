@@ -101,16 +101,19 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 	const handleAddToCart = async (e) => {
 		e.stopPropagation();
 
-		// Use the unified addItem function
-		await addItem({
-			id: product.id || product._id,
-			name: product.title,
-			description: product.description,
-			price: product.salePrice || product.price,
-			originalPrice: product.price,
-			image: product.images?.[0] || product.image,
-			inStock: product.inStock,
-		});
+               // Use the unified addItem function
+               await addItem(
+                       {
+                               id: product.id || product._id,
+                               name: product.title,
+                               description: product.description,
+                               price: product.salePrice || product.price,
+                               originalPrice: product.price,
+                               image: product.images?.[0] || product.image,
+                               inStock: product.inStock,
+                       },
+                       quantity
+               );
 	};
 
 	const handleBuyNow = async (e) => {
@@ -227,7 +230,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 										<img
 											src={
 												image ||
-												"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png"
+												"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
 											}
 											alt={`${product.name} view ${index + 1}`}
 											className="w-full h-full object-contain p-1"

@@ -1,5 +1,6 @@
 import { dbConnect } from "@/lib/dbConnect.js";
 import Product from "@/model/Product.js";
+import Category from "@/model/Category.js";
 import cloudinary from "@/lib/cloudnary.js";
 
 export async function POST(request) {
@@ -16,14 +17,14 @@ export async function POST(request) {
 		const category = formData.get("category");
 		const imageFiles = formData.getAll("images");
 
-		console.log("Received data:", {
-			title,
-			description,
-			price,
-			stocks,
-			category,
-			imageCount: imageFiles.length,
-		});
+                console.log("Received data:", {
+                        title,
+                        description,
+                        price,
+                        stocks,
+                        category,
+                        imageCount: imageFiles.length,
+                });
 
 		// Validate required fields
 		if (
@@ -48,13 +49,25 @@ export async function POST(request) {
 					},
 				},
 				{ status: 400 }
-			);
-		}
+                        );
+                }
 
-		// Upload images to Cloudinary
-		const uploadPromises = imageFiles.map(async (file) => {
-			try {
-				// Check if file is a Blob/File object
+                // Ensure category exists in master table
+                if (category) {
+                        const existingCategory = await Category.findOne({ slug: category });
+                        if (!existingCategory) {
+                                const name = category.replace(/-/g, " ");
+                                await Category.create({
+                                        name,
+                                        description: `${name} category`,
+                                });
+                        }
+                }
+
+                // Upload images to Cloudinary
+                const uploadPromises = imageFiles.map(async (file) => {
+                        try {
+                                // Check if file is a Blob/File object
 				if (!(file instanceof Blob)) {
 					throw new Error("Invalid file format");
 				}

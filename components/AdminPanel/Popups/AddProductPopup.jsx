@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
 	Dialog,
@@ -26,17 +26,6 @@ import { X, Plus } from "lucide-react";
 import { useAdminProductStore } from "@/store/adminProductStore.js";
 import { ImageUpload } from "@/components/AdminPanel/ImageUpload.jsx";
 
-const categories = [
-	{ value: "personal-safety", label: "Personal Safety" },
-	{ value: "road-safety", label: "Road Safety" },
-	{ value: "signage", label: "Signage" },
-	{ value: "industrial-safety", label: "Industrial Safety" },
-	{ value: "queue-management", label: "Queue Management" },
-	{ value: "fire-safety", label: "Fire Safety" },
-	{ value: "first-aid", label: "First Aid" },
-	{ value: "water-safety", label: "Water Safety" },
-	{ value: "emergency-kit", label: "Emergency Kit" },
-];
 
 const productTypes = [
 	{ value: "featured", label: "Featured" },
@@ -46,16 +35,32 @@ const productTypes = [
 ];
 
 export function AddProductPopup({ open, onOpenChange }) {
-	const { addProduct } = useAdminProductStore();
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [features, setFeatures] = useState([{ title: "", description: "" }]);
+        const { addProduct } = useAdminProductStore();
+        const [isSubmitting, setIsSubmitting] = useState(false);
+        const [features, setFeatures] = useState([{ title: "", description: "" }]);
+        const [categories, setCategories] = useState([]);
 
-	const [formData, setFormData] = useState({
-		title: "",
-		description: "",
-		longDescription: "",
-		category: "",
-		price: "",
+        useEffect(() => {
+                const fetchCategories = async () => {
+                        try {
+                                const res = await fetch(
+                                        "/api/admin/categories?limit=1000"
+                                );
+                                const data = await res.json();
+                                if (data.success) setCategories(data.categories);
+                        } catch (err) {
+                                console.error("Failed to fetch categories", err);
+                        }
+                };
+                fetchCategories();
+        }, []);
+
+        const [formData, setFormData] = useState({
+                title: "",
+                description: "",
+                longDescription: "",
+                category: "",
+                price: "",
 		salePrice: "",
 		stocks: "",
 		discount: "",
@@ -210,26 +215,29 @@ export function AddProductPopup({ open, onOpenChange }) {
 								/>
 							</div>
 
-							<div>
-								<Label>Category *</Label>
-								<Select
-									value={formData.category}
-									onValueChange={(value) =>
-										setFormData({ ...formData, category: value })
-									}
-								>
-									<SelectTrigger className="mt-1">
-										<SelectValue placeholder="Select category" />
-									</SelectTrigger>
-									<SelectContent>
-										{categories.map((category) => (
-											<SelectItem key={category.value} value={category.value}>
-												{category.label}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
+                                                        <div>
+                                                                <Label htmlFor="category">Category *</Label>
+                                                                <Input
+                                                                        id="category"
+                                                                        list="admin-category-list"
+                                                                        value={formData.category}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        category: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                        required
+                                                                />
+                                                                <datalist id="admin-category-list">
+                                                                        {categories.map((cat) => (
+                                                                                <option key={cat._id} value={cat.slug}>
+                                                                                        {cat.name}
+                                                                                </option>
+                                                                        ))}
+                                                                </datalist>
+                                                        </div>
 
 							<div>
 								<Label>Product Type</Label>

@@ -128,15 +128,15 @@ export const useCartStore = create(
 						return useAuthStore.getState().user !== null;
 					},
 
-					// Unified add item function - handles both authenticated and non-authenticated users
-					addItem: async (product) => {
-						const isAuth = get().isAuthenticated();
+                                       // Unified add item function - handles both authenticated and non-authenticated users
+                                       addItem: async (product, quantity = 1) => {
+                                               const isAuth = get().isAuthenticated();
 
-						if (isAuth) {
-							// For authenticated users: Update database directly
-							set({ isLoading: true });
-							try {
-								const data = await cartAPI.addToCart(product.id, 1);
+                                               if (isAuth) {
+                                                       // For authenticated users: Update database directly
+                                                       set({ isLoading: true });
+                                                       try {
+                                                               const data = await cartAPI.addToCart(product.id, quantity);
 
 								// Update local state with server response
 								const serverItems = data.cart.products.map((item) => ({
@@ -147,7 +147,7 @@ export const useCartStore = create(
 									originalPrice: item.product.price,
 									image:
 										item.product.images?.[0] ||
-										"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png",
+										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 									quantity: item.quantity,
 									inStock: item.product.inStock,
 								}));
@@ -171,26 +171,26 @@ export const useCartStore = create(
 								set({ isLoading: false });
 							}
 						} else {
-							// For non-authenticated users: Update locally
-							const { items } = get();
-							const existingItem = items.find((item) => item.id === product.id);
+                                                       // For non-authenticated users: Update locally
+                                                       const { items } = get();
+                                                       const existingItem = items.find((item) => item.id === product.id);
 
-							if (existingItem) {
-								set({
-									items: items.map((item) =>
-										item.id === product.id
-											? { ...item, quantity: item.quantity + 1 }
-											: item
-									),
-								});
-							} else {
-								set({ items: [...items, { ...product, quantity: 1 }] });
-							}
+                                                       if (existingItem) {
+                                                               set({
+                                                                       items: items.map((item) =>
+                                                                               item.id === product.id
+                                                                                       ? { ...item, quantity: item.quantity + quantity }
+                                                                                       : item
+                                                                       ),
+                                                               });
+                                                       } else {
+                                                               set({ items: [...items, { ...product, quantity }] });
+                                                       }
 
-							get().calculateTotals();
-							toast.success("Added to cart!");
-						}
-					},
+                                                       get().calculateTotals();
+                                                       toast.success("Added to cart!");
+                                               }
+                                       },
 
 					// Unified update quantity function
 					updateQuantity: async (productId, quantity) => {
@@ -216,7 +216,7 @@ export const useCartStore = create(
 									originalPrice: item.product.price,
 									image:
 										item.product.images?.[0] ||
-										"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png",
+										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 									quantity: item.quantity,
 									inStock: item.product.inStock,
 								}));
@@ -267,7 +267,7 @@ export const useCartStore = create(
 									originalPrice: item.product.price,
 									image:
 										item.product.images?.[0] ||
-										"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png",
+										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 									quantity: item.quantity,
 									inStock: item.product.inStock,
 								}));
@@ -356,7 +356,7 @@ export const useCartStore = create(
 								originalPrice: item.product.price,
 								image:
 									item.product.images?.[0] ||
-									"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png",
+									"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 								quantity: item.quantity,
 								inStock: item.product.inStock,
 							}));

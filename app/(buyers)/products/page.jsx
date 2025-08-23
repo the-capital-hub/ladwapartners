@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useProductStore } from "@/store/productStore.js";
-import ProductFilters from "@/components/BuyerPanel/products/ProductFilters.jsx";
+// import ProductFilters from "@/components/BuyerPanel/products/ProductFilters.jsx";
 import ProductGrid from "@/components/BuyerPanel/products/ProductGrid.jsx";
 import FeaturedBanner from "@/components/BuyerPanel/products/FeaturedBanner.jsx";
 import { useSearchParams } from "next/navigation";
@@ -50,18 +50,8 @@ export default function ProductsPage() {
 		<div className="h-screen bg-gray-50">
 			{/* Featured Banner */}
 			<FeaturedBanner />
-			<div className="container mx-auto px-4 py-8">
-				<div className="flex flex-col lg:flex-row gap-8">
-					{/* Filters Sidebar */}
-					<div className="lg:w-80 flex-shrink-0">
-						<ProductFilters />
-					</div>
-
-					{/* Main Content */}
-					<div className="flex-1">
-						<ProductGrid />
-					</div>
-				</div>
+			<div className="container mx-auto p-8">
+				<ProductGrid />
 			</div>
 		</div>
 	);

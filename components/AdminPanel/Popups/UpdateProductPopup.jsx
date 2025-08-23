@@ -26,18 +26,6 @@ import { Plus, X } from "lucide-react";
 import { useAdminProductStore } from "@/store/adminProductStore.js";
 import { ImageUpload } from "@/components/AdminPanel/ImageUpload.jsx";
 
-const categories = [
-	{ value: "personal-safety", label: "Personal Safety" },
-	{ value: "road-safety", label: "Road Safety" },
-	{ value: "signage", label: "Signage" },
-	{ value: "industrial-safety", label: "Industrial Safety" },
-	{ value: "queue-management", label: "Queue Management" },
-	{ value: "fire-safety", label: "Fire Safety" },
-	{ value: "first-aid", label: "First Aid" },
-	{ value: "water-safety", label: "Water Safety" },
-	{ value: "emergency-kit", label: "Emergency Kit" },
-];
-
 const productTypes = [
 	{ value: "featured", label: "Featured" },
 	{ value: "top-selling", label: "Top Selling" },
@@ -46,20 +34,48 @@ const productTypes = [
 ];
 
 export function UpdateProductPopup({ open, onOpenChange, product }) {
-	const { updateProduct } = useAdminProductStore();
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [features, setFeatures] = useState([{ title: "", description: "" }]);
+        const { updateProduct } = useAdminProductStore();
+        const [isSubmitting, setIsSubmitting] = useState(false);
+        const [features, setFeatures] = useState([{ title: "", description: "" }]);
+        const [categories, setCategories] = useState([]);
 
-	const [formData, setFormData] = useState({
-		title: "",
-		description: "",
-		longDescription: "",
-		category: "",
-		price: "",
-		salePrice: "",
-		stocks: "",
-		discount: "",
-		type: "featured",
+        useEffect(() => {
+                const fetchCategories = async () => {
+                        try {
+                                const res = await fetch(
+                                        "/api/admin/categories?limit=1000"
+                                );
+                                const data = await res.json();
+                                if (data.success) setCategories(data.categories);
+                        } catch (err) {
+                                console.error("Failed to fetch categories", err);
+                        }
+                };
+                fetchCategories();
+        }, []);
+
+        const [formData, setFormData] = useState({
+                title: "",
+                description: "",
+                longDescription: "",
+                category: "",
+                subCategory: "",
+                sku: "",
+                mrp: "",
+                mainImageLink: "",
+                length: "",
+                width: "",
+                height: "",
+                weight: "",
+                colour: "",
+                material: "",
+                brand: "",
+                size: "",
+                price: "",
+                salePrice: "",
+                stocks: "",
+                discount: "",
+                type: "featured",
 		published: true,
 		images: [],
 	});
@@ -102,16 +118,28 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
 					);
 				}
 
-				setFormData({
-					title: product.title || "",
-					description: product.description || "",
-					longDescription: product.longDescription || "",
-					category: product.category || "",
-					price: product.price?.toString() || "",
-					salePrice: product.salePrice?.toString() || "",
-					stocks: product.stocks?.toString() || "",
-					discount: product.discount?.toString() || "",
-					type: product.type || "featured",
+                                setFormData({
+                                        title: product.title || "",
+                                        description: product.description || "",
+                                        longDescription: product.longDescription || "",
+                                        category: product.category || "",
+                                        subCategory: product.subCategory || "",
+                                        sku: product.sku || "",
+                                        mrp: product.mrp?.toString() || "",
+                                        mainImageLink: product.mainImageLink || "",
+                                        length: product.length?.toString() || "",
+                                        width: product.width?.toString() || "",
+                                        height: product.height?.toString() || "",
+                                        weight: product.weight?.toString() || "",
+                                        colour: product.colour || "",
+                                        material: product.material || "",
+                                        brand: product.brand || "",
+                                        size: product.size || "",
+                                        price: product.price?.toString() || "",
+                                        salePrice: product.salePrice?.toString() || "",
+                                        stocks: product.stocks?.toString() || "",
+                                        discount: product.discount?.toString() || "",
+                                        type: product.type || "featured",
 					published: product.published !== undefined ? product.published : true,
 					images: convertedImages,
 				});
@@ -135,16 +163,28 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
 
 		try {
 			// Prepare the update data similar to addProduct
-			const updateData = {
-				title: formData.title,
-				description: formData.description,
-				longDescription: formData.longDescription || formData.description,
-				category: formData.category,
-				price: parseFloat(formData.price),
-				salePrice: formData.salePrice ? parseFloat(formData.salePrice) : 0,
-				stocks: parseInt(formData.stocks),
-				discount: formData.discount ? parseFloat(formData.discount) : 0,
-				type: formData.type,
+                        const updateData = {
+                                title: formData.title,
+                                description: formData.description,
+                                longDescription: formData.longDescription || formData.description,
+                                category: formData.category,
+                                subCategory: formData.subCategory,
+                                sku: formData.sku,
+                                mrp: formData.mrp ? parseFloat(formData.mrp) : undefined,
+                                mainImageLink: formData.mainImageLink,
+                                length: formData.length ? parseFloat(formData.length) : undefined,
+                                width: formData.width ? parseFloat(formData.width) : undefined,
+                                height: formData.height ? parseFloat(formData.height) : undefined,
+                                weight: formData.weight ? parseFloat(formData.weight) : undefined,
+                                colour: formData.colour,
+                                material: formData.material,
+                                brand: formData.brand,
+                                size: formData.size,
+                                price: parseFloat(formData.price),
+                                salePrice: formData.salePrice ? parseFloat(formData.salePrice) : 0,
+                                stocks: parseInt(formData.stocks),
+                                discount: formData.discount ? parseFloat(formData.discount) : 0,
+                                type: formData.type,
 				published: formData.published,
 				features: features.filter((f) => f.title && f.description),
 				images: formData.images, // Pass the base64 images array
@@ -242,40 +282,230 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
 								/>
 							</div>
 
-							<div className="md:col-span-2">
-								<ImageUpload
-									images={formData.images}
-									onImagesChange={(images) =>
-										setFormData({ ...formData, images })
-									}
-									maxImages={5}
-									label="Product Images"
-									required={false}
-								/>
-							</div>
+                                                          <div className="md:col-span-2">
+                                                                <ImageUpload
+                                                                        images={formData.images}
+                                                                        onImagesChange={(images) =>
+                                                                                setFormData({ ...formData, images })
+                                                                        }
+                                                                        maxImages={5}
+                                                                        label="Product Images"
+                                                                        required={false}
+                                                                />
+                                                          </div>
 
-							<div>
-								<Label>Category *</Label>
-								<Select
-									value={formData.category}
-									onValueChange={(value) =>
-										setFormData({ ...formData, category: value })
-									}
-								>
-									<SelectTrigger className="mt-1">
-										<SelectValue placeholder="Select category" />
-									</SelectTrigger>
-									<SelectContent>
-										{categories.map((category) => (
-											<SelectItem key={category.value} value={category.value}>
-												{category.label}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
+                                                          <div>
+                                                                <Label htmlFor="category">Category *</Label>
+                                                                <Input
+                                                                        id="category"
+                                                                        list="admin-category-list"
+                                                                        value={formData.category}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        category: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                        required
+                                                                />
+                                                                  <datalist id="admin-category-list">
+                                                                          {categories.map((cat) => (
+                                                                                  <option key={cat._id} value={cat.slug}>
+                                                                                          {cat.name}
+                                                                                  </option>
+                                                                          ))}
+                                                                  </datalist>
+                                                          </div>
 
-							<div>
+                                                          <div>
+                                                                <Label htmlFor="subCategory">Sub Category</Label>
+                                                                <Input
+                                                                        id="subCategory"
+                                                                        value={formData.subCategory}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        subCategory: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="sku">SKU *</Label>
+                                                                <Input
+                                                                        id="sku"
+                                                                        value={formData.sku}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        sku: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                        required
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="mrp">MRP *</Label>
+                                                                <Input
+                                                                        id="mrp"
+                                                                        type="number"
+                                                                        value={formData.mrp}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        mrp: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                        required
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="mainImageLink">Main Image Link</Label>
+                                                                <Input
+                                                                        id="mainImageLink"
+                                                                        value={formData.mainImageLink}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        mainImageLink: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="length">Length</Label>
+                                                                <Input
+                                                                        id="length"
+                                                                        type="number"
+                                                                        value={formData.length}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        length: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="width">Width</Label>
+                                                                <Input
+                                                                        id="width"
+                                                                        type="number"
+                                                                        value={formData.width}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        width: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="height">Height</Label>
+                                                                <Input
+                                                                        id="height"
+                                                                        type="number"
+                                                                        value={formData.height}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        height: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="weight">Weight</Label>
+                                                                <Input
+                                                                        id="weight"
+                                                                        type="number"
+                                                                        value={formData.weight}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        weight: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="colour">Colour</Label>
+                                                                <Input
+                                                                        id="colour"
+                                                                        value={formData.colour}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        colour: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="material">Material</Label>
+                                                                <Input
+                                                                        id="material"
+                                                                        value={formData.material}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        material: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="brand">Brand</Label>
+                                                                <Input
+                                                                        id="brand"
+                                                                        value={formData.brand}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        brand: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="size">Size</Label>
+                                                                <Input
+                                                                        id="size"
+                                                                        value={formData.size}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        size: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                        </div>
+
+                                                        <div>
 								<Label>Product Type</Label>
 								<Select
 									value={formData.type}

@@ -131,7 +131,7 @@ const ResearchAndDevelopment = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
               >
-                Research &<br />Analysis
+                Quality <br />Assurance
               </motion.h2>
               <motion.p 
                 className={`${lato.className} text-white text-sm lg:text-base mb-8 opacity-90`}
@@ -139,8 +139,8 @@ const ResearchAndDevelopment = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
-                Nullam tincidunt libero eu augue<br />
-                eleifend, vitae condimentum lacus
+                Ensuring every stage meets the highest standards of safety and performance.<br/>
+                We focus on thorough inspections, continuous monitoring, and strict compliance checks to guarantee reliability, durability, and customer confidence.
               </motion.p>
               <motion.button 
                 className="w-12 h-12 lg:w-14 lg:h-14 flex items-center absolute bottom-4 right-4 bg-[#FFB82D] justify-center"
@@ -186,8 +186,8 @@ const ResearchAndDevelopment = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
-                Fusce in hendrerit lectus. Morbi<br />
-                vitae tortor sed turpis feugiat
+                Driving innovation and growth through cutting-edge practices and modern technologies.<br/>
+                We invest in scalable solutions, foster strategic partnerships, and support advancements that shape the future of our industry.
               </motion.p>
               <motion.button 
                 className="w-12 h-12 lg:w-14 lg:h-14 flex items-center absolute bottom-4 right-4 justify-center bg-[#00215B]"
@@ -233,8 +233,8 @@ const ResearchAndDevelopment = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
               >
-                Nullam tincidunt libero eu augue<br />
-                eleifend, vitae condimentum lacus
+                Transforming plans into reality with seamless execution and timely delivery.<br/>
+                From preparation to rollout, we ensure efficiency, precision, and long-term success with every launch.
               </motion.p>
               <motion.button 
                 className="w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center absolute bottom-4 right-4 bg-[#FFB82D]"

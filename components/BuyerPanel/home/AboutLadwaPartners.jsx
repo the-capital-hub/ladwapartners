@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import img1 from "@/public/images/home/buildersimag.png";
 import img2 from "@/public/images/home/middleimg.png";
 import img3 from "@/public/images/home/cautiousimg.png";
@@ -63,7 +64,7 @@ const AboutLadwaPartners = () => {
           {/* Badge */}
           <motion.div variants={itemVariants}>
             <span className="bg-[#FFB82D] text-black text-xs md:text-sm font-semibold px-4 py-2 rounded-full inline-block">
-              About LADWA Partners
+              About LADWA
             </span>
           </motion.div>
 
@@ -128,7 +129,9 @@ const AboutLadwaPartners = () => {
               whileTap={{ scale: 0.95 }}
               className="bg-[#FFB82D] hover:bg-yellow-600 mb-6 md:mb-6 text-black font-semibold px-4 py-2 md:px-6 md:py-3 rounded-md text-sm md:text-base transition-colors duration-200"
             >
-              Learn More
+              <Link href="https://ladwas.com/about" target="_blank" rel="noopener noreferrer">
+                Learn More
+              </Link>
             </motion.button>
             </div>
           <motion.div variants={scaleVariants} className="relative">

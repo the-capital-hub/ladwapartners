@@ -6,8 +6,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-// import ProductCard from "@/components/home/ProductCard.jsx";
-import ProductCard from "@/components/BuyerPanel/products/ProductCard.jsx";
+import ProductCard from "@/components/BuyerPanel/home/ProductCard.jsx";
 
 export default function ProductCarousel({
 	products,

@@ -345,7 +345,7 @@ const SignupPage = () => {
                                                                                                htmlFor="mobile"
                                                                                                className="text-gray-700 font-medium"
                                                                                        >
-                                                                                               Mobile Number (Optional)
+                                                                                               Mobile Number
                                                                                        </Label>
                                                                                        <Input
                                                                                                id="mobile"
@@ -361,7 +361,7 @@ const SignupPage = () => {
                                                                                <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
                                                                                         <div className="space-y-2">
                                                                                                 <Label htmlFor="legalName" className="text-gray-700 font-medium">
-                                                                                                        Legal Name
+                                                                                                        Business Legal Name
                                                                                                 </Label>
                                                                                                 <Input
                                                                                                         id="legalName"
@@ -405,7 +405,7 @@ const SignupPage = () => {
 
                                                                                <motion.div variants={itemVariants} className="space-y-2">
                                                                                         <Label htmlFor="gstin" className="text-gray-700 font-medium">
-                                                                                                GSTIN (Optional)
+                                                                                                GSTIN 
                                                                                         </Label>
                                                                                         <Input
                                                                                                 id="gstin"

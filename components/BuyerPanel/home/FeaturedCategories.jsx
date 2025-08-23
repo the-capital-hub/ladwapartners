@@ -1,15 +1,24 @@
 "use client";
 
+import { useState } from "react";
 import { ShieldCheck, Signpost, HardHat, Flame } from "lucide-react";
 import { motion } from "framer-motion";
+import ProductCard from "@/components/BuyerPanel/products/ProductCard.jsx";
+import products from "@/constants/products.js";
 
 export default function FeaturedCategories() {
         const categories = [
-                { name: "Road Safety", icon: ShieldCheck },
-                { name: "Road Sign", icon: Signpost },
-                { name: "Industrial Safety", icon: HardHat },
-                { name: "Fire Safety", icon: Flame },
+                { name: "Road Safety", icon: ShieldCheck, slug: "road-safety" },
+                { name: "Road Sign", icon: Signpost, slug: "signage" },
+                { name: "Industrial Safety", icon: HardHat, slug: "industrial-safety" },
+                { name: "Fire Safety", icon: Flame, slug: "fire-safety" },
         ];
+
+        const [selectedCategory, setSelectedCategory] = useState(null);
+
+        const filteredProducts = selectedCategory
+                ? products.filter((p) => p.category === selectedCategory).slice(0, 10)
+                : [];
 
         return (
                 <section className="py-8 md:py-16 bg-gray-50">
@@ -40,6 +49,7 @@ export default function FeaturedCategories() {
                                 >
                                         {categories.map((cat, index) => {
                                                 const Icon = cat.icon;
+                                                const isActive = selectedCategory === cat.slug;
                                                 return (
                                                         <motion.div
                                                                 key={cat.name}
@@ -47,7 +57,10 @@ export default function FeaturedCategories() {
                                                                 whileInView={{ opacity: 1, y: 0 }}
                                                                 viewport={{ once: true }}
                                                                 transition={{ delay: index * 0.1 }}
-                                                                className="p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col items-center"
+                                                                onClick={() => setSelectedCategory(cat.slug)}
+                                                                className={`p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col items-center cursor-pointer ${
+                                                                        isActive ? "ring-2 ring-yellow-500" : ""
+                                                                }`}
                                                         >
                                                                 <Icon className="w-12 h-12 text-yellow-500 mb-4" />
                                                                 <h3 className="font-semibold">{cat.name}</h3>
@@ -55,6 +68,32 @@ export default function FeaturedCategories() {
                                                 );
                                         })}
                                 </motion.div>
+
+                                {selectedCategory && (
+                                        <div className="mt-8 overflow-x-auto">
+                                                <div className="flex gap-6 pb-2">
+                                                        {filteredProducts.map((product) => (
+                                                                <div
+                                                                        key={product.id}
+                                                                        className="min-w-[280px] max-w-[280px] flex-shrink-0"
+                                                                >
+                                                                        <ProductCard
+                                                                                product={{
+                                                                                        id: product.id,
+                                                                                        title: product.name,
+                                                                                        description: product.description,
+                                                                                        price: product.price,
+                                                                                        salePrice: product.price,
+                                                                                        images: [product.image],
+                                                                                        inStock: product.inStock,
+                                                                                        discountPercentage: 0,
+                                                                                }}
+                                                                        />
+                                                                </div>
+                                                        ))}
+                                                </div>
+                                        </div>
+                                )}
                         </div>
                 </section>
         );
