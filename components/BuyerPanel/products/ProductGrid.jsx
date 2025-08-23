@@ -15,10 +15,14 @@ import {
 	Grid,
 	List,
 	SlidersHorizontal,
+	ListFilter,
+	FunnelPlus,
+	FunnelX,
 } from "lucide-react";
 import { useState } from "react";
 import { useProductStore } from "@/store/productStore.js";
 import ProductCard from "@/components/BuyerPanel/products/ProductCard.jsx";
+import ProductFilters from "@/components/BuyerPanel/products/ProductFilters.jsx";
 
 export default function ProductGrid() {
 	const [viewMode, setViewMode] = useState("grid");
@@ -63,10 +67,14 @@ export default function ProductGrid() {
 					</div>
 
 					<div className="flex items-center gap-4">
+						{/* Filter Dropdown Button */}
+						<ProductFilters />
+
 						{/* Sort Dropdown */}
 						<Select value={getSortValue()} onValueChange={handleSortChange}>
-							<SelectTrigger className="w-48">
-								<SlidersHorizontal className="h-4 w-4 mr-2" />
+							<SelectTrigger className="w-52 hover:bg-gray-50 bg-transparent">
+								<ListFilter className="h-4 w-4 text-gray-600 mr-2" />
+								<h2 className="text-gray-700 font-medium">SORT BY - </h2>
 								<SelectValue placeholder="Sort by" />
 							</SelectTrigger>
 							<SelectContent>
@@ -122,8 +130,8 @@ export default function ProductGrid() {
 				<motion.div
 					className={
 						viewMode === "grid"
-							? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
-							: "space-y-6"
+							? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6"
+							: "max-w-5xl mx-auto space-y-6"
 					}
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
