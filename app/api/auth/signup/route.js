@@ -1,6 +1,7 @@
 import { dbConnect } from "@/lib/dbConnect";
 import User from "@/model/User.js";
 import Verification from "@/model/Verification.js";
+import UserGST from "@/model/UserGST.js";
 import {
         verifyGSTIN,
         lookupGSTINFromPAN,
@@ -126,6 +127,14 @@ export async function POST(req) {
                 isVerified: true,
         });
         await newUser.save();
+
+        if (gstInfo?.details) {
+                await UserGST.create({
+                        user: newUser._id,
+                        gstin: newUser.gstin,
+                        details: gstInfo.details,
+                });
+        }
 
         return Response.json({
                 dealerId: newUser._id,

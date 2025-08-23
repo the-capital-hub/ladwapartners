@@ -30,16 +30,18 @@ import {
 	Trash2,
 	Upload,
 	Download,
-	MoreHorizontal,
-	User,
-	Calendar,
-	Mail,
-	Phone,
+        MoreHorizontal,
+        User,
+        Calendar,
+        Mail,
+        Phone,
+        Eye,
 } from "lucide-react";
 import { useAdminCustomerStore } from "@/store/adminCustomerStore.js";
 import { DeleteCustomerPopup } from "@/components/AdminPanel/Popups/DeleteCustomerPopup.jsx";
 import { AddCustomerPopup } from "@/components/AdminPanel/Popups/AddCustomerPopup.jsx";
 import { UpdateCustomerPopup } from "@/components/AdminPanel/Popups/UpdateCustomerPopup.jsx";
+import { GstDetailsPopup } from "@/components/AdminPanel/Popups/GstDetailsPopup.jsx";
 import { useIsAuthenticated } from "@/store/adminAuthStore.js";
 import { useRouter } from "next/navigation";
 
@@ -64,10 +66,11 @@ export default function AdminCustomersPage() {
 		customer: null,
 	});
 	const [addPopup, setAddPopup] = useState(false);
-	const [updatePopup, setUpdatePopup] = useState({
-		open: false,
-		customer: null,
-	});
+        const [updatePopup, setUpdatePopup] = useState({
+                open: false,
+                customer: null,
+        });
+        const [gstPopup, setGstPopup] = useState({ open: false, customer: null });
 	const isAuthenticated = useIsAuthenticated();
 	const [isRedirecting, setIsRedirecting] = useState(false);
 	const router = useRouter();	useEffect(() => {
@@ -121,15 +124,19 @@ export default function AdminCustomersPage() {
 		setDeletePopup({ open: true, customer });
 	};
 
-	const handleUpdate = (customer) => {
-		setUpdatePopup({ open: true, customer });
-	};
+        const handleUpdate = (customer) => {
+                setUpdatePopup({ open: true, customer });
+        };
 
-	const confirmDelete = async () => {
-		if (deletePopup.customer) {
-			await deleteCustomer(deletePopup.customer._id);
-		}
-	};
+        const handleViewGST = (customer) => {
+                setGstPopup({ open: true, customer });
+        };
+
+        const confirmDelete = async () => {
+                if (deletePopup.customer) {
+                        await deleteCustomer(deletePopup.customer._id);
+                }
+        };
 
 	const handleBulkDelete = async () => {
 		if (selectedCustomers.length > 0) {
@@ -368,25 +375,34 @@ export default function AdminCustomersPage() {
 													: "Never"}
 											</div>
 										</TableCell>
-										<TableCell>
-											<div className="flex gap-2">
-												<Button
-													size="icon"
-													variant="outline"
-													onClick={() => handleUpdate(customer)}
-												>
-													<Edit className="w-4 h-4" />
-												</Button>
-												<Button
-													size="icon"
-													variant="outline"
-													className="text-red-600 hover:text-red-700 bg-transparent"
-													onClick={() => handleDelete(customer)}
-												>
-													<Trash2 className="w-4 h-4" />
-												</Button>
-											</div>
-										</TableCell>
+                                                                                <TableCell>
+                                                                                        <div className="flex gap-2">
+                                                                                                {customer.gstVerified && (
+                                                                                                        <Button
+                                                                                                                size="icon"
+                                                                                                                variant="outline"
+                                                                                                                onClick={() => handleViewGST(customer)}
+                                                                                                        >
+                                                                                                                <Eye className="w-4 h-4" />
+                                                                                                        </Button>
+                                                                                                )}
+                                                                                                <Button
+                                                                                                        size="icon"
+                                                                                                        variant="outline"
+                                                                                                        onClick={() => handleUpdate(customer)}
+                                                                                                >
+                                                                                                        <Edit className="w-4 h-4" />
+                                                                                                </Button>
+                                                                                                <Button
+                                                                                                        size="icon"
+                                                                                                        variant="outline"
+                                                                                                        className="text-red-600 hover:text-red-700 bg-transparent"
+                                                                                                        onClick={() => handleDelete(customer)}
+                                                                                                >
+                                                                                                        <Trash2 className="w-4 h-4" />
+                                                                                                </Button>
+                                                                                        </div>
+                                                                                </TableCell>
 									</motion.tr>
 								))}
 							</TableBody>
@@ -453,11 +469,17 @@ export default function AdminCustomersPage() {
 
 			<AddCustomerPopup open={addPopup} onOpenChange={setAddPopup} />
 
-			<UpdateCustomerPopup
-				open={updatePopup.open}
-				onOpenChange={(open) => setUpdatePopup({ open, customer: null })}
-				customer={updatePopup.customer}
-			/>
-		</>
-	);
+                        <UpdateCustomerPopup
+                                open={updatePopup.open}
+                                onOpenChange={(open) => setUpdatePopup({ open, customer: null })}
+                                customer={updatePopup.customer}
+                        />
+
+                        <GstDetailsPopup
+                                open={gstPopup.open}
+                                onOpenChange={(open) => setGstPopup({ open, customer: null })}
+                                customer={gstPopup.customer}
+                        />
+                </>
+        );
 }
