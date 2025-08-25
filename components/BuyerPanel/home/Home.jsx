@@ -24,7 +24,7 @@ export default function HomePage() {
 	const [currentPage, setCurrentPage] = useState(1);
 
 	const {
-		// discountedProducts,
+		discountedProducts,
 		topSellingProducts,
 		bestSellingProduct,
 		featuredProducts,
@@ -76,9 +76,10 @@ export default function HomePage() {
                 <div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
                         {/* <NavigationBar /> */}
                         <HeroSection />
-						<ProductShowcase/>
+						<ProductShowcase products={discountedProducts} />
+						{/* <ProductShowcase/> */}
                         <FeaturedCategories />
-                        {/* <ProductShowcase products={discountedProducts} /> */}
+                       
                         <AboutLadwaPartners/>
 						<FeaturedSection
 							topSellingProducts={topSellingProducts}
