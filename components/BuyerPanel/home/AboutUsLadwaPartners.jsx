@@ -138,7 +138,7 @@ const AboutUsLadwaPartners = () => {
                   alt="Traffic Cone"
                   width={250}
                   height={160}
-                  className="w-full h-full rounded-3xl object-contain drop-shadow-lg"
+                  className="w-full h-auto rounded-3xl object-contain drop-shadow-lg"
                 />
               </motion.div>
             </div>
