@@ -60,14 +60,16 @@ export function AddProductPopup({ open, onOpenChange }) {
                 description: "",
                 longDescription: "",
                 category: "",
+                sku: "",
+                mrp: "",
                 price: "",
-		salePrice: "",
-		stocks: "",
-		discount: "",
-		type: "featured",
-		published: true,
-		images: [],
-	});
+                salePrice: "",
+                stocks: "",
+                discount: "",
+                type: "featured",
+                published: true,
+                images: [],
+        });
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -79,16 +81,18 @@ export function AddProductPopup({ open, onOpenChange }) {
 				title: formData.title,
 				description: formData.description,
 				longDescription: formData.longDescription || formData.description,
-				category: formData.category,
-				price: parseFloat(formData.price),
-				salePrice: formData.salePrice ? parseFloat(formData.salePrice) : 0,
-				stocks: parseInt(formData.stocks),
-				discount: formData.discount ? parseFloat(formData.discount) : 0,
-				type: formData.type,
-				published: formData.published,
-				features: features.filter((f) => f.title && f.description),
-				images: formData.images,
-			};
+                                category: formData.category,
+                                sku: formData.sku,
+                                mrp: parseFloat(formData.mrp),
+                                price: parseFloat(formData.price),
+                                salePrice: formData.salePrice ? parseFloat(formData.salePrice) : 0,
+                                stocks: parseInt(formData.stocks),
+                                discount: formData.discount ? parseFloat(formData.discount) : 0,
+                                type: formData.type,
+                                published: formData.published,
+                                features: features.filter((f) => f.title && f.description),
+                                images: formData.images,
+                        };
 
 			console.log("Product Data:", productData);
 
@@ -109,18 +113,20 @@ export function AddProductPopup({ open, onOpenChange }) {
 
 	const resetForm = () => {
 		setFormData({
-			title: "",
-			description: "",
-			longDescription: "",
-			category: "",
-			price: "",
-			salePrice: "",
-			stocks: "",
-			discount: "",
-			type: "featured",
-			published: true,
-			images: [],
-		});
+                        title: "",
+                        description: "",
+                        longDescription: "",
+                        category: "",
+                        sku: "",
+                        mrp: "",
+                        price: "",
+                        salePrice: "",
+                        stocks: "",
+                        discount: "",
+                        type: "featured",
+                        published: true,
+                        images: [],
+                });
 		setFeatures([{ title: "", description: "" }]);
 	};
 
@@ -239,8 +245,8 @@ export function AddProductPopup({ open, onOpenChange }) {
                                                                 </datalist>
                                                         </div>
 
-							<div>
-								<Label>Product Type</Label>
+                                                        <div>
+                                                                <Label>Product Type</Label>
 								<Select
 									value={formData.type}
 									onValueChange={(value) =>
@@ -257,13 +263,49 @@ export function AddProductPopup({ open, onOpenChange }) {
 											</SelectItem>
 										))}
 									</SelectContent>
-								</Select>
-							</div>
+                                                                </Select>
+                                                        </div>
 
-							<div>
-								<Label htmlFor="price">Regular Price *</Label>
-								<Input
-									id="price"
+                                                        <div>
+                                                                <Label htmlFor="sku">SKU *</Label>
+                                                                <Input
+                                                                        id="sku"
+                                                                        placeholder="Enter SKU"
+                                                                        value={formData.sku}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        sku: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                        required
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="mrp">MRP *</Label>
+                                                                <Input
+                                                                        id="mrp"
+                                                                        placeholder="0.00"
+                                                                        value={formData.mrp}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        mrp: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                        type="number"
+                                                                        step="0.01"
+                                                                        required
+                                                                />
+                                                        </div>
+
+                                                        <div>
+                                                                <Label htmlFor="price">Regular Price *</Label>
+                                                                <Input
+                                                                        id="price"
 									placeholder="0.00"
 									value={formData.price}
 									onChange={(e) =>
