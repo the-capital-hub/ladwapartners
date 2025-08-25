@@ -13,7 +13,7 @@ import {
 } from "@/components/BuyerPanel/home/ProductShowcaseCarousel/carouselArrowButtons.jsx";
 import { Product16 } from "@/public/images/home/index.js";
 
-export default function ProductShowcase({ products = [] }) {
+export default function ProductShowcase({ products = [], isLoading = false }) {
 	const [emblaRef, emblaApi] = useEmblaCarousel({
 		slidesToScroll: 1,
 		containScroll: "trimSnaps",
@@ -25,19 +25,19 @@ export default function ProductShowcase({ products = [] }) {
 	const { selectedIndex, scrollSnaps, onDotButtonClick } =
 		useDotButton(emblaApi);
 
-	const {
-		prevBtnDisabled,
-		nextBtnDisabled,
-		onPrevButtonClick,
-		onNextButtonClick,
-	} = usePrevNextButtons(emblaApi);
+        const {
+                prevBtnDisabled,
+                nextBtnDisabled,
+                onPrevButtonClick,
+                onNextButtonClick,
+        } = usePrevNextButtons(emblaApi);
 
-	// Show loading state if no products
-	if (!products || products.length === 0) {
-		return (
-			<section className="py-6 sm:py-8 lg:py-12 bg-white min-h-[calc(100vh-136px)]">
-				<div className="h-full px-10 sm:px-6 lg:px-10">
-					<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 h-full">
+        // Display skeleton while data is loading
+        if (isLoading) {
+                return (
+                        <section className="py-6 sm:py-8 lg:py-12 bg-white min-h-[calc(100vh-136px)]">
+                                <div className="h-full px-10 sm:px-6 lg:px-10">
+                                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 h-full">
 						<div className="lg:col-span-1 flex flex-col justify-center">
 							<div className="animate-pulse">
 								<div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
@@ -54,11 +54,22 @@ export default function ProductShowcase({ products = [] }) {
 								))}
 							</div>
 						</div>
-					</div>
-				</div>
-			</section>
-		);
-	}
+                                        </div>
+                                </div>
+                        </section>
+                );
+        }
+
+        // Show message if no products available after loading
+        if (!products || products.length === 0) {
+                return (
+                        <section className="py-6 sm:py-8 lg:py-12 bg-white min-h-[calc(100vh-136px)]">
+                                <div className="h-full flex items-center justify-center text-gray-500">
+                                        No products available.
+                                </div>
+                        </section>
+                );
+        }
 
 	return (
 		<section className="py-6 sm:py-8 lg:py-12 bg-white min-h-[calc(100vh-136px)]">
