@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
-import { useIsAuthenticated } from "@/store/authStore";
+import { useIsAuthenticated, useIsGstVerified } from "@/store/authStore";
 import Image from "next/image";
 
 export default function ProductCard({ product, viewMode = "grid" }) {
@@ -135,7 +135,15 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 							{/* Price + Stock */}
 							<div className="flex items-center justify-between">
 								<div className="space-y-1">
-									{isAuthenticated ? (
+									{!isAuthenticated ? (
+										<p className="text-red-600 font-medium">
+											Please login to see price
+										</p>
+									) : !isGstVerified ? (
+										<p className="text-red-600 font-medium">
+											Please verify your GST number
+										</p>
+									) : (
 										<div className="flex items-center gap-2">
 											<p className="text-2xl font-bold">
 												₹{(product.salePrice || product.price).toLocaleString()}
@@ -146,15 +154,10 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 												</p>
 											)}
 										</div>
-									) : (
-										<p className="text-red-600 font-medium">
-											Please login to see price
-										</p>
 									)}
 									<p
-										className={`text-sm ${
-											product.inStock ? "text-green-600" : "text-red-600"
-										}`}
+										className={`text-sm ${product.inStock ? "text-green-600" : "text-red-600"
+											}`}
 									>
 										{product.inStock ? "In Stock" : "Out of Stock"}
 									</p>
@@ -322,7 +325,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 										₹{(product.salePrice || product.price).toLocaleString()}
 									</p>
 									{product.price > (product.salePrice || product.price) && (
-										<p className="text-sm text-gray-500 line-through">
+										<p className="text-lg text-gray-500 line-through">
 											₹{product.price.toLocaleString()}
 										</p>
 									)}
@@ -340,9 +343,8 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 
 							{/* Stock */}
 							<p
-								className={`text-xs ${
-									product.inStock ? "text-green-600" : "text-red-600"
-								}`}
+								className={`text-xs ${product.inStock ? "text-green-600" : "text-red-600"
+									}`}
 							>
 								{product.inStock ? "In Stock" : "Out of Stock"}
 							</p>

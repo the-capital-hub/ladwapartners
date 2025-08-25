@@ -8,8 +8,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
 	ArrowLeft,
 	ShoppingCart,
+	ChevronLeft, ChevronRight,
 	Heart,
-	Share2,
+
 	Minus,
 	Plus,
 	MapPin,
@@ -23,6 +24,7 @@ import {
 	Receipt,
 	Lock,
 	HelpCircle,
+	Share,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,6 +33,7 @@ import ProductCard from "@/components/BuyerPanel/products/ProductCard.jsx";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { useIsAuthenticated } from "@/store/authStore";
+import ReviewAndRatings from "./ReviewAndRatings";
 
 export default function ProductDetail({ product, relatedProducts = [] }) {
 	const [selectedImage, setSelectedImage] = useState(0);
@@ -171,578 +174,202 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 	}
 
 	return (
-		<div className="min-h-screen bg-gray-50">
-			<div className="container mx-auto px-4 lg:px-10 py-8">
+		<div className="min-h-screen bg-white">
+			<div className="container mx-auto px-4 lg:px-10 py-5">
 				{/* Product Details */}
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-					{/* Product Images */}
-					<div className="space-y-6">
-						<motion.div
-							className="relative bg-white rounded-lg overflow-hidden shadow-sm"
-							initial={{ opacity: 0, x: -20 }}
-							animate={{ opacity: 1, x: 0 }}
-							transition={{ duration: 0.5 }}
-						>
-							<div className="absolute top-4 left-4 z-10">
-								<Link
-									href="/products"
-									className="inline-flex items-center bg-black text-white py-2 px-4 rounded-full hover:bg-gray-800 transition-colors"
-								>
-									<ArrowLeft className="h-4 w-4 mr-2" />
-									Back
-								</Link>
+				<div className="max-w-7xl mx-auto">
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+						{/* Product Images Section */}
+						<div className="relative">
+							{/* Main Product Image */}
+							<div className="relative bg-gray-50 rounded-lg overflow-hidden">
+								<div className="relative h-96 md:h-[66vh]">
+									<img
+										src={
+											product.images?.[selectedImage] ||
+											product.image ||
+											"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png"
+										}
+										alt={product.name}
+										className="w-full h-full object-contain p-8"
+									/>
+								</div>
 							</div>
 
-							<div className="relative w-full h-96 lg:h-[400px]">
-								<Image
-									src={
-										product.images?.[selectedImage] ||
-										product.image ||
-										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
-									}
-									alt={product.name}
-									fill
-									className="object-contain p-8"
-									priority
-								/>
+							{/* Share and Wishlist Icons - positioned on right side */}
+							<div className="absolute top-0 right-0 flex flex-col items-center space-y-2 p-2">
+								<button className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100">
+									<Share className="h-5 w-5 text-black" />
+								</button>
+								<button className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100">
+									<Heart className="h-5 w-5 text-black" />
+								</button>
 							</div>
-						</motion.div>
 
-						{/* Image Gallery */}
-						{product.images && product.images.length > 1 && (
-							<div className="flex space-x-4 justify-center overflow-x-auto">
-								{product.images.map((image, index) => (
+							{/* Navigation arrows - positioned at bottom right */}
+							<div className="absolute bottom-[24%] right-2 flex flex-col space-y-2">
+								<button className="bg-gray-100 rounded-xl p-2  hover:bg-gray-200">
+									<ChevronLeft className="h-5 w-5 text-black" />
+								</button>
+								<button className="bg-gray-100 rounded-xl p-2 hover:bg-gray-200">
+									<ChevronRight className="h-5 w-5 text-black" />
+								</button>
+							</div>
+
+							{/* Thumbnail Images */}
+							<div className="flex gap-2 mt-4">
+								{product.images?.slice(0, 4).map((image, index) => (
 									<button
 										key={index}
 										onClick={() => setSelectedImage(index)}
-										className={`relative w-20 h-20 border-2 rounded-lg overflow-hidden flex-shrink-0 ${selectedImage === index
-											? "border-black"
-											: "border-gray-200 hover:border-gray-400"
+										className={`relative w-16 h-16 md:w-20 md:h-20 border rounded-lg overflow-hidden flex-shrink-0 ${selectedImage === index
+											? "border-blue-500"
+											: "border-gray-200 hover:border-gray-300"
 											}`}
 									>
-										<Image
+										<img
 											src={
 												image ||
 												"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
 											}
 											alt={`${product.name} view ${index + 1}`}
-											fill
-											className="object-contain p-2"
+											className="w-full h-full object-contain p-1"
 										/>
 									</button>
 								))}
 							</div>
-						)}
-					</div>
+						</div>
 
-					{/* Product Info */}
-					<motion.div
-						className="space-y-6"
-						initial={{ opacity: 0, x: 20 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ duration: 0.5, delay: 0.2 }}
-					>
-						<div>
-							<Badge variant="secondary" className="mb-4">
-								{product.category?.replace("-", " ").toUpperCase()}
-							</Badge>
-							<h1 className="text-3xl lg:text-4xl font-bold mb-4">
+						{/* Product Details Section */}
+						<div className="">
+
+
+							{/* Category */}
+							<div className="text-gray-500 text-sm">
+								Ladwa
+							</div>
+
+							{/* Product Name */}
+							<h1 className="text-2xl mb-4 md:text-3xl font-bold text-gray-900 leading-tight">
 								{product.name}
 							</h1>
 
-							{/* Product rating */}
-							<div className="flex items-center mb-2">
-								<span className="flex items-center gap-2 bg-green-600 text-white px-2 py-1 rounded-lg">
-									{product.rating || 4.5}
-									<Star className="w-4 h-4 fill-white text-white" />
-								</span>
-								<span className="ml-2 text-gray-600 font-semibold">
-									({reviews.length} Reviews)
-								</span>
-							</div>
-							{isAuthenticated ? (<>
-								<p className="text-xl lg:text-2xl font-semibold text-black mb-2">
-									₹ {product.price.toLocaleString()}
-								</p>
-
-								{/* Discounted price and discount percentage */}
-								{product.originalPrice > product.price && (
-									<div className="flex items-center mb-4">
-										<span className="text-gray-500 line-through mr-2">
-											₹ {product.originalPrice.toLocaleString()}
-										</span>
-										<span className="text-green-500">
-											{product.discountPercentage}% off
-										</span>
+							{/* Rating and Reviews */}
+							<div className="flex items-center justify-between gap-6 border-b-2  border-dotted">
+								<div className="flex items-center gap-3 mb-4">
+									<span className="text-gray-500 line-through text-lg">
+										₹ {product.originalPrice?.toLocaleString()}
+									</span>
+									{/* Price */}
+									<div className="text-3xl font-bold text-gray-900">
+										₹ {product.price?.toLocaleString()}
 									</div>
-								)}
-							</>) : <>
-								<p className="text-red-600 font-medium">
-									Please login to see price
-								</p>
-							</>}
-							{/* Product price */}
-
-						</div>
-
-						{/* Product Colors
-						<div className="w-fit flex space-x-2 p-3 bg-gray-200 rounded-lg">
-							{colors.map((color, i) => (
-								<div
-									key={i}
-									className={`w-6 h-6 rounded-full border border-gray-200 cursor-pointer ${color}`}
-								/>
-							))}
-						</div> */}
-
-						{/* Quantity and Add to Cart */}
-						<div className="space-y-4">
-							<div className="flex items-center space-x-4">
-								<span className="font-medium">Quantity:</span>
-								<div className="flex items-center border rounded-lg">
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() => handleQuantityChange(-1)}
-										 disabled={!isAuthenticated || quantity <= 1}
-									>
-										<Minus className="h-4 w-4" />
-									</Button>
-									<span className="px-4 py-2 font-medium">{quantity}</span>
-									<Button
-										variant="ghost"
-										size="icon"
-										onClick={() => handleQuantityChange(1)}
-										disabled={quantity >= product.stocks || !isAuthenticated}
-									>
-										<Plus className="h-4 w-4" />
-									</Button>
 								</div>
-								<span className="text-sm text-gray-500">
-									({product.stocks} available)
-								</span>
+								<div className="flex items-center gap-4">
+									<span className="text-gray-600">
+										{product.soldCount} Sold
+									</span>
+									<div className="flex items-center gap-1">
+										<Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+										<span className="font-semibold">{product.rating}</span>
+									</div>
+								</div>
 							</div>
 
-							<div className="flex flex-col md:flex-row gap-4">
-								<Button
+
+
+							{/* Update Quantity */}
+							<div className="border-b-2 flex items-center py-5 gap-6 border-dotted mb-4">
+								<div className="text-gray-700 font-medium mb-3">Update Qty:</div>
+								<div className="flex items-center gap-4">
+									<div className="flex items-center">
+										<button
+											onClick={() => handleQuantityChange(-1)}
+											disabled={quantity <= 1}
+											className="p-1 border rounded-full border-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+										>
+											<Minus className="h-4 w-4 text-gray-600" />
+										</button>
+										<span className="px-4 py-2 font-medium">
+											{quantity}
+										</span>
+										<button
+											onClick={() => handleQuantityChange(1)}
+											disabled={quantity >= product.stocks}
+											className="p-1 border rounded-full border-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+										>
+											<Plus className="h-4 w-4 text-gray-600" />
+										</button>
+									</div>
+								</div>
+							</div>
+
+							{/* Product Description */}
+							<div className="space-y-4 mb-4 text-gray-700 text-sm leading-relaxed">
+								<div>
+									<span className="font-semibold">Set of Four Speed Breakers:</span> {product.description.setOfFour}
+								</div>
+								<div>
+									<span className="font-semibold">75mm Height:</span> {product.description.height}
+								</div>
+								<div>
+									<span className="font-semibold">1 Meter Long:</span> {product.description.meterLong}
+								</div>
+								<div>
+									<span className="font-semibold">Traffic Speed Control:</span> {product.description.trafficControl}
+								</div>
+							</div>
+
+							{/* Action Buttons */}
+							<div className="flex gap-3">
+								<button
 									onClick={handleAddToCart}
-									disabled={!product.inStock || isLoading || !isAuthenticated}
-									className="flex-1 bg-black text-white hover:bg-gray-800 "
-
+									disabled={!product.inStock}
+									className="flex-1 bg-blue-600 text-white py-3 px-6 rounded font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 								>
-									<ShoppingCart className="h-5 w-5 mr-2" />
-									Add to Cart
-								</Button>
-								<Button
+									Add To Cart
+								</button>
+								<button
 									onClick={handleBuyNow}
-									disabled={!product.inStock || !isAuthenticated}
-									className="flex-1 bg-green-600 text-white hover:bg-green-700"
-
+									disabled={!product.inStock}
+									className="flex-1 bg-gray-100 border border-black text-gray-700 py-3 px-6 rounded font-semibold hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
 								>
 									Buy Now
-								</Button>
-								<Button variant="outline" size="lg">
-									<Heart className="h-5 w-5 mr-2" />
-									Wishlist
-								</Button>
-								<Button variant="outline" size="lg">
-									<Share2 className="h-5 w-5" />
-								</Button>
+								</button>
+							</div>
+
+							{/* Product Information */}
+							<div className="space-y-2 py-4 border-t border-gray-200 text-sm text-gray-600">
+								<div>
+									<span className="font-semibold">SKU:</span> {product.sku}
+								</div>
+								<div>
+									<span className="font-semibold">Category:</span>{' '}
+									<span className="text-blue-600 hover:underline cursor-pointer">
+										{product.categoryLink}
+									</span>
+								</div>
 							</div>
 						</div>
-
-						{/* Stock Status */}
-						<div className="flex items-center space-x-2">
-							<div
-								className={`w-3 h-3 rounded-full ${product.inStock ? "bg-green-500" : "bg-red-500"
-									}`}
-							/>
-							<span
-								className={product.inStock ? "text-green-600" : "text-red-600"}
-							>
-								{product.status}
-							</span>
-						</div>
-					</motion.div>
+					</div>
+					<div className="text-sm text-gray-600 mb-7">
+						<span className="font-semibold text-black text-lg md:text-lg"> Description:</span> {product?.description}
+					</div>
 				</div>
-				{product.features && product.features.length > 0 && (
-					<motion.div
-						className="mb-10"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.5 }}
-					>
-						<h2 className="text-2xl font-bold mb-8">Product Features</h2>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-							{product.features.map((feature, index) => (
-								<Card key={index} className="bg-white rounded-xl p-6 shadow-sm">
-									<h3 className="font-semibold text-lg mb-3">
-										{feature.title}
-									</h3>
-									<p className="text-gray-600">{feature.description}</p>
-								</Card>
-							))}
-						</div>
-                                                {product.longDescription && (
-                                                        <Card className="bg-white rounded-xl p-6 shadow-sm">
-                                                                <h2 className="text-2xl font-bold mb-4">Product Description</h2>
-                                                                <p className="text-gray-600 leading-relaxed">
-                                                                        {product.longDescription}
-                                                                </p>
-                                                        </Card>
-                                                )}
-
-                                                {(product.sku ||
-                                                        product.mrp ||
-                                                        product.subCategory ||
-                                                        product.mainImageLink ||
-                                                        product.length ||
-                                                        product.width ||
-                                                        product.height ||
-                                                        product.weight ||
-                                                        product.colour ||
-                                                        product.material ||
-                                                        product.brand ||
-                                                        product.size) && (
-                                                        <Card className="bg-white rounded-xl p-6 shadow-sm mt-6">
-                                                                <h2 className="text-2xl font-bold mb-4">Specifications</h2>
-                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2 text-gray-600">
-                                                                        {product.sku && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">SKU:</span> {product.sku}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.mrp && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">MRP:</span> ₹{product.mrp}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.subCategory && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Sub Category:</span> {product.subCategory}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.mainImageLink && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Main Image:</span> {product.mainImageLink}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.length && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Length:</span> {product.length}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.width && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Width:</span> {product.width}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.height && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Height:</span> {product.height}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.weight && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Weight:</span> {product.weight}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.colour && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Colour:</span> {product.colour}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.material && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Material:</span> {product.material}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.brand && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Brand:</span> {product.brand}
-                                                                                </p>
-                                                                        )}
-                                                                        {product.size && (
-                                                                                <p>
-                                                                                        <span className="font-medium text-gray-900">Size:</span> {product.size}
-                                                                                </p>
-                                                                        )}
-                                                                </div>
-                                                        </Card>
-                                                )}
-                                        </motion.div>
-                                )}
-
-				{/* Delivery Details and Offers */}
-				<div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-10">
-					{/* Delivery Details Section */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.3 }}
-						className="flex-1"
-					>
-						<Card className="bg-green-50 border-green-200">
-							<CardContent className="p-6">
-								<h2 className="text-2xl font-bold mb-6">Delivery Details</h2>
-
-								{/* Location Check
-								<div className="bg-white rounded-lg p-4 mb-6 flex items-center justify-between">
-									<div className="flex items-center space-x-3">
-										<MapPin className="h-6 w-6 text-gray-600" />
-										<span className="text-gray-600">Enter your pincode</span>
-									</div>
-									<Button className="bg-black text-white hover:bg-gray-800 rounded-full px-6">
-										CHECK
-									</Button>
-								</div>
-
-								<p className="text-gray-700 mb-6">
-									Check serviceability at your location
-								</p> */}
-
-								{/* Delivery Options */}
-								<div className="space-y-4">
-									<div className="flex items-center space-x-4">
-										<div className="bg-green-600 p-2 rounded-lg">
-											<Truck className="h-6 w-6 text-white" />
-										</div>
-										<div>
-											<h3 className="font-semibold text-green-600 text-lg">
-												Free Delivery
-											</h3>
-											<p className="text-gray-600">
-												No shipping charge on this order
-											</p>
-										</div>
-									</div>
-
-									<div className="flex items-center space-x-4">
-										<div className="bg-green-600 p-2 rounded-lg">
-											<CreditCard className="h-6 w-6 text-white" />
-										</div>
-										<div>
-											<h3 className="font-semibold text-green-600 text-lg">
-												COD Available
-											</h3>
-											<p className="text-gray-600">
-												You can pay at the time of delivery
-											</p>
-										</div>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					</motion.div>
-
-					{/* Offers and Coupons Section */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.5, delay: 0.4 }}
-						className="flex-1"
-					>
-						<Card className="bg-green-50 border-green-200">
-							<CardContent className="p-6">
-								<h2 className="text-2xl font-bold mb-6">Offers and Coupons</h2>
-
-								{/* Offers List */}
-								<div className="space-y-4 mb-8">
-									<div className="flex items-start space-x-3">
-										<div className="bg-green-600 p-1 rounded">
-											<div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center">
-												<div className="w-2 h-2 bg-green-600 rounded-sm"></div>
-											</div>
-										</div>
-										<div>
-											<h3 className="font-semibold text-green-600">
-												Save instantly 5% with online payment.
-											</h3>
-											<p className="text-sm text-gray-600">
-												via UPI, EMI, Credit/Debit Card, Net Banking, Wallets.
-											</p>
-										</div>
-									</div>
-
-									{/* <div className="flex items-start space-x-3">
-										<div className="bg-green-600 p-1 rounded">
-											<div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center">
-												<div className="w-2 h-2 bg-green-600 rounded-sm"></div>
-											</div>
-										</div>
-										<div className="flex-1">
-											<div className="flex items-center justify-between">
-												<div>
-													<h3 className="font-semibold text-green-600">
-														Get flat ₹1000 OFF on app
-													</h3>
-													<p className="text-sm text-gray-600">
-														Min cart value ₹2,000
-													</p>
-												</div>
-												<Badge
-													variant="outline"
-													className="border-green-600 text-green-600 border-dashed"
-												>
-													SAFETY ₹1000
-												</Badge>
-											</div>
-										</div>
-									</div> */}
-
-									<div className="flex items-start space-x-3">
-										<div className="bg-green-600 p-1 rounded">
-											<div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center">
-												<div className="w-2 h-2 bg-green-600 rounded-sm"></div>
-											</div>
-										</div>
-										<div>
-											<h3 className="font-semibold text-green-600">
-												Get GST invoice and save up to 18% on business purchases
-											</h3>
-										</div>
-									</div>
-								</div>
-
-								{/* Buy More & Save More */}
-								{/* <div>
-									<h3 className="text-xl font-bold mb-4">
-										Buy More & Save More
-									</h3>
-									<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-										{quantityOffers.map((offer, index) => (
-											<div
-												key={index}
-												className={`border-2 rounded-lg p-4 cursor-pointer transition-colors ${
-													selectedQuantityOffer === index
-														? "border-green-600 bg-green-50"
-														: "border-gray-200 bg-white hover:border-green-300"
-												}`}
-												onClick={() => setSelectedQuantityOffer(index)}
-											>
-												<div className="text-center">
-													<h4 className="font-semibold text-lg">
-														{offer.label}
-													</h4>
-													<p className="text-xl font-bold">
-														₹{offer.price.toLocaleString()}{" "}
-														<span className="text-sm font-normal">/ pc</span>
-													</p>
-													<Badge
-														variant="secondary"
-														className="text-green-600 bg-green-100"
-													>
-														{offer.discount}% OFF
-													</Badge>
-												</div>
-											</div>
-										))}
-									</div>
-								</div> */}
-							</CardContent>
-						</Card>
-					</motion.div>
-				</div>
-
-				{/* Product Features */}
-
 
 				{/* Reviews & Ratings Section */}
-				<motion.div
-					className="mb-10"
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5, delay: 0.6 }}
-				>
-					<Card>
-						<CardContent className="p-6">
-							<div className="flex items-center justify-between mb-6">
-								<h2 className="text-2xl font-bold">Reviews & Ratings</h2>
-								<Button className="bg-black text-white hover:bg-gray-800">
-									WRITE A REVIEW
-								</Button>
-							</div>
-
-							<p className="text-gray-600 mb-6">
-								{product.name} - Customer Reviews and Ratings
-							</p>
-
-							{/* Rating Summary */}
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-								<div className="text-center">
-									<div className="flex items-center justify-center space-x-2 mb-2">
-										<span className="text-4xl font-bold text-green-600">
-											{product.rating || 4.5}
-										</span>
-										<Star className="w-8 h-8 fill-green-600 text-green-600" />
-									</div>
-									<p className="text-gray-600">
-										Average Rating based on {reviews.length} ratings and{" "}
-										{reviews.length} reviews
-									</p>
-								</div>
-
-								<div className="space-y-2">
-									{[5, 4, 3, 2, 1].map((stars) => (
-										<div key={stars} className="flex items-center space-x-3">
-											<span className="w-4 text-sm">{stars}</span>
-											<div className="flex-1 bg-gray-200 rounded-full h-2">
-												<div
-													className="bg-green-600 h-2 rounded-full"
-													style={{
-														width:
-															stars === 5 ? "58%" : stars === 4 ? "41%" : "0%",
-													}}
-												></div>
-											</div>
-											<span className="text-sm text-gray-600 w-12">
-												{stars === 5 ? "58%" : stars === 4 ? "41%" : "0%"}
-											</span>
-										</div>
-									))}
-								</div>
-							</div>
-
-							{/* Individual Reviews */}
-							<div className="space-y-6">
-								{reviews.map((review) => (
-									<div
-										key={review.id}
-										className="border-b border-gray-200 pb-6 last:border-b-0"
-									>
-										<div className="flex items-start space-x-4">
-											<div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-												<User className="w-5 h-5 text-gray-600" />
-											</div>
-											<div className="flex-1">
-												<div className="flex items-center space-x-2 mb-2">
-													<h4 className="font-semibold">{review.name}</h4>
-												</div>
-												<div className="flex items-center space-x-1 mb-3">
-													{renderStars(review.rating)}
-												</div>
-												<p className="text-gray-700 text-sm leading-relaxed">
-													{review.comment}
-												</p>
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
-						</CardContent>
-					</Card>
-				</motion.div>
+				<ReviewAndRatings/>
 
 				{/* Benefits and Warranty Section */}
-				<motion.div
+				{/* <motion.div
 					className="mb-10"
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.5, delay: 0.8 }}
-				>
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+				> */}
+					{/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> */}
 						{/* Store Benefits */}
-						<Card>
+						{/* <Card>
 							<CardContent className="p-6">
 								<h2 className="text-xl font-bold mb-6">Store Benefits</h2>
 								<div className="space-y-4">
@@ -760,10 +387,10 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 									</div>
 								</div>
 							</CardContent>
-						</Card>
+						</Card> */}
 
 						{/* Return & Warranty Policy */}
-						<Card>
+						{/* <Card>
 							<CardContent className="p-6">
 								<h2 className="text-xl font-bold mb-6">
 									Return & Warranty Policy
@@ -787,7 +414,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 							</CardContent>
 						</Card>
 					</div>
-				</motion.div>
+				</motion.div> */}
 
 				{/* Related Products */}
 				{relatedProducts.length > 0 && (
