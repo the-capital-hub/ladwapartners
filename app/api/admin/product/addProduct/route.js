@@ -12,10 +12,12 @@ export async function POST(request) {
 		// Extract product data from formData
 		const title = formData.get("title");
 		const description = formData.get("description");
-		const price = parseFloat(formData.get("price"));
-		const stocks = parseInt(formData.get("stocks"));
-		const category = formData.get("category");
-		const imageFiles = formData.getAll("images");
+                const price = parseFloat(formData.get("price"));
+                const stocks = parseInt(formData.get("stocks"));
+                const category = formData.get("category");
+                const sku = formData.get("sku");
+                const mrp = parseFloat(formData.get("mrp"));
+                const imageFiles = formData.getAll("images");
 
                 console.log("Received data:", {
                         title,
@@ -23,6 +25,8 @@ export async function POST(request) {
                         price,
                         stocks,
                         category,
+                        sku,
+                        mrp,
                         imageCount: imageFiles.length,
                 });
 
@@ -30,25 +34,29 @@ export async function POST(request) {
 		if (
 			!title ||
 			!description ||
-			!price ||
-			!stocks ||
-			!category ||
-			!imageFiles.length
-		) {
-			return Response.json(
-				{
-					success: false,
-					message: "Missing required fields",
-					received: {
-						title: !!title,
-						description: !!description,
-						price: !!price,
-						stocks: !!stocks,
-						category: !!category,
-						images: imageFiles.length,
-					},
-				},
-				{ status: 400 }
+                        !price ||
+                        !stocks ||
+                        !category ||
+                        !sku ||
+                        !mrp ||
+                        !imageFiles.length
+                ) {
+                        return Response.json(
+                                {
+                                        success: false,
+                                        message: "Missing required fields",
+                                        received: {
+                                                title: !!title,
+                                                description: !!description,
+                                                price: !!price,
+                                                stocks: !!stocks,
+                                                category: !!category,
+                                                sku: !!sku,
+                                                mrp: !!mrp,
+                                                images: imageFiles.length,
+                                        },
+                                },
+                                { status: 400 }
                         );
                 }
 
@@ -117,24 +125,26 @@ export async function POST(request) {
 		}
 
 		// Create new product
-		const product = new Product({
-			title,
-			description,
-			longDescription: formData.get("longDescription") || description,
-			images: imageUrls,
-			category,
-			published: formData.get("published") === "true",
-			stocks: stocks,
-			price: price,
-			salePrice: formData.get("salePrice")
-				? parseFloat(formData.get("salePrice"))
-				: 0,
-			discount: formData.get("discount")
-				? parseFloat(formData.get("discount"))
-				: 0,
-			type: formData.get("type") || "featured",
-			features: features,
-		});
+                const product = new Product({
+                        title,
+                        description,
+                        longDescription: formData.get("longDescription") || description,
+                        images: imageUrls,
+                        category,
+                        sku,
+                        mrp,
+                        published: formData.get("published") === "true",
+                        stocks: stocks,
+                        price: price,
+                        salePrice: formData.get("salePrice")
+                                ? parseFloat(formData.get("salePrice"))
+                                : 0,
+                        discount: formData.get("discount")
+                                ? parseFloat(formData.get("discount"))
+                                : 0,
+                        type: formData.get("type") || "featured",
+                        features: features,
+                });
 
 		await product.save();
 
