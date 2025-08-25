@@ -1,22 +1,31 @@
+// app/api/products/filters/route.js
+
 import { dbConnect } from "@/lib/dbConnect.js";
 import Product from "@/model/Product.js";
+import Category from "@/model/Category.js";
 
-const categories = [
-	"personal-safety",
-	"road-safety",
-	"signage",
-	"industrial-safety",
-	"queue-management",
-	"fire-safety",
-	"first-aid",
-	"water-safety",
-	"emergency-kit",
-];
+// Commented out predefined categories - now fetching from database
+// const categories = [
+// 	"personal-safety",
+// 	"road-safety",
+// 	"signage",
+// 	"industrial-safety",
+// 	"queue-management",
+// 	"fire-safety",
+// 	"first-aid",
+// 	"water-safety",
+// 	"emergency-kit",
+// ];
 
 export async function GET() {
 	await dbConnect();
 
 	try {
+		// Fetch categories from database
+		const categoriesFromDB = await Category.find({ published: true })
+			.select("name slug productCount")
+			.sort({ sortOrder: 1, name: 1 });
+
 		// Get price range
 		const priceStats = await Product.aggregate([
 			{ $match: { published: true } },
@@ -35,7 +44,7 @@ export async function GET() {
 
 		const { minPrice = 0, maxPrice = 10000 } = priceStats[0] || {};
 
-		// Get category counts
+		// Get category counts from products (real-time count)
 		const categoryCounts = await Product.aggregate([
 			{ $match: { published: true } },
 			{ $group: { _id: "$category", count: { $sum: 1 } } },
@@ -103,6 +112,19 @@ export async function GET() {
 
 		const { inStockCount = 0, outOfStockCount = 0 } = stockStats[0] || {};
 
+		// Map database categories to the expected format
+		const categoriesWithCounts = categoriesFromDB.map((category) => ({
+			id: category.slug || category.name.toLowerCase().replace(/\s+/g, "-"),
+			name: category.name,
+			label: category.name,
+			count:
+				categoryMap[category.slug] ||
+				categoryMap[category.name] ||
+				category.productCount ||
+				0,
+			slug: category.slug,
+		}));
+
 		return Response.json({
 			success: true,
 			filters: {
@@ -110,14 +132,7 @@ export async function GET() {
 					min: Math.floor(minPrice),
 					max: Math.ceil(maxPrice),
 				},
-				categories: categories.map((cat) => ({
-					id: cat,
-					label: cat
-						.split("-")
-						.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-						.join(" "),
-					count: categoryMap[cat] || 0,
-				})),
+				categories: categoriesWithCounts,
 				discount: {
 					min: Math.floor(minDiscount),
 					max: Math.ceil(maxDiscount),
