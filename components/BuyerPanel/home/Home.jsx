@@ -24,17 +24,17 @@ export default function HomePage() {
 	const [currentPage, setCurrentPage] = useState(1);
 
 	const {
-		discountedProducts,
-		topSellingProducts,
-		bestSellingProduct,
-		featuredProducts,
-		// categoryProducts,
-		// categories,
-		// pagination,
-		// isLoading,
-		error,
-		refetch,
-	} = useHomeData(selectedCategory, searchQuery, currentPage);
+                discountedProducts,
+                topSellingProducts,
+                bestSellingProduct,
+                featuredProducts,
+                // categoryProducts,
+                // categories,
+                // pagination,
+                isLoading,
+                error,
+                refetch,
+        } = useHomeData(selectedCategory, searchQuery, currentPage);
 
 	console.log("top selling products", topSellingProducts);
 	console.log("best selling product", bestSellingProduct);
@@ -76,8 +76,8 @@ export default function HomePage() {
                 <div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
                         {/* <NavigationBar /> */}
                         <HeroSection />
-						<ProductShowcase products={discountedProducts} />
-						{/* <ProductShowcase/> */}
+                        <ProductShowcase products={discountedProducts} isLoading={isLoading} />
+                        {/* <ProductShowcase/> */}
                         <FeaturedCategories />
                        
                         <AboutLadwaPartners/>
