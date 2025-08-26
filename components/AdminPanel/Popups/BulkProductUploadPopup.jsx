@@ -22,6 +22,7 @@ import {
         TableHeader,
         TableRow,
 } from "@/components/ui/table";
+import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
 
 export function BulkUploadPopup({ open, onOpenChange }) {
         const { bulkUploadProducts } = useAdminProductStore();
@@ -97,7 +98,9 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                 subCategory: row["Sub Category"] || row["Sub-Category"],
                                 price: row["Price"],
                                 mrp: row["MRP"],
-                                mainImageLink: row["Main Image Link"],
+                                mainImageLink: getDirectGoogleDriveImageUrl(
+                                        row["Main Image Link"]
+                                ),
                                 length: row["Length (mm)"],
                                 width: row["Width (mm)"],
                                 height: row["height (mm)"],

@@ -34,14 +34,27 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { useIsAuthenticated } from "@/store/authStore";
 import ReviewAndRatings from "./ReviewAndRatings";
+import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
 
 export default function ProductDetail({ product, relatedProducts = [] }) {
 	const [selectedImage, setSelectedImage] = useState(0);
 	const [quantity, setQuantity] = useState(1);
-	const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
-	const router = useRouter();
-	const isAuthenticated = useIsAuthenticated();
-	const { addItem, isLoading } = useCartStore();
+        const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
+        const router = useRouter();
+        const isAuthenticated = useIsAuthenticated();
+        const { addItem, isLoading } = useCartStore();
+
+        const fallbackMainImage =
+                "https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
+        const fallbackThumbImage =
+                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
+
+        const mainImageSrc = getDirectGoogleDriveImageUrl(
+                product.images?.[selectedImage] ||
+                        product.image ||
+                        fallbackMainImage
+        );
+        const isMainImageUnoptimized = mainImageSrc.includes("google");
 
 	// Mock reviews data - you can replace this with real reviews from the API
 	const reviews = [
@@ -182,19 +195,18 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 						{/* Product Images Section */}
 						<div className="relative">
 							{/* Main Product Image */}
-							<div className="relative bg-gray-50 rounded-lg overflow-hidden">
-								<div className="relative h-96 md:h-[66vh]">
-									<img
-										src={
-											product.images?.[selectedImage] ||
-											product.image ||
-											"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png"
-										}
-										alt={product.name}
-										className="w-full h-full object-contain p-8"
-									/>
-								</div>
-							</div>
+                                                        <div className="relative bg-gray-50 rounded-lg overflow-hidden">
+                                                                <div className="relative h-96 md:h-[66vh]">
+                                                                        <Image
+                                                                                src={mainImageSrc}
+                                                                                alt={product.name}
+                                                                                fill
+                                                                                sizes="100vw"
+                                                                                className="object-contain p-8"
+                                                                                unoptimized={isMainImageUnoptimized}
+                                                                        />
+                                                                </div>
+                                                        </div>
 
 							{/* Share and Wishlist Icons - positioned on right side */}
 							<div className="absolute top-0 right-0 flex flex-col items-center space-y-2 p-2">
@@ -217,27 +229,34 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 							</div>
 
 							{/* Thumbnail Images */}
-							<div className="flex gap-2 mt-4">
-								{product.images?.slice(0, 4).map((image, index) => (
-									<button
-										key={index}
-										onClick={() => setSelectedImage(index)}
-										className={`relative w-16 h-16 md:w-20 md:h-20 border rounded-lg overflow-hidden flex-shrink-0 ${selectedImage === index
-											? "border-blue-500"
-											: "border-gray-200 hover:border-gray-300"
-											}`}
-									>
-										<img
-											src={
-												image ||
-												"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
-											}
-											alt={`${product.name} view ${index + 1}`}
-											className="w-full h-full object-contain p-1"
-										/>
-									</button>
-								))}
-							</div>
+                                                        <div className="flex gap-2 mt-4">
+                                                                {product.images?.slice(0, 4).map((image, index) => {
+                                                                        const src = getDirectGoogleDriveImageUrl(
+                                                                                image ||
+                                                                                        fallbackThumbImage
+                                                                        );
+                                                                        const unopt = src.includes("google");
+                                                                        return (
+                                                                                <button
+                                                                                        key={index}
+                                                                                        onClick={() => setSelectedImage(index)}
+                                                                                        className={`relative w-16 h-16 md:w-20 md:h-20 border rounded-lg overflow-hidden flex-shrink-0 ${selectedImage === index
+                                                                                                ? "border-blue-500"
+                                                                                                : "border-gray-200 hover:border-gray-300"
+                                                                                                }`}
+                                                                                >
+                                                                                        <Image
+                                                                                                src={src}
+                                                                                                alt={`${product.name} view ${index + 1}`}
+                                                                                                fill
+                                                                                                sizes="80px"
+                                                                                                className="object-contain p-1"
+                                                                                                unoptimized={unopt}
+                                                                                        />
+                                                                                </button>
+                                                                        );
+                                                                })}
+                                                        </div>
 						</div>
 
 						{/* Product Details Section */}
