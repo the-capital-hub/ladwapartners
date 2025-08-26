@@ -3,41 +3,74 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
+        Dialog,
+        DialogContent,
+        DialogDescription,
+        DialogFooter,
+        DialogHeader,
+        DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Upload, Download } from "lucide-react";
 import { useAdminProductStore } from "@/store/adminProductStore.js";
+import {
+        Table,
+        TableBody,
+        TableCell,
+        TableHead,
+        TableHeader,
+        TableRow,
+} from "@/components/ui/table";
 
 export function BulkUploadPopup({ open, onOpenChange }) {
-	const { bulkUploadProducts } = useAdminProductStore();
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [jsonData, setJsonData] = useState("");
-	const [uploadResults, setUploadResults] = useState(null);
+        const { bulkUploadProducts } = useAdminProductStore();
+        const [isSubmitting, setIsSubmitting] = useState(false);
+        const [jsonData, setJsonData] = useState("");
+        const [uploadResults, setUploadResults] = useState(null);
+        const [preValidationErrors, setPreValidationErrors] = useState([]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (!jsonData.trim()) return;
 
-		setIsSubmitting(true);
-		try {
-			const products = JSON.parse(jsonData);
-			const results = await bulkUploadProducts(products);
-			setUploadResults(results);
-			if (results) {
-				setJsonData("");
-			}
-		} catch (error) {
-			console.error("Invalid JSON format:", error);
-		}
-		setIsSubmitting(false);
+                setIsSubmitting(true);
+                try {
+                        const products = JSON.parse(jsonData);
+                        const requiredFields = ["title", "price", "mrp", "category"];
+                        const invalid = [];
+                        const valid = [];
+                        products.forEach((prod) => {
+                                const missing = requiredFields.filter(
+                                        (field) => !prod[field] && prod[field] !== 0
+                                );
+                                if (missing.length) {
+                                        invalid.push({
+                                                data: prod,
+                                                error: `Missing required fields: ${missing.join(", ")}`,
+                                        });
+                                } else {
+                                        valid.push(prod);
+                                }
+                        });
+                        setPreValidationErrors(invalid);
+                        const results =
+                                valid.length > 0
+                                        ? await bulkUploadProducts(valid)
+                                        : { success: [], failed: [] };
+                        setUploadResults({
+                                success: results?.success || [],
+                                failed: [...invalid, ...(results?.failed || [])],
+                        });
+                        if (results) {
+                                setJsonData("");
+                        }
+                } catch (error) {
+                        console.error("Invalid JSON format:", error);
+                        setUploadResults({ success: [], failed: [] });
+                }
+                setIsSubmitting(false);
 	};
 
 	const downloadTemplate = () => {
@@ -152,23 +185,29 @@ export function BulkUploadPopup({ open, onOpenChange }) {
 									</div>
 								</div>
 
-								{uploadResults.failed.length > 0 && (
-									<div className="bg-red-50 border border-red-200 rounded-lg p-4">
-										<h4 className="font-medium text-red-900 mb-2">
-											Failed Uploads
-										</h4>
-										<div className="text-sm text-red-700 space-y-1">
-											{uploadResults.failed.slice(0, 3).map((failed, index) => (
-												<p key={index}>
-													• {failed.data.title || "Unknown"}: {failed.error}
-												</p>
-											))}
-											{uploadResults.failed.length > 3 && (
-												<p>... and {uploadResults.failed.length - 3} more</p>
-											)}
-										</div>
-									</div>
-								)}
+                                                                {uploadResults.failed.length > 0 && (
+                                                                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                                                                                <h4 className="font-medium text-red-900 mb-2">
+                                                                                        Failed Uploads
+                                                                                </h4>
+                                                                                <Table>
+                                                                                        <TableHeader>
+                                                                                                <TableRow>
+                                                                                                        <TableHead>Title</TableHead>
+                                                                                                        <TableHead>Error</TableHead>
+                                                                                                </TableRow>
+                                                                                        </TableHeader>
+                                                                                        <TableBody>
+                                                                                                {uploadResults.failed.map((failed, index) => (
+                                                                                                        <TableRow key={index}>
+                                                                                                                <TableCell>{failed.data.title || "Unknown"}</TableCell>
+                                                                                                                <TableCell>{failed.error}</TableCell>
+                                                                                                        </TableRow>
+                                                                                                ))}
+                                                                                        </TableBody>
+                                                                                </Table>
+                                                                        </div>
+                                                                )}
 							</div>
 						)}
 
