@@ -45,8 +45,8 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
       .replace(/(^-|-$)+/g, "");
 
   const staticItems = [
-    { id: "home", label: "Home", href: "/" },
-    { id: "about-us", label: "About us", href: "/about" },
+    { id: "home", label: "Home", href: "/home" },
+    { id: "about-us", label: "About us", href: "/home#about-us" },
   ];
 
   const orderedSlugs = [
@@ -83,7 +83,11 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   };
 
   const handleNavigation = (href) => {
-    router.push(href);
+    if (href.includes("#")) {
+      window.location.href = href;
+    } else {
+      router.push(href);
+    }
     if (onMenuClose) onMenuClose();
   };
 
