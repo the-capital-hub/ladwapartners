@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, ChevronDown } from "lucide-react";
@@ -17,6 +17,7 @@ import { useProductStore } from "@/store/productStore.js";
 export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [categoryData, setCategoryData] = useState([]);
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
@@ -24,26 +25,59 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
     setCurrentCategory,
   } = useProductStore();
 
-  const categories = [
-    { id: "all", label: "All Products" },
-    { id: "personal-safety", label: "Personal Safety" },
-    { id: "road-safety", label: "Road Safety" },
-    { id: "signage", label: "Retro Reflective Sign" },
-    { id: "industrial-safety", label: "Industrial Safety/PPE" },
-    { id: "queue-management", label: "Q-Please" },
-    { id: "fire-safety", label: "Fire Safety" },
-    { id: "first-aid", label: "First Aid" },
-    { id: "water-safety", label: "Water Safety" },
-    { id: "emergency-kit", label: "Emergency Kit" },
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/admin/categories?limit=100");
+        const data = await res.json();
+        if (data.success) setCategoryData(data.categories || []);
+      } catch (error) {
+        console.error("Failed to load categories", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const slugify = (text) =>
+    text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "");
+
+  const staticItems = [
+    { id: "home", label: "Home", href: "/" },
+    { id: "about-us", label: "About us", href: "/about" },
   ];
 
-  const VISIBLE_COUNT = 6;
-  const visibleCategories = categories.slice(0, VISIBLE_COUNT);
-  const hiddenCategories = categories.slice(VISIBLE_COUNT);
+  const orderedSlugs = [
+    "road-safety",
+    "fire-safety",
+    "personal-safety",
+    "industrial-safety",
+  ];
+
+  const dynamicItems = orderedSlugs
+    .map((slug) => {
+      const cat = categoryData.find((c) => c.slug === slug);
+      if (!cat) return null;
+      return {
+        id: cat.slug,
+        label: cat.name,
+        subCategories: cat.subCategories || [],
+      };
+    })
+    .filter(Boolean);
+
+  const navItems = [...staticItems, ...dynamicItems];
 
   const handleCategoryClick = (categoryId) => {
     setCurrentCategory(categoryId);
     router.push(`/products?category=${categoryId}`);
+    if (onMenuClose) onMenuClose();
+  };
+
+  const handleNavigation = (href) => {
+    router.push(href);
     if (onMenuClose) onMenuClose();
   };
 
@@ -66,40 +100,61 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
         <div className="flex items-center justify-between py-4">
           {/* Categories */}
           <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap">
-            {visibleCategories.map((category) => (
-              <Button
-                key={category.id}
-                variant="ghost"
-                className={
-                  currentCategory === category.id
-                    ? "bg-black text-white"
-                    : "hover:bg-gray-100"
-                }
-                onClick={() => handleCategoryClick(category.id)}
-              >
-                {category.label}
-              </Button>
-            ))}
-            {hiddenCategories.length > 0 && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="hover:bg-gray-100">
-                    More
-                    <ChevronDown className="ml-1 h-4 w-4" />
+            {navItems.map((item) => {
+              if (item.href) {
+                return (
+                  <Button
+                    key={item.id}
+                    variant="ghost"
+                    className="hover:bg-gray-100"
+                    onClick={() => handleNavigation(item.href)}
+                  >
+                    {item.label}
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  {categories.map((category) => (
-                    <DropdownMenuItem
-                      key={category.id}
-                      onSelect={() => handleCategoryClick(category.id)}
-                    >
-                      {category.label}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+                );
+              }
+
+              return (
+                <div key={item.id} className="flex items-center">
+                  <Button
+                    variant="ghost"
+                    className={
+                      currentCategory === item.id
+                        ? "bg-black text-white"
+                        : "hover:bg-gray-100"
+                    }
+                    onClick={() => handleCategoryClick(item.id)}
+                  >
+                    {item.label}
+                  </Button>
+                  {item.subCategories.length > 0 && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="p-0 ml-1 hover:bg-gray-100"
+                        >
+                          <ChevronDown className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        {item.subCategories.map((sub) => {
+                          const subSlug = slugify(sub);
+                          return (
+                            <DropdownMenuItem
+                              key={subSlug}
+                              onSelect={() => handleCategoryClick(subSlug)}
+                            >
+                              {sub}
+                            </DropdownMenuItem>
+                          );
+                        })}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Desktop Search */}
