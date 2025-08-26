@@ -7,12 +7,19 @@ import { ShoppingCart, Heart, Minus, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import { useIsAuthenticated } from "@/store/authStore";
+import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
 
 export default function ProductCard({ product, compact = false }) {
   const router = useRouter();
   const { addItem, isLoading } = useCartStore();
   const isAuthenticated = useIsAuthenticated();
   const [quantity, setQuantity] = useState(1);
+
+  const fallbackImage =
+    "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
+  const imageSrc = getDirectGoogleDriveImageUrl(
+    product.image || fallbackImage
+  );
 
   const handleViewProduct = () => {
     router.push(`/products/${product.id || product._id}`);
@@ -36,7 +43,7 @@ export default function ProductCard({ product, compact = false }) {
         description: product.description,
         price: product.price,
         originalPrice: product.originalPrice,
-        image: product.image,
+        image: getDirectGoogleDriveImageUrl(product.image),
         inStock: product.inStock,
       },
       quantity
@@ -114,10 +121,7 @@ export default function ProductCard({ product, compact = false }) {
 
         <div className="mb-3">
           <img
-            src={
-              product.image ||
-              "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
-            }
+            src={imageSrc}
             alt={product.title}
             className={`w-full ${
               compact ? "h-24 md:h-32" : "h-32 md:h-48"

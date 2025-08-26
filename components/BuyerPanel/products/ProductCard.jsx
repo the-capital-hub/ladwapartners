@@ -19,19 +19,26 @@ import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import { useIsAuthenticated, useIsGstVerified } from "@/store/authStore";
 import Image from "next/image";
+import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
 
 export default function ProductCard({ product, viewMode = "grid" }) {
 	const router = useRouter();
-	const { addItem, isLoading } = useCartStore();
-	const isAuthenticated = useIsAuthenticated();
-	const [quantity, setQuantity] = useState(1);
+        const { addItem, isLoading } = useCartStore();
+        const isAuthenticated = useIsAuthenticated();
+        const [quantity, setQuantity] = useState(1);
 
-	console.log("product", product);
+        console.log("product", product);
 
-	const changeQuantity = (e, delta) => {
-		e.stopPropagation();
-		setQuantity((q) => Math.max(1, q + delta));
-	};
+        const fallbackImage =
+                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
+        const imageSrc = getDirectGoogleDriveImageUrl(
+                product.images?.[0] || product.image || fallbackImage
+        );
+
+        const changeQuantity = (e, delta) => {
+                e.stopPropagation();
+                setQuantity((q) => Math.max(1, q + delta));
+        };
 
 	const handleViewProduct = () => {
 		if (!isAuthenticated) {
@@ -56,12 +63,14 @@ export default function ProductCard({ product, viewMode = "grid" }) {
                                 description: product.description,
                                 price: product.price,
                                 originalPrice: product.originalPrice,
-                                image: product.images?.[0] || product.image,
+                                image: getDirectGoogleDriveImageUrl(
+                                        product.images?.[0] || product.image
+                                ),
                                 inStock: product.inStock,
                         },
                         quantity
                 );
-	};
+        };
 
 	const handleBuyNow = async (e) => {
 		e.stopPropagation();
@@ -87,17 +96,13 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 					<div className="flex flex-col sm:flex-row gap-6">
 						{/* Image */}
 						<div className="relative w-full sm:w-48 h-48 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
-							<Image
-								src={
-									product.images?.[0] ||
-									product.image ||
-									"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
-								}
-								alt={product?.title || "product image"}
-								fill
-								className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-								onClick={handleViewProduct}
-							/>
+                                                        <Image
+                                                                src={imageSrc}
+                                                                alt={product?.title || "product image"}
+                                                                fill
+                                                                className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+                                                                onClick={handleViewProduct}
+                                                        />
 							{product.discountPercentage > 0 && (
 								<Badge className="absolute top-2 left-2 bg-red-500 text-white">
 									{product.discountPercentage}% OFF
@@ -231,18 +236,14 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 			>
 				<CardContent className="p-0 flex-1 flex flex-col">
 					{/* Image */}
-					<div className="relative m-4 h-64 bg-gray-100 rounded-xl overflow-hidden">
-						<Image
-							src={
-								product.images?.[0] ||
-								product.image ||
-								"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
-							}
-							alt={product.title}
-							fill
-							className="object-contain group-hover:scale-110 transition-transform duration-300 rounded-xl"
-							onClick={handleViewProduct}
-						/>
+                                        <div className="relative m-4 h-64 bg-gray-100 rounded-xl overflow-hidden">
+                                                <Image
+                                                        src={imageSrc}
+                                                        alt={product.title}
+                                                        fill
+                                                        className="object-contain group-hover:scale-110 transition-transform duration-300 rounded-xl"
+                                                        onClick={handleViewProduct}
+                                                />
 
 						{/* Badges */}
 						<div className="absolute top-2 left-2 flex flex-col gap-1">
