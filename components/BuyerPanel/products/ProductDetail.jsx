@@ -122,12 +122,14 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
                                description: product.description,
                                price: product.price,
                                originalPrice: product.originalPrice,
-                               image: product.images?.[0] || product.image,
+                               image: getDirectGoogleDriveImageUrl(
+                                       product.images?.[0] || product.image
+                               ),
                                inStock: product.inStock,
                        },
                        quantity
                );
-	};
+       };
 
 	const handleBuyNow = async (e) => {
 		e.stopPropagation();
