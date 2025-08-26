@@ -14,12 +14,21 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Upload, Download } from "lucide-react";
 import { useAdminProductStore } from "@/store/adminProductStore.js";
+import {
+        Table,
+        TableBody,
+        TableCell,
+        TableHead,
+        TableHeader,
+        TableRow,
+} from "@/components/ui/table";
 
 export function BulkUploadPopup({ open, onOpenChange }) {
         const { bulkUploadProducts } = useAdminProductStore();
         const [isSubmitting, setIsSubmitting] = useState(false);
         const [products, setProducts] = useState([]);
         const [uploadResults, setUploadResults] = useState(null);
+        const [preValidationErrors, setPreValidationErrors] = useState([]);
 
         const parseCSV = (text) => {
                 const splitLine = (line) =>
@@ -73,17 +82,41 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                 brand: row["brand"],
                                 size: row["size"],
                         }));
-                        setProducts(mapped);
+
+                        const requiredFields = ["title", "price", "mrp", "category"];
+                        const invalid = [];
+                        const valid = [];
+                        mapped.forEach((prod) => {
+                                const missing = requiredFields.filter(
+                                        (field) => !prod[field] || prod[field] === ""
+                                );
+                                if (missing.length) {
+                                        invalid.push({
+                                                data: prod,
+                                                error: `Missing required fields: ${missing.join(", ")}`,
+                                        });
+                                } else {
+                                        valid.push(prod);
+                                }
+                        });
+                        setProducts(valid);
+                        setPreValidationErrors(invalid);
                 };
                 reader.readAsText(file);
         };
 
         const handleSubmit = async (e) => {
                 e.preventDefault();
-                if (products.length === 0) return;
+                if (products.length === 0 && preValidationErrors.length === 0) return;
                 setIsSubmitting(true);
-                const results = await bulkUploadProducts(products);
-                setUploadResults(results);
+                const results =
+                        products.length > 0
+                                ? await bulkUploadProducts(products)
+                                : { success: [], failed: [] };
+                setUploadResults({
+                        success: results?.success || [],
+                        failed: [...preValidationErrors, ...(results?.failed || [])],
+                });
                 setIsSubmitting(false);
         };
 
@@ -209,14 +242,22 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                                                                 <h4 className="font-medium text-red-900 mb-2">
                                                                                         Failed Uploads
                                                                                 </h4>
-                                                                                <div className="text-sm text-red-700 space-y-1">
-                                                                                        {uploadResults.failed.slice(0, 3).map((failed, index) => (
-                                                                                                <p key={index}>• {failed.data.title || "Unknown"}: {failed.error}</p>
-                                                                                        ))}
-                                                                                        {uploadResults.failed.length > 3 && (
-                                                                                                <p>... and {uploadResults.failed.length - 3} more</p>
-                                                                                        )}
-                                                                                </div>
+                                                                                <Table>
+                                                                                        <TableHeader>
+                                                                                                <TableRow>
+                                                                                                        <TableHead>Title</TableHead>
+                                                                                                        <TableHead>Error</TableHead>
+                                                                                                </TableRow>
+                                                                                        </TableHeader>
+                                                                                        <TableBody>
+                                                                                                {uploadResults.failed.map((failed, index) => (
+                                                                                                        <TableRow key={index}>
+                                                                                                                <TableCell>{failed.data.title || "Unknown"}</TableCell>
+                                                                                                                <TableCell>{failed.error}</TableCell>
+                                                                                                        </TableRow>
+                                                                                                ))}
+                                                                                        </TableBody>
+                                                                                </Table>
                                                                         </div>
                                                                 )}
                                                         </div>
