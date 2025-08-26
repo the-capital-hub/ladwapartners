@@ -31,27 +31,52 @@ export function BulkUploadPopup({ open, onOpenChange }) {
         const [preValidationErrors, setPreValidationErrors] = useState([]);
 
         const parseCSV = (text) => {
-                const splitLine = (line) =>
-                        line
-                                .match(/("([^"]|"")*"|[^,]+)/g)
-                                ?.map((v) =>
-                                        v
-                                                .replace(/^"|"$/g, "")
-                                                .replace(/""/g, '"')
-                                                .trim()
-                                ) || [];
+                const rows = [];
+                let current = "";
+                let row = [];
+                let inQuotes = false;
 
-                const lines = text.trim().split(/\r?\n/);
-                const headers = splitLine(lines[0]);
+                const pushField = () => {
+                        row.push(current);
+                        current = "";
+                };
 
-                return lines
-                        .slice(1)
-                        .filter((line) => line.trim())
-                        .map((line) => {
-                                const values = splitLine(line);
+                const pushRow = () => {
+                        pushField();
+                        rows.push(row);
+                        row = [];
+                };
+
+                for (let i = 0; i < text.length; i++) {
+                        const char = text[i];
+                        if (char === '"') {
+                                if (inQuotes && text[i + 1] === '"') {
+                                        current += '"';
+                                        i++;
+                                } else {
+                                        inQuotes = !inQuotes;
+                                }
+                        } else if (char === ',' && !inQuotes) {
+                                pushField();
+                        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+                                if (char === '\r' && text[i + 1] === '\n') i++;
+                                pushRow();
+                        } else {
+                                current += char;
+                        }
+                }
+
+                if (current.length > 0 || row.length > 0) {
+                        pushRow();
+                }
+
+                const headers = rows.shift().map((h) => h.trim());
+                return rows
+                        .filter((r) => r.some((v) => v.trim() !== ""))
+                        .map((r) => {
                                 const obj = {};
                                 headers.forEach((h, i) => {
-                                        obj[h] = values[i];
+                                        obj[h] = r[i] ? r[i].trim() : "";
                                 });
                                 return obj;
                         });
@@ -69,7 +94,7 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                 title: row["Product Name"],
                                 description: row["Description"],
                                 category: row["Product Category"],
-                                subCategory: row["Sub-Category"],
+                                subCategory: row["Sub Category"] || row["Sub-Category"],
                                 price: row["Price"],
                                 mrp: row["MRP"],
                                 mainImageLink: row["Main Image Link"],
