@@ -101,7 +101,8 @@ const AboutUsLadwaPartners = () => {
   }
 
   return (
-    <motion.div 
+    <motion.div
+      id="about-us"
       className="bg-gray-50 py-16 px-4"
       variants={containerVariants}
       initial="hidden"
@@ -212,7 +213,7 @@ const AboutUsLadwaPartners = () => {
         </div>
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default AboutUsLadwaPartners
+export default AboutUsLadwaPartners;
