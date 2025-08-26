@@ -141,6 +141,7 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                 setUploadResults({
                         success: results?.success || [],
                         failed: [...preValidationErrors, ...(results?.failed || [])],
+                        duplicates: results?.duplicates || [],
                 });
                 setIsSubmitting(false);
         };
@@ -259,6 +260,12 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                                                                                 products
                                                                                         </p>
                                                                                 )}
+                                                                                {uploadResults.duplicates.length > 0 && (
+                                                                                        <p>
+                                                                                                ⚠️ Duplicates assigned: {uploadResults.duplicates.length}{" "}
+                                                                                                products
+                                                                                        </p>
+                                                                                )}
                                                                         </div>
                                                                 </div>
 
@@ -279,6 +286,30 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                                                                                         <TableRow key={index}>
                                                                                                                 <TableCell>{failed.data.title || "Unknown"}</TableCell>
                                                                                                                 <TableCell>{failed.error}</TableCell>
+                                                                                                        </TableRow>
+                                                                                                ))}
+                                                                                        </TableBody>
+                                                                                </Table>
+                                                                        </div>
+                                                                )}
+
+                                                                {uploadResults.duplicates.length > 0 && (
+                                                                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                                                                <h4 className="font-medium text-yellow-900 mb-2">
+                                                                                        Duplicates Mapped
+                                                                                </h4>
+                                                                                <Table>
+                                                                                        <TableHeader>
+                                                                                                <TableRow>
+                                                                                                        <TableHead>Title</TableHead>
+                                                                                                        <TableHead>Existing Category</TableHead>
+                                                                                                </TableRow>
+                                                                                        </TableHeader>
+                                                                                        <TableBody>
+                                                                                                {uploadResults.duplicates.map((dup, index) => (
+                                                                                                        <TableRow key={index}>
+                                                                                                                <TableCell>{dup.title}</TableCell>
+                                                                                                                <TableCell>{dup.category}</TableCell>
                                                                                                         </TableRow>
                                                                                                 ))}
                                                                                         </TableBody>

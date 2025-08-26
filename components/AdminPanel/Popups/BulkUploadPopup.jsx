@@ -58,17 +58,18 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         const results =
                                 valid.length > 0
                                         ? await bulkUploadProducts(valid)
-                                        : { success: [], failed: [] };
+                                        : { success: [], failed: [], duplicates: [] };
                         setUploadResults({
                                 success: results?.success || [],
                                 failed: [...invalid, ...(results?.failed || [])],
+                                duplicates: results?.duplicates || [],
                         });
                         if (results) {
                                 setJsonData("");
                         }
                 } catch (error) {
                         console.error("Invalid JSON format:", error);
-                        setUploadResults({ success: [], failed: [] });
+                        setUploadResults({ success: [], failed: [], duplicates: [] });
                 }
                 setIsSubmitting(false);
 	};
@@ -171,19 +172,25 @@ export function BulkUploadPopup({ open, onOpenChange }) {
 									<h4 className="font-medium text-green-900 mb-2">
 										Upload Results
 									</h4>
-									<div className="text-sm text-green-700">
-										<p>
-											✅ Successfully uploaded: {uploadResults.success.length}{" "}
-											products
-										</p>
-										{uploadResults.failed.length > 0 && (
-											<p>
-												❌ Failed to upload: {uploadResults.failed.length}{" "}
-												products
-											</p>
-										)}
-									</div>
-								</div>
+                                                                        <div className="text-sm text-green-700">
+                                                                                <p>
+                                                                                        ✅ Successfully uploaded: {uploadResults.success.length}{" "}
+                                                                                        products
+                                                                                </p>
+                                                                                {uploadResults.failed.length > 0 && (
+                                                                                        <p>
+                                                                                                ❌ Failed to upload: {uploadResults.failed.length}{" "}
+                                                                                                products
+                                                                                        </p>
+                                                                                )}
+                                                                                {uploadResults.duplicates.length > 0 && (
+                                                                                        <p>
+                                                                                                ⚠️ Duplicates assigned: {uploadResults.duplicates.length}{" "}
+                                                                                                products
+                                                                                        </p>
+                                                                                )}
+                                                                        </div>
+                                                                </div>
 
                                                                 {uploadResults.failed.length > 0 && (
                                                                         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -208,8 +215,32 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                                                                 </Table>
                                                                         </div>
                                                                 )}
-							</div>
-						)}
+
+                                                                {uploadResults.duplicates.length > 0 && (
+                                                                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                                                                <h4 className="font-medium text-yellow-900 mb-2">
+                                                                                        Duplicates Mapped
+                                                                                </h4>
+                                                                                <Table>
+                                                                                        <TableHeader>
+                                                                                                <TableRow>
+                                                                                                        <TableHead>Title</TableHead>
+                                                                                                        <TableHead>Existing Category</TableHead>
+                                                                                                </TableRow>
+                                                                                        </TableHeader>
+                                                                                        <TableBody>
+                                                                                                {uploadResults.duplicates.map((dup, index) => (
+                                                                                                        <TableRow key={index}>
+                                                                                                                <TableCell>{dup.title}</TableCell>
+                                                                                                                <TableCell>{dup.category}</TableCell>
+                                                                                                        </TableRow>
+                                                                                                ))}
+                                                                                        </TableBody>
+                                                                                </Table>
+                                                                        </div>
+                                                                )}
+                                                        </div>
+                                                )}
 
 						<form onSubmit={handleSubmit} className="space-y-4">
 							<div>
