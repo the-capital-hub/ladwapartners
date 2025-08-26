@@ -63,21 +63,43 @@ export async function POST(request) {
 
                                 // Ensure category and subcategory exist in master table
                                 if (category) {
-                                        let existingCategory = await Category.findOne({ slug: category });
-                                        if (!existingCategory) {
-                                                const name = category.replace(/-/g, " ");
+                                        const categorySlug = category
+                                                .toLowerCase()
+                                                .replace(/[^a-zA-Z0-9]/g, "-")
+                                                .replace(/-+/g, "-")
+                                                .replace(/^-|-$/g, "");
+
+                                        let existingCategory = await Category.findOne({ slug: categorySlug });
+
+                                        if (existingCategory) {
+                                                // Track duplicate category product
+                                                results.duplicates = results.duplicates || [];
+                                                results.duplicates.push({
+                                                        title,
+                                                        category: existingCategory.name,
+                                                });
+
+                                                if (subCategory) {
+                                                        await Category.updateOne(
+                                                                { _id: existingCategory._id },
+                                                                { $addToSet: { subCategories: subCategory } }
+                                                        );
+                                                }
+                                        } else {
+                                                const name = category.trim();
                                                 existingCategory = await Category.create({
                                                         name,
                                                         description: `${name} category`,
-                                                        subCategories: subCategory ? [subCategory] : [],
+                                                        subCategories: subCategory
+                                                                ? [subCategory]
+                                                                : [],
                                                 });
-                                        } else if (subCategory) {
-                                                await Category.updateOne(
-                                                        { slug: category },
-                                                        { $addToSet: { subCategories: subCategory } }
-                                                );
                                         }
+
+                                        productData.category = existingCategory.slug;
                                 }
+
+                                const finalCategory = productData.category || category;
 
                                 const featureImageUrl = mainImageLink || "";
 
@@ -102,7 +124,7 @@ export async function POST(request) {
                                         title,
                                         description: description || "",
                                         longDescription: description || "",
-                                        category,
+                                        category: finalCategory,
                                         subCategory,
                                         price: parsedPrice,
                                         mrp: parsedMrp,

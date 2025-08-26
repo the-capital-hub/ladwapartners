@@ -21,19 +21,28 @@ export function AddCategoryPopup({ open, onOpenChange }) {
 	const { addCategory } = useAdminCategoryStore();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const [formData, setFormData] = useState({
-		name: "",
-		description: "",
-		icon: "",
-		published: true,
-		sortOrder: 0,
-	});
+        const [formData, setFormData] = useState({
+                name: "",
+                description: "",
+                icon: "",
+                subCategories: "",
+                published: true,
+                sortOrder: 0,
+        });
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setIsSubmitting(true);
 
-		const success = await addCategory(formData);
+                const submitData = {
+                        ...formData,
+                        subCategories: formData.subCategories
+                                .split(",")
+                                .map((s) => s.trim())
+                                .filter(Boolean),
+                };
+
+                const success = await addCategory(submitData);
 		if (success) {
 			onOpenChange(false);
 			resetForm();
@@ -46,9 +55,10 @@ export function AddCategoryPopup({ open, onOpenChange }) {
 			name: "",
 			description: "",
 			icon: "",
-			published: true,
-			sortOrder: 0,
-		});
+                        subCategories: "",
+                        published: true,
+                        sortOrder: 0,
+                });
 	};
 
 	return (
@@ -83,8 +93,8 @@ export function AddCategoryPopup({ open, onOpenChange }) {
 							/>
 						</div>
 
-						<div>
-							<Label htmlFor="description">Description *</Label>
+                                                <div>
+                                                        <Label htmlFor="description">Description *</Label>
 							<Textarea
 								id="description"
 								placeholder="Enter category description"
@@ -96,11 +106,30 @@ export function AddCategoryPopup({ open, onOpenChange }) {
 								rows={3}
 								required
 							/>
-						</div>
+                                                </div>
 
-						<div>
-							<Label htmlFor="icon">Icon URL</Label>
-							<Input
+                                                <div>
+                                                        <Label htmlFor="subCategories">Sub Categories</Label>
+                                                        <Input
+                                                                id="subCategories"
+                                                                placeholder="e.g. Helmets, Gloves"
+                                                                value={formData.subCategories}
+                                                                onChange={(e) =>
+                                                                        setFormData({
+                                                                                ...formData,
+                                                                                subCategories: e.target.value,
+                                                                        })
+                                                                }
+                                                                className="mt-1"
+                                                        />
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                                Optional: comma-separated list
+                                                        </p>
+                                                </div>
+
+                                                <div>
+                                                        <Label htmlFor="icon">Icon URL</Label>
+                                                        <Input
 								id="icon"
 								placeholder="https://example.com/icon.png"
 								value={formData.icon}

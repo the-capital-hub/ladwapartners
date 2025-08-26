@@ -21,25 +21,30 @@ export function UpdateCategoryPopup({ open, onOpenChange, category }) {
 	const { updateCategory } = useAdminCategoryStore();
 	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	const [formData, setFormData] = useState({
-		name: "",
-		description: "",
-		icon: "",
-		published: true,
-		sortOrder: 0,
-	});
+        const [formData, setFormData] = useState({
+                name: "",
+                description: "",
+                icon: "",
+                subCategories: "",
+                published: true,
+                sortOrder: 0,
+        });
 
 	useEffect(() => {
 		if (category) {
 			setFormData({
 				name: category.name || "",
 				description: category.description || "",
-				icon: category.icon || "",
-				published: category.published !== undefined ? category.published : true,
-				sortOrder: category.sortOrder || 0,
-			});
-		}
-	}, [category]);
+                                icon: category.icon || "",
+                                subCategories: category.subCategories?.join(", ") || "",
+                                published:
+                                        category.published !== undefined
+                                                ? category.published
+                                                : true,
+                                sortOrder: category.sortOrder || 0,
+                        });
+                }
+        }, [category]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -47,7 +52,15 @@ export function UpdateCategoryPopup({ open, onOpenChange, category }) {
 
 		setIsSubmitting(true);
 
-		const success = await updateCategory(category._id, formData);
+                const submitData = {
+                        ...formData,
+                        subCategories: formData.subCategories
+                                .split(",")
+                                .map((s) => s.trim())
+                                .filter(Boolean),
+                };
+
+                const success = await updateCategory(category._id, submitData);
 		if (success) {
 			onOpenChange(false);
 		}
@@ -86,8 +99,8 @@ export function UpdateCategoryPopup({ open, onOpenChange, category }) {
 							/>
 						</div>
 
-						<div>
-							<Label htmlFor="description">Description *</Label>
+                                                <div>
+                                                        <Label htmlFor="description">Description *</Label>
 							<Textarea
 								id="description"
 								placeholder="Enter category description"
@@ -99,11 +112,30 @@ export function UpdateCategoryPopup({ open, onOpenChange, category }) {
 								rows={3}
 								required
 							/>
-						</div>
+                                                </div>
 
-						<div>
-							<Label htmlFor="icon">Icon URL</Label>
-							<Input
+                                                <div>
+                                                        <Label htmlFor="subCategories">Sub Categories</Label>
+                                                        <Input
+                                                                id="subCategories"
+                                                                placeholder="e.g. Helmets, Gloves"
+                                                                value={formData.subCategories}
+                                                                onChange={(e) =>
+                                                                        setFormData({
+                                                                                ...formData,
+                                                                                subCategories: e.target.value,
+                                                                        })
+                                                                }
+                                                                className="mt-1"
+                                                        />
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                                Optional: comma-separated list
+                                                        </p>
+                                                </div>
+
+                                                <div>
+                                                        <Label htmlFor="icon">Icon URL</Label>
+                                                        <Input
 								id="icon"
 								placeholder="https://example.com/icon.png"
 								value={formData.icon}

@@ -301,6 +301,7 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                                                                 setFormData({
                                                                                         ...formData,
                                                                                         category: e.target.value,
+                                                                                        subCategory: "",
                                                                                 })
                                                                         }
                                                                         className="mt-1"
@@ -319,6 +320,7 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                                                 <Label htmlFor="subCategory">Sub Category</Label>
                                                                 <Input
                                                                         id="subCategory"
+                                                                        list="admin-update-subcategory-list"
                                                                         value={formData.subCategory}
                                                                         onChange={(e) =>
                                                                                 setFormData({
@@ -328,6 +330,16 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                                                         }
                                                                         className="mt-1"
                                                                 />
+                                                                <datalist id="admin-update-subcategory-list">
+                                                                        {categories
+                                                                                .find(
+                                                                                        (cat) =>
+                                                                                                cat.slug ===
+                                                                                                formData.category
+                                                                                )?.subCategories?.map((sub) => (
+                                                                                        <option key={sub} value={sub} />
+                                                                                ))}
+                                                                </datalist>
                                                         </div>
 
 

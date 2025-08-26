@@ -60,6 +60,7 @@ export function AddProductPopup({ open, onOpenChange }) {
                 description: "",
                 longDescription: "",
                 category: "",
+                subCategory: "",
                 mrp: "",
                 price: "",
                 salePrice: "",
@@ -81,6 +82,7 @@ export function AddProductPopup({ open, onOpenChange }) {
 				description: formData.description,
 				longDescription: formData.longDescription || formData.description,
                                 category: formData.category,
+                                subCategory: formData.subCategory,
                                 mrp: parseFloat(formData.mrp),
                                 price: parseFloat(formData.price),
                                 salePrice: formData.salePrice ? parseFloat(formData.salePrice) : 0,
@@ -115,6 +117,7 @@ export function AddProductPopup({ open, onOpenChange }) {
                         description: "",
                         longDescription: "",
                         category: "",
+                        subCategory: "",
                         mrp: "",
                         price: "",
                         salePrice: "",
@@ -228,6 +231,7 @@ export function AddProductPopup({ open, onOpenChange }) {
                                                                                 setFormData({
                                                                                         ...formData,
                                                                                         category: e.target.value,
+                                                                                        subCategory: "",
                                                                                 })
                                                                         }
                                                                         className="mt-1"
@@ -243,13 +247,39 @@ export function AddProductPopup({ open, onOpenChange }) {
                                                         </div>
 
                                                         <div>
+                                                                <Label htmlFor="subCategory">Sub Category</Label>
+                                                                <Input
+                                                                        id="subCategory"
+                                                                        list="admin-subcategory-list"
+                                                                        value={formData.subCategory}
+                                                                        onChange={(e) =>
+                                                                                setFormData({
+                                                                                        ...formData,
+                                                                                        subCategory: e.target.value,
+                                                                                })
+                                                                        }
+                                                                        className="mt-1"
+                                                                />
+                                                                <datalist id="admin-subcategory-list">
+                                                                        {categories
+                                                                                .find(
+                                                                                        (cat) =>
+                                                                                                cat.slug ===
+                                                                                                formData.category
+                                                                                )?.subCategories?.map((sub) => (
+                                                                                        <option key={sub} value={sub} />
+                                                                                ))}
+                                                                </datalist>
+                                                        </div>
+
+                                                        <div>
                                                                 <Label>Product Type</Label>
-								<Select
-									value={formData.type}
-									onValueChange={(value) =>
-										setFormData({ ...formData, type: value })
-									}
-								>
+                                                                <Select
+                                                                        value={formData.type}
+                                                                        onValueChange={(value) =>
+                                                                                setFormData({ ...formData, type: value })
+                                                                        }
+                                                                >
 									<SelectTrigger className="mt-1">
 										<SelectValue placeholder="Select type" />
 									</SelectTrigger>

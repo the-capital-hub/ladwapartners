@@ -78,9 +78,15 @@ export async function GET(request) {
 export async function POST(request) {
 	await dbConnect();
 
-	try {
-		const { name, description, icon, published, sortOrder } =
-			await request.json();
+        try {
+                const {
+                        name,
+                        description,
+                        icon,
+                        published,
+                        sortOrder,
+                        subCategories,
+                } = await request.json();
 
 		if (!name || !description) {
 			return Response.json(
@@ -89,13 +95,16 @@ export async function POST(request) {
 			);
 		}
 
-		const category = new Category({
-			name,
-			description,
-			icon: icon || "",
-			published: published !== undefined ? published : true,
-			sortOrder: sortOrder || 0,
-		});
+                const category = new Category({
+                        name,
+                        description,
+                        icon: icon || "",
+                        published: published !== undefined ? published : true,
+                        sortOrder: sortOrder || 0,
+                        subCategories: Array.isArray(subCategories)
+                                ? subCategories
+                                : [],
+                });
 
 		await category.save();
 
@@ -123,7 +132,7 @@ export async function PUT(request) {
 	await dbConnect();
 
 	try {
-		const { categoryId, ...updateData } = await request.json();
+                const { categoryId, subCategories, ...updateData } = await request.json();
 
 		if (!categoryId) {
 			return Response.json(
@@ -132,9 +141,19 @@ export async function PUT(request) {
 			);
 		}
 
-		const category = await Category.findByIdAndUpdate(categoryId, updateData, {
-			new: true,
-		});
+                if (subCategories !== undefined) {
+                        updateData.subCategories = Array.isArray(subCategories)
+                                ? subCategories
+                                : [];
+                }
+
+                const category = await Category.findByIdAndUpdate(
+                        categoryId,
+                        updateData,
+                        {
+                                new: true,
+                        }
+                );
 
 		if (!category) {
 			return Response.json(
