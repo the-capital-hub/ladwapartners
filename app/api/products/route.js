@@ -14,9 +14,10 @@ export async function GET(request) {
 		const maxPrice = searchParams.get("maxPrice");
 		const inStock = searchParams.get("inStock");
 		const discount = searchParams.get("discount");
-		const category = searchParams.get("category");
-		const search = searchParams.get("search");
-		const type = searchParams.get("type");
+                const category = searchParams.get("category");
+                const subCategory = searchParams.get("subCategory");
+                const search = searchParams.get("search");
+                const type = searchParams.get("type");
 		const page = Number.parseInt(searchParams.get("page") || "1");
 		const limit = Number.parseInt(searchParams.get("limit") || "12");
 		const sort = searchParams.get("sort") || "createdAt";
@@ -25,10 +26,18 @@ export async function GET(request) {
 		// Build query
 		const query = { published: true };
 
-		// Category filter
-		if (category && category !== "all") {
-			query.category = category;
-		}
+                // Category filter
+                if (category && category !== "all") {
+                        query.category = category;
+                }
+
+                // Subcategory filter
+                if (subCategory) {
+                        const formattedSub = subCategory.replace(/-/g, " ");
+                        query.subCategory = {
+                                $regex: new RegExp(`^${formattedSub}$`, "i"),
+                        };
+                }
 
 		// Search filter
 		if (search) {

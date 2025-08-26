@@ -11,17 +11,18 @@ import { useSearchParams } from "next/navigation";
 export default function ProductsPage() {
 	const searchParams = useSearchParams();
 
-	const { error, fetchProducts, setCurrentCategory, setSearchQuery } =
-		useProductStore();
+        const { error, fetchProducts, setCurrentCategory, setSearchQuery } =
+                useProductStore();
 
 	// Handle URL parameters
 	useEffect(() => {
-		const category = searchParams.get("category");
-		const search = searchParams.get("search");
+                const category = searchParams.get("category");
+                const subCategory = searchParams.get("subCategory");
+                const search = searchParams.get("search");
 
-		if (category) {
-			setCurrentCategory(category);
-		}
+                if (category || subCategory) {
+                        setCurrentCategory(category || "all", subCategory || "");
+                }
 
 		if (search) {
 			setSearchQuery(search);
