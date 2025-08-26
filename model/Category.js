@@ -18,14 +18,15 @@ const CategorySchema = new mongoose.Schema(
 			unique: true,
 			lowercase: true,
 		},
-		icon: {
-			type: String, // URL to icon image
-			default: "",
-		},
-		published: {
-			type: Boolean,
-			default: true,
-		},
+                icon: {
+                        type: String, // URL to icon image
+                        default: "",
+                },
+                subCategories: [{ type: String, trim: true }],
+                published: {
+                        type: Boolean,
+                        default: true,
+                },
 		sortOrder: {
 			type: Number,
 			default: 0,

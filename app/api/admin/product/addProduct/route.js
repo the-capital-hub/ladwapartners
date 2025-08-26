@@ -15,7 +15,7 @@ export async function POST(request) {
                 const price = parseFloat(formData.get("price"));
                 const stocks = parseInt(formData.get("stocks"));
                 const category = formData.get("category");
-                const sku = formData.get("sku");
+                const subCategory = formData.get("subCategory");
                 const mrp = parseFloat(formData.get("mrp"));
                 const imageFiles = formData.getAll("images");
 
@@ -25,7 +25,7 @@ export async function POST(request) {
                         price,
                         stocks,
                         category,
-                        sku,
+                        subCategory,
                         mrp,
                         imageCount: imageFiles.length,
                 });
@@ -37,7 +37,6 @@ export async function POST(request) {
                         !price ||
                         !stocks ||
                         !category ||
-                        !sku ||
                         !mrp ||
                         !imageFiles.length
                 ) {
@@ -51,7 +50,7 @@ export async function POST(request) {
                                                 price: !!price,
                                                 stocks: !!stocks,
                                                 category: !!category,
-                                                sku: !!sku,
+                                                subCategory: !!subCategory,
                                                 mrp: !!mrp,
                                                 images: imageFiles.length,
                                         },
@@ -60,15 +59,21 @@ export async function POST(request) {
                         );
                 }
 
-                // Ensure category exists in master table
+                // Ensure category and subcategory exist in master table
                 if (category) {
-                        const existingCategory = await Category.findOne({ slug: category });
+                        let existingCategory = await Category.findOne({ slug: category });
                         if (!existingCategory) {
                                 const name = category.replace(/-/g, " ");
-                                await Category.create({
+                                existingCategory = await Category.create({
                                         name,
                                         description: `${name} category`,
+                                        subCategories: subCategory ? [subCategory] : [],
                                 });
+                        } else if (subCategory) {
+                                await Category.updateOne(
+                                        { slug: category },
+                                        { $addToSet: { subCategories: subCategory } }
+                                );
                         }
                 }
 
@@ -108,9 +113,9 @@ export async function POST(request) {
 			}
 		});
 
-		const imageUrls = await Promise.all(uploadPromises);
+                const imageUrls = await Promise.all(uploadPromises);
 
-		console.log("Images uploaded successfully:", imageUrls.length);
+                console.log("Images uploaded successfully:", imageUrls.length);
 
 		// Parse features safely
 		let features = [];
@@ -130,8 +135,9 @@ export async function POST(request) {
                         description,
                         longDescription: formData.get("longDescription") || description,
                         images: imageUrls,
+                        featureImage: imageUrls[0],
                         category,
-                        sku,
+                        subCategory,
                         mrp,
                         published: formData.get("published") === "true",
                         stocks: stocks,

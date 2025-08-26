@@ -3,7 +3,6 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Product from "@/model/Product";
 import Category from "@/model/Category";
-import cloudinary from "@/lib/cloudnary.js";
 
 export async function POST(request) {
 	await dbConnect();
@@ -30,10 +29,8 @@ export async function POST(request) {
                                         description,
                                         price,
                                         mrp,
-                                        sku,
                                         category,
                                         subCategory,
-                                        featureImage,
                                         mainImageLink,
                                         length,
                                         width,
@@ -52,7 +49,6 @@ export async function POST(request) {
                                 const missingFields = [];
                                 if (!title) missingFields.push("title");
                                 if (!category) missingFields.push("category");
-                                if (!sku) missingFields.push("sku");
                                 if (Number.isNaN(parsedPrice)) missingFields.push("price");
                                 if (Number.isNaN(parsedMrp)) missingFields.push("mrp");
 
@@ -65,29 +61,25 @@ export async function POST(request) {
                                         continue;
                                 }
 
-                                // Ensure category exists in master table
+                                // Ensure category and subcategory exist in master table
                                 if (category) {
-                                        const existingCategory = await Category.findOne({ slug: category });
+                                        let existingCategory = await Category.findOne({ slug: category });
                                         if (!existingCategory) {
                                                 const name = category.replace(/-/g, " ");
-                                                await Category.create({
+                                                existingCategory = await Category.create({
                                                         name,
                                                         description: `${name} category`,
+                                                        subCategories: subCategory ? [subCategory] : [],
                                                 });
+                                        } else if (subCategory) {
+                                                await Category.updateOne(
+                                                        { slug: category },
+                                                        { $addToSet: { subCategories: subCategory } }
+                                                );
                                         }
                                 }
 
-                                let featureImageUrl = "";
-                                if (featureImage) {
-                                        try {
-                                                const uploaded = await cloudinary.uploader.upload(featureImage, {
-                                                        folder: "products",
-                                                });
-                                                featureImageUrl = uploaded.secure_url;
-                                        } catch (err) {
-                                                console.error("Feature image upload failed:", err);
-                                        }
-                                }
+                                const featureImageUrl = mainImageLink || "";
 
                                 const parsedLength =
                                         length !== undefined && length !== ""
@@ -112,7 +104,6 @@ export async function POST(request) {
                                         longDescription: description || "",
                                         category,
                                         subCategory,
-                                        sku,
                                         price: parsedPrice,
                                         mrp: parsedMrp,
                                         featureImage: featureImageUrl,

@@ -34,19 +34,19 @@ export async function POST(request, { params }) {
 
 		// For now, we'll return success with product details
 		// In a real app, you'd add this to user's cart in database
-		const productData = {
-			id: product._id.toString(),
-			name: product.title,
-			description: product.description,
-			price: product.salePrice > 0 ? product.salePrice : product.price,
-			originalPrice: product.price,
-			image:
-				product.images?.[0] ||
-				"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
-			quantity: quantity,
-			inStock: product.inStock,
-			availableStock: product.stocks,
-		};
+                const productData = {
+                        id: product._id.toString(),
+                        name: product.title,
+                        description: product.description,
+                        price: product.price,
+                        originalPrice: product.mrp,
+                        image:
+                                product.images?.[0] ||
+                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                        quantity: quantity,
+                        inStock: product.inStock,
+                        availableStock: product.stocks,
+                };
 
 		return Response.json({
 			success: true,

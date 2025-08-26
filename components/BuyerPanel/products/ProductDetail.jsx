@@ -107,8 +107,8 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
                                id: product.id || product._id,
                                name: product.title,
                                description: product.description,
-                               price: product.salePrice || product.price,
-                               originalPrice: product.price,
+                               price: product.price,
+                               originalPrice: product.originalPrice,
                                image: product.images?.[0] || product.image,
                                inStock: product.inStock,
                        },
@@ -338,18 +338,68 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 								</button>
 							</div>
 
-							{/* Product Information */}
-							<div className="space-y-2 py-4 border-t border-gray-200 text-sm text-gray-600">
-								<div>
-									<span className="font-semibold">SKU:</span> {product.sku}
-								</div>
-								<div>
-									<span className="font-semibold">Category:</span>{' '}
-									<span className="text-blue-600 hover:underline cursor-pointer">
-										{product.categoryLink}
-									</span>
-								</div>
-							</div>
+                                                        {/* Product Specification */}
+                                                        <div className="space-y-2 py-4 border-t border-gray-200 text-sm text-gray-600">
+                                                                <h3 className="font-semibold text-black mb-2">Product Specification</h3>
+                                                                <table className="w-full text-left text-sm">
+                                                                        <tbody>
+                                                                                {product.length && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Length</td>
+                                                                                                <td>{product.length}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                                {product.width && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Width</td>
+                                                                                                <td>{product.width}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                                {product.height && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Height</td>
+                                                                                                <td>{product.height}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                                {product.weight && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Weight</td>
+                                                                                                <td>{product.weight}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                                {product.colour && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Color</td>
+                                                                                                <td>{product.colour}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                                {product.material && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Material</td>
+                                                                                                <td>{product.material}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                                {product.brand && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Brand</td>
+                                                                                                <td>{product.brand}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                                {product.size && (
+                                                                                        <tr>
+                                                                                                <td className="pr-4">Size</td>
+                                                                                                <td>{product.size}</td>
+                                                                                        </tr>
+                                                                                )}
+                                                                        </tbody>
+                                                                </table>
+                                                                <div>
+                                                                        <span className="font-semibold">Category:</span>{" "}
+                                                                        <span className="text-blue-600 hover:underline cursor-pointer">
+                                                                                {product.category}
+                                                                        </span>
+                                                                </div>
+                                                        </div>
 						</div>
 					</div>
 					<div className="text-sm text-gray-600 mb-7">

@@ -35,7 +35,6 @@ export async function PUT(request) {
                 const longDescription = formData.get("longDescription");
                 const category = formData.get("category");
                 const subCategory = formData.get("subCategory");
-                const sku = formData.get("sku");
                 const mrp = formData.get("mrp")
                         ? parseFloat(formData.get("mrp"))
                         : undefined;
@@ -61,13 +60,19 @@ export async function PUT(request) {
 
                 // Ensure category exists in master table
                 if (category) {
-                        const existingCategory = await Category.findOne({ slug: category });
+                        let existingCategory = await Category.findOne({ slug: category });
                         if (!existingCategory) {
                                 const name = category.replace(/-/g, " ");
-                                await Category.create({
+                                existingCategory = await Category.create({
                                         name,
                                         description: `${name} category`,
+                                        subCategories: subCategory ? [subCategory] : [],
                                 });
+                        } else if (subCategory) {
+                                await Category.updateOne(
+                                        { slug: category },
+                                        { $addToSet: { subCategories: subCategory } }
+                                );
                         }
                 }
 
@@ -153,7 +158,6 @@ export async function PUT(request) {
                 product.longDescription = longDescription || description;
                 product.category = category;
                 product.subCategory = subCategory;
-                product.sku = sku;
                 if (mrp !== undefined && !Number.isNaN(mrp)) product.mrp = mrp;
                 product.mainImageLink = mainImageLink;
                 const parsedLength = lengthVal ? parseFloat(lengthVal) : undefined;

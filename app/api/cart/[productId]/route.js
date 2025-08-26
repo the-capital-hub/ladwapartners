@@ -46,10 +46,10 @@ export async function PUT(req, { params }) {
 		}
 
 		// Recalculate total price
-		cart.totalPrice = cart.products.reduce((total, item) => {
-			const price = item.product.salePrice || item.product.price;
-			return total + price * item.quantity;
-		}, 0);
+                cart.totalPrice = cart.products.reduce((total, item) => {
+                        const price = item.product.price;
+                        return total + price * item.quantity;
+                }, 0);
 
 		await cart.save();
 
@@ -88,10 +88,10 @@ export async function DELETE(req, { params }) {
 		);
 
 		// Recalculate total price
-		cart.totalPrice = cart.products.reduce((total, item) => {
-			const price = item.product.salePrice || item.product.price;
-			return total + price * item.quantity;
-		}, 0);
+                cart.totalPrice = cart.products.reduce((total, item) => {
+                        const price = item.product.price;
+                        return total + price * item.quantity;
+                }, 0);
 
 		await cart.save();
 

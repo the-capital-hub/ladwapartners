@@ -60,7 +60,6 @@ export function AddProductPopup({ open, onOpenChange }) {
                 description: "",
                 longDescription: "",
                 category: "",
-                sku: "",
                 mrp: "",
                 price: "",
                 salePrice: "",
@@ -82,7 +81,6 @@ export function AddProductPopup({ open, onOpenChange }) {
 				description: formData.description,
 				longDescription: formData.longDescription || formData.description,
                                 category: formData.category,
-                                sku: formData.sku,
                                 mrp: parseFloat(formData.mrp),
                                 price: parseFloat(formData.price),
                                 salePrice: formData.salePrice ? parseFloat(formData.salePrice) : 0,
@@ -117,7 +115,6 @@ export function AddProductPopup({ open, onOpenChange }) {
                         description: "",
                         longDescription: "",
                         category: "",
-                        sku: "",
                         mrp: "",
                         price: "",
                         salePrice: "",
@@ -266,22 +263,6 @@ export function AddProductPopup({ open, onOpenChange }) {
                                                                 </Select>
                                                         </div>
 
-                                                        <div>
-                                                                <Label htmlFor="sku">SKU *</Label>
-                                                                <Input
-                                                                        id="sku"
-                                                                        placeholder="Enter SKU"
-                                                                        value={formData.sku}
-                                                                        onChange={(e) =>
-                                                                                setFormData({
-                                                                                        ...formData,
-                                                                                        sku: e.target.value,
-                                                                                })
-                                                                        }
-                                                                        className="mt-1"
-                                                                        required
-                                                                />
-                                                        </div>
 
                                                         <div>
                                                                 <Label htmlFor="mrp">MRP *</Label>

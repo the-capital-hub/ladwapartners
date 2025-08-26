@@ -45,30 +45,25 @@ export async function GET(request) {
 		}
 
 		// Discount filter
-		if (discount) {
-			const discountValue = Number.parseInt(discount);
-			query.$or = [
-				{ discount: { $gte: discountValue } },
-				{
-					$expr: {
-						$gte: [
-							{
-								$multiply: [
-									{
-										$divide: [
-											{ $subtract: ["$price", "$salePrice"] },
-											"$price",
-										],
-									},
-									100,
-								],
-							},
-							discountValue,
-						],
-					},
-				},
-			];
-		}
+                if (discount) {
+                        const discountValue = Number.parseInt(discount);
+                        query.$expr = {
+                                $gte: [
+                                        {
+                                                $multiply: [
+                                                        {
+                                                                $divide: [
+                                                                        { $subtract: ["$mrp", "$price"] },
+                                                                        "$mrp",
+                                                                ],
+                                                        },
+                                                        100,
+                                                ],
+                                        },
+                                        discountValue,
+                                ],
+                        };
+                }
 
 		// Published filter
 		if (published !== null && published !== undefined) {

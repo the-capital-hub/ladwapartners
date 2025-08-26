@@ -40,22 +40,18 @@ export async function GET(request) {
 		}
 
 		// Price range filter
-		if (minPrice || maxPrice) {
-			query.$and = query.$and || [];
-			const priceQuery = {};
+                if (minPrice || maxPrice) {
+                        const priceQuery = {};
 
-			if (minPrice) {
-				priceQuery.$gte = Number.parseInt(minPrice);
-			}
-			if (maxPrice) {
-				priceQuery.$lte = Number.parseInt(maxPrice);
-			}
+                        if (minPrice) {
+                                priceQuery.$gte = Number.parseInt(minPrice);
+                        }
+                        if (maxPrice) {
+                                priceQuery.$lte = Number.parseInt(maxPrice);
+                        }
 
-			// Check both regular price and sale price
-			query.$and.push({
-				$or: [{ price: priceQuery }, { salePrice: { ...priceQuery, $gt: 0 } }],
-			});
-		}
+                        query.price = priceQuery;
+                }
 
 		// Stock filter
 		if (inStock === "true") {
@@ -64,30 +60,25 @@ export async function GET(request) {
 		}
 
 		// Discount filter
-		if (discount) {
-			const discountValue = Number.parseInt(discount);
-			query.$or = [
-				{ discount: { $gte: discountValue } },
-				{
-					$expr: {
-						$gte: [
-							{
-								$multiply: [
-									{
-										$divide: [
-											{ $subtract: ["$price", "$salePrice"] },
-											"$price",
-										],
-									},
-									100,
-								],
-							},
-							discountValue,
-						],
-					},
-				},
-			];
-		}
+                if (discount) {
+                        const discountValue = Number.parseInt(discount);
+                        query.$expr = {
+                                $gte: [
+                                        {
+                                                $multiply: [
+                                                        {
+                                                                $divide: [
+                                                                        { $subtract: ["$mrp", "$price"] },
+                                                                        "$mrp",
+                                                                ],
+                                                        },
+                                                        100,
+                                                ],
+                                        },
+                                        discountValue,
+                                ],
+                        };
+                }
 
 		// Type filter
 		if (type) {
@@ -115,21 +106,17 @@ export async function GET(request) {
 			name: product.title,
 			description: product.description,
 			longDescription: product.longDescription,
-			price: product.salePrice > 0 ? product.salePrice : product.price,
-			originalPrice: product.price,
-			salePrice: product.salePrice,
-			discount: product.discount,
-			discountPercentage:
-				product.salePrice > 0
-					? Math.round(
-							((product.price - product.salePrice) / product.price) * 100
-					  )
-					: product.discount,
-			image:
-				product.images?.[0] ||
-				"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
-			images: product.images || [],
-			category: product.category,
+                        price: product.price,
+                        originalPrice: product.mrp,
+                        discountPercentage:
+                                product.mrp && product.mrp > product.price
+                                        ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+                                        : 0,
+                        image:
+                                product.images?.[0] ||
+                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                        images: product.images || [],
+                        category: product.category,
 			inStock: product.inStock,
 			stocks: product.stocks,
 			status: product.status,
