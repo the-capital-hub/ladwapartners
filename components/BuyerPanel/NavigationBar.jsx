@@ -70,9 +70,15 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
 
   const navItems = [...staticItems, ...dynamicItems];
 
-  const handleCategoryClick = (categoryId) => {
-    setCurrentCategory(categoryId);
-    router.push(`/products?category=${categoryId}`);
+  const handleCategoryClick = (categoryId, subCategory) => {
+    setCurrentCategory(categoryId, subCategory);
+
+    const params = new URLSearchParams({ category: categoryId });
+    if (subCategory) {
+      params.append("subCategory", subCategory);
+    }
+
+    router.push(`/products?${params.toString()}`);
     if (onMenuClose) onMenuClose();
   };
 
@@ -143,7 +149,7 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
                           return (
                             <DropdownMenuItem
                               key={subSlug}
-                              onSelect={() => handleCategoryClick(subSlug)}
+                              onSelect={() => handleCategoryClick(item.id, subSlug)}
                             >
                               {sub}
                             </DropdownMenuItem>

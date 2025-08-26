@@ -17,11 +17,12 @@ export const useProductStore = create(
 					discount: 0,
 					type: "",
 				},
-				availableFilters: null,
-				currentCategory: "all",
-				currentPage: 1,
-				totalPages: 1,
-				searchQuery: "",
+                                availableFilters: null,
+                                currentCategory: "all",
+                                currentSubCategory: "",
+                                currentPage: 1,
+                                totalPages: 1,
+                                searchQuery: "",
 				isLoading: false,
 				error: null,
 				sortBy: "createdAt",
@@ -32,14 +33,15 @@ export const useProductStore = create(
 					set({ isLoading: true, error: null });
 
 					try {
-						const {
-							currentCategory,
-							searchQuery,
-							filters,
-							currentPage,
-							sortBy,
-							sortOrder,
-						} = get();
+                                                const {
+                                                        currentCategory,
+                                                        currentSubCategory,
+                                                        searchQuery,
+                                                        filters,
+                                                        currentPage,
+                                                        sortBy,
+                                                        sortOrder,
+                                                } = get();
 
 						const params = new URLSearchParams({
 							page: currentPage.toString(),
@@ -48,9 +50,13 @@ export const useProductStore = create(
 							order: sortOrder,
 						});
 
-						if (currentCategory !== "all") {
-							params.append("category", currentCategory);
-						}
+                                                if (currentCategory !== "all") {
+                                                        params.append("category", currentCategory);
+                                                }
+
+                                                if (currentSubCategory) {
+                                                        params.append("subCategory", currentSubCategory);
+                                                }
 
 						if (searchQuery) {
 							params.append("search", searchQuery);
@@ -119,13 +125,14 @@ export const useProductStore = create(
 					}
 				},
 
-				setCurrentCategory: (category) => {
-					set({
-						currentCategory: category,
-						currentPage: 1,
-					});
-					get().fetchProducts();
-				},
+                                setCurrentCategory: (category, subCategory = "") => {
+                                        set({
+                                                currentCategory: category,
+                                                currentSubCategory: subCategory,
+                                                currentPage: 1,
+                                        });
+                                        get().fetchProducts();
+                                },
 
 				setCurrentPage: (page) => {
 					set({ currentPage: page });
