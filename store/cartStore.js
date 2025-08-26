@@ -143,8 +143,8 @@ export const useCartStore = create(
 									id: item.product._id,
 									name: item.product.title,
 									description: item.product.description,
-									price: item.product.salePrice || item.product.price,
-									originalPrice: item.product.price,
+                                                                        price: item.product.price,
+                                                                        originalPrice: item.product.mrp,
 									image:
 										item.product.images?.[0] ||
 										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
@@ -212,8 +212,8 @@ export const useCartStore = create(
 									id: item.product._id,
 									name: item.product.title,
 									description: item.product.description,
-									price: item.product.salePrice || item.product.price,
-									originalPrice: item.product.price,
+                                                                        price: item.product.price,
+                                                                        originalPrice: item.product.mrp,
 									image:
 										item.product.images?.[0] ||
 										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
@@ -263,8 +263,8 @@ export const useCartStore = create(
 									id: item.product._id,
 									name: item.product.title,
 									description: item.product.description,
-									price: item.product.salePrice || item.product.price,
-									originalPrice: item.product.price,
+                                                                        price: item.product.price,
+                                                                        originalPrice: item.product.mrp,
 									image:
 										item.product.images?.[0] ||
 										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
@@ -352,8 +352,8 @@ export const useCartStore = create(
 								id: item.product._id,
 								name: item.product.title,
 								description: item.product.description,
-								price: item.product.salePrice || item.product.price,
-								originalPrice: item.product.price,
+                                                                        price: item.product.price,
+                                                                        originalPrice: item.product.mrp,
 								image:
 									item.product.images?.[0] ||
 									"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",

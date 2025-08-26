@@ -60,7 +60,6 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                 longDescription: "",
                 category: "",
                 subCategory: "",
-                sku: "",
                 mrp: "",
                 mainImageLink: "",
                 length: "",
@@ -124,7 +123,6 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                         longDescription: product.longDescription || "",
                                         category: product.category || "",
                                         subCategory: product.subCategory || "",
-                                        sku: product.sku || "",
                                         mrp: product.mrp?.toString() || "",
                                         mainImageLink: product.mainImageLink || "",
                                         length: product.length?.toString() || "",
@@ -169,7 +167,6 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                 longDescription: formData.longDescription || formData.description,
                                 category: formData.category,
                                 subCategory: formData.subCategory,
-                                sku: formData.sku,
                                 mrp: formData.mrp ? parseFloat(formData.mrp) : undefined,
                                 mainImageLink: formData.mainImageLink,
                                 length: formData.length ? parseFloat(formData.length) : undefined,
@@ -333,21 +330,7 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                                                 />
                                                         </div>
 
-                                                        <div>
-                                                                <Label htmlFor="sku">SKU *</Label>
-                                                                <Input
-                                                                        id="sku"
-                                                                        value={formData.sku}
-                                                                        onChange={(e) =>
-                                                                                setFormData({
-                                                                                        ...formData,
-                                                                                        sku: e.target.value,
-                                                                                })
-                                                                        }
-                                                                        className="mt-1"
-                                                                        required
-                                                                />
-                                                        </div>
+
 
                                                         <div>
                                                                 <Label htmlFor="mrp">MRP *</Label>

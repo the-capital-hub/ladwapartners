@@ -33,17 +33,16 @@ export async function POST(request, { params }) {
 		}
 
 		// Create order data for buy now
-		const orderData = {
-			productId: product._id.toString(),
-			productName: product.title,
-			quantity: quantity,
-			unitPrice: product.salePrice > 0 ? product.salePrice : product.price,
-			totalPrice:
-				(product.salePrice > 0 ? product.salePrice : product.price) * quantity,
-			productImage:
-				product.images?.[0] ||
-				"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
-		};
+                const orderData = {
+                        productId: product._id.toString(),
+                        productName: product.title,
+                        quantity: quantity,
+                        unitPrice: product.price,
+                        totalPrice: product.price * quantity,
+                        productImage:
+                                product.images?.[0] ||
+                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                };
 
 		return Response.json({
 			success: true,

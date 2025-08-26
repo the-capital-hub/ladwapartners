@@ -27,20 +27,16 @@ export async function GET() {
 			.sort({ sortOrder: 1, name: 1 });
 
 		// Get price range
-		const priceStats = await Product.aggregate([
-			{ $match: { published: true } },
-			{
-				$group: {
-					_id: null,
-					minPrice: {
-						$min: {
-							$cond: [{ $gt: ["$salePrice", 0] }, "$salePrice", "$price"],
-						},
-					},
-					maxPrice: { $max: "$price" },
-				},
-			},
-		]);
+                const priceStats = await Product.aggregate([
+                        { $match: { published: true } },
+                        {
+                                $group: {
+                                        _id: null,
+                                        minPrice: { $min: "$price" },
+                                        maxPrice: { $max: "$price" },
+                                },
+                        },
+                ]);
 
 		const { minPrice = 0, maxPrice = 10000 } = priceStats[0] || {};
 
@@ -56,42 +52,36 @@ export async function GET() {
 		}, {});
 
 		// Get discount range
-		const discountStats = await Product.aggregate([
-			{
-				$match: {
-					published: true,
-					$or: [{ discount: { $gt: 0 } }, { salePrice: { $gt: 0 } }],
-				},
-			},
-			{
-				$addFields: {
-					calculatedDiscount: {
-						$cond: [
-							{ $gt: ["$salePrice", 0] },
-							{
-								$multiply: [
-									{
-										$divide: [
-											{ $subtract: ["$price", "$salePrice"] },
-											"$price",
-										],
-									},
-									100,
-								],
-							},
-							"$discount",
-						],
-					},
-				},
-			},
-			{
-				$group: {
-					_id: null,
-					minDiscount: { $min: "$calculatedDiscount" },
-					maxDiscount: { $max: "$calculatedDiscount" },
-				},
-			},
-		]);
+                const discountStats = await Product.aggregate([
+                        {
+                                $match: {
+                                        published: true,
+                                        $expr: { $gt: ["$mrp", "$price"] },
+                                },
+                        },
+                        {
+                                $project: {
+                                        calculatedDiscount: {
+                                                $multiply: [
+                                                        {
+                                                                $divide: [
+                                                                        { $subtract: ["$mrp", "$price"] },
+                                                                        "$mrp",
+                                                                ],
+                                                        },
+                                                        100,
+                                                ],
+                                        },
+                                },
+                        },
+                        {
+                                $group: {
+                                        _id: null,
+                                        minDiscount: { $min: "$calculatedDiscount" },
+                                        maxDiscount: { $max: "$calculatedDiscount" },
+                                },
+                        },
+                ]);
 
 		const { minDiscount = 0, maxDiscount = 100 } = discountStats[0] || {};
 

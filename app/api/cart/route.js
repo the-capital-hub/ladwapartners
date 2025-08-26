@@ -22,10 +22,10 @@ export async function GET() {
 
 		const decoded = verifyToken(token);
 
-		let cart = await Cart.findOne({ user: decoded.id }).populate({
-			path: "products.product",
-			select: "title description images price salePrice discount inStock",
-		});
+                let cart = await Cart.findOne({ user: decoded.id }).populate({
+                        path: "products.product",
+                        select: "title description images price mrp inStock",
+                });
 
 		if (!cart) {
 			cart = new Cart({ user: decoded.id, products: [], totalPrice: 0 });
@@ -90,10 +90,10 @@ export async function POST(req) {
 
 		// Recalculate total price
 		await cart.populate("products.product");
-		cart.totalPrice = cart.products.reduce((total, item) => {
-			const price = item.product.salePrice || item.product.price;
-			return total + price * item.quantity;
-		}, 0);
+                cart.totalPrice = cart.products.reduce((total, item) => {
+                        const price = item.product.price;
+                        return total + price * item.quantity;
+                }, 0);
 
 		await cart.save();
 

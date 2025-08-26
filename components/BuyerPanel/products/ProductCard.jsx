@@ -49,18 +49,18 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 			return;
 		}
 
-		await addItem(
-			{
-				id: product.id || product._id,
-				name: product.title,
-				description: product.description,
-				price: product.salePrice || product.price,
-				originalPrice: product.price,
-				image: product.images?.[0] || product.image,
-				inStock: product.inStock,
-			},
-			quantity
-		);
+                await addItem(
+                        {
+                                id: product.id || product._id,
+                                name: product.title,
+                                description: product.description,
+                                price: product.price,
+                                originalPrice: product.originalPrice,
+                                image: product.images?.[0] || product.image,
+                                inStock: product.inStock,
+                        },
+                        quantity
+                );
 	};
 
 	const handleBuyNow = async (e) => {
@@ -144,16 +144,16 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 											Please verify your GST number
 										</p>
 									) : (
-										<div className="flex items-center gap-2">
-											<p className="text-2xl font-bold">
-												₹{(product.salePrice || product.price).toLocaleString()}
-											</p>
-											{product.price > (product.salePrice || product.price) && (
-												<p className="text-lg text-gray-500 line-through">
-													₹{product.price.toLocaleString()}
-												</p>
-											)}
-										</div>
+                                                                                <div className="flex items-center gap-2">
+                                                                                        <p className="text-2xl font-bold">
+                                                                                                ₹{product.price.toLocaleString()}
+                                                                                        </p>
+                                                                                        {product.originalPrice > product.price && (
+                                                                                                <p className="text-lg text-gray-500 line-through">
+                                                                                                        ₹{product.originalPrice.toLocaleString()}
+                                                                                                </p>
+                                                                                        )}
+                                                                                </div>
 									)}
 									<p
 										className={`text-sm ${product.inStock ? "text-green-600" : "text-red-600"
@@ -321,19 +321,19 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 						<div className="space-y-2 my-4">
 							{isAuthenticated ? (
 								<div className="flex items-center gap-3">
-									<p className="text-xl font-bold">
-										₹{(product.salePrice || product.price).toLocaleString()}
-									</p>
-									{product.price > (product.salePrice || product.price) && (
-										<p className="text-lg text-gray-500 line-through">
-											₹{product.price.toLocaleString()}
-										</p>
-									)}
-									{product.discount > 0 && (
-										<div className="text-sm font-semibold text-black border border-black px-2 py-1 rounded-sm">
-											{product.discountPercentage.toLocaleString()}% OFF
-										</div>
-									)}
+                                                                        <p className="text-xl font-bold">
+                                                                                ₹{product.price.toLocaleString()}
+                                                                        </p>
+                                                                        {product.originalPrice > product.price && (
+                                                                                <p className="text-lg text-gray-500 line-through">
+                                                                                        ₹{product.originalPrice.toLocaleString()}
+                                                                                </p>
+                                                                        )}
+                                                                        {product.originalPrice > product.price && (
+                                                                                <div className="text-sm font-semibold text-black border border-black px-2 py-1 rounded-sm">
+                                                                                        {product.discountPercentage.toLocaleString()}% OFF
+                                                                                </div>
+                                                                        )}
 								</div>
 							) : (
 								<p className="text-red-600 font-medium">

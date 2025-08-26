@@ -24,17 +24,19 @@ export async function GET(req, { params }) {
 		}).limit(4);
 
 		// Transform product data to match frontend expectations
-		const transformedProduct = {
-			id: product._id.toString(),
-			name: product.title,
-			description: product.description,
-			longDescription: product.longDescription || product.description,
-			price: product.salePrice > 0 ? product.salePrice : product.price,
-			originalPrice: product.price,
-                        discountPercentage: product.discount || 0,
+                const transformedProduct = {
+                        id: product._id.toString(),
+                        name: product.title,
+                        description: product.description,
+                        longDescription: product.longDescription || product.description,
+                        price: product.price,
+                        originalPrice: product.mrp,
+                        discountPercentage:
+                                product.mrp && product.mrp > product.price
+                                        ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+                                        : 0,
                         category: product.category,
                         subCategory: product.subCategory,
-                        sku: product.sku,
                         mrp: product.mrp,
                         mainImageLink: product.mainImageLink,
                         length: product.length,
@@ -62,19 +64,22 @@ export async function GET(req, { params }) {
 		};
 
 		// Transform related products
-		const transformedRelatedProducts = relatedProducts.map((p) => ({
-			id: p._id.toString(),
-			name: p.title,
-			description: p.description,
-			price: p.salePrice > 0 ? p.salePrice : p.price,
-			originalPrice: p.price,
-			discountPercentage: p.discount || 0,
-			image: p.images?.[0] || "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
-			inStock: p.stocks > 0,
-			status: p.stocks > 0 ? "In Stock" : "Out of Stock",
-			category: p.category,
-			type: p.type,
-		}));
+                const transformedRelatedProducts = relatedProducts.map((p) => ({
+                        id: p._id.toString(),
+                        name: p.title,
+                        description: p.description,
+                        price: p.price,
+                        originalPrice: p.mrp,
+                        discountPercentage:
+                                p.mrp && p.mrp > p.price
+                                        ? Math.round(((p.mrp - p.price) / p.mrp) * 100)
+                                        : 0,
+                        image: p.images?.[0] || "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                        inStock: p.stocks > 0,
+                        status: p.stocks > 0 ? "In Stock" : "Out of Stock",
+                        category: p.category,
+                        type: p.type,
+                }));
 
 		return Response.json({
 			success: true,

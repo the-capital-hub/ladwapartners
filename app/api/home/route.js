@@ -6,12 +6,12 @@ export async function GET(request) {
 
 	try {
 		// Get discounted products for showcase section
-		const discountedProducts = await Product.find({
-			published: true,
-			$or: [{ discount: { $gt: 0 } }],
-		})
-			.limit(6)
-			.lean();
+                const discountedProducts = await Product.find({
+                        published: true,
+                        $expr: { $gt: ["$mrp", "$price"] },
+                })
+                        .limit(6)
+                        .lean();
 
 		// Get top selling products
 		const topSellingProducts = await Product.find({
@@ -69,37 +69,33 @@ export async function GET(request) {
 		const categories = await Product.distinct("category", { published: true });
 
 		// Transform function
-		const transformProduct = (product) => ({
-			id: product._id.toString(),
-			title: product.title,
-			description: product.description,
-			longDescription: product.longDescription,
-			price: product.salePrice > 0 ? product.salePrice : product.price,
-			originalPrice: product.price,
-			salePrice: product.salePrice,
-			discount: product.discount,
-			discountPercentage:
-				product.salePrice > 0
-					? Math.round(
-							((product.price - product.salePrice) / product.price) * 100
-					  )
-					: product.discount,
-			image:
-				product.images?.[0] ||
-				"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
-			images: product.images || [],
-			gallery: product.images || [],
-			category: product.category,
-			inStock: product.inStock && product.stocks > 0,
-			stocks: product.stocks,
-			status:
-				product.inStock && product.stocks > 0 ? "In Stock" : "Out of Stock",
-			type: product.type,
-			features: product.features || [],
-			colors: ["blue", "black", "red", "orange"],
-			createdAt: product.createdAt,
-			updatedAt: product.updatedAt,
-		});
+                const transformProduct = (product) => ({
+                        id: product._id.toString(),
+                        title: product.title,
+                        description: product.description,
+                        longDescription: product.longDescription,
+                        price: product.price,
+                        originalPrice: product.mrp,
+                        discountPercentage:
+                                product.mrp && product.mrp > product.price
+                                        ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
+                                        : 0,
+                        image:
+                                product.images?.[0] ||
+                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                        images: product.images || [],
+                        gallery: product.images || [],
+                        category: product.category,
+                        inStock: product.inStock && product.stocks > 0,
+                        stocks: product.stocks,
+                        status:
+                                product.inStock && product.stocks > 0 ? "In Stock" : "Out of Stock",
+                        type: product.type,
+                        features: product.features || [],
+                        colors: ["blue", "black", "red", "orange"],
+                        createdAt: product.createdAt,
+                        updatedAt: product.updatedAt,
+                });
 
 		return Response.json({
 			success: true,
