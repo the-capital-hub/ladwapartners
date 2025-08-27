@@ -1,38 +1,52 @@
 "use client";
 
 import Image from "next/image";
-import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowRight, Facebook, Instagram, Linkedin } from "lucide-react";
 import { Barcode, AppStore, GooglePlay } from "@/public/images/home/index.js";
-import Logo from "@/public/ladwapartners.png";
 
 export default function Footer() {
-        const footerSections = {
-                support: {
-                        title: "Support",
-                        items: ["hello@ladwapartners.com", "9945234161"],
-                },
-                account: {
-                        title: "Account",
-                        items: ["My Account", "Login / Register", "Cart", "Wishlist", "Shop"],
-                },
-        };
+	const footerSections = {
+		support: {
+			title: "Support",
+			items: ["hello@ladwapartners.com", "9945234161"],
+		},
+		account: {
+			title: "Account",
+			items: ["My Account", "Login / Register", "Cart", "Wishlist", "Shop"],
+		},
+		quickLinks: {
+			title: "Quick Link",
+			items: ["Privacy Policy", "Terms Of Use", "FAQ", "Contact"],
+		},
+	};
 
 	return (
 		<footer className="bg-black text-white py-8 md:py-16">
 			<div className="px-10">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                                        {/* Logo & About */}
-                                        <div className="lg:col-span-1 space-y-4">
-                                                <Image
-                                                        src={Logo}
-                                                        alt="Ladwa Partners Logo"
-                                                        width={150}
-                                                        className="object-contain"
-                                                />
-                                                <p className="text-gray-400 text-sm">
-                                                        Ladwa Partners connects suppliers and buyers for safety products across India.
-                                                </p>
-                                        </div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+					{/* Newsletter */}
+					<div className="lg:col-span-1">
+						<h3 className="text-xl font-bold mb-4">Exclusive</h3>
+						<h4 className="text-lg mb-4">Subscribe</h4>
+						<p className="text-gray-400 mb-6">
+							Get 10% off on your first order
+						</p>
+						<div className="flex">
+							<Input
+								placeholder="Enter your email"
+								className="bg-transparent border-white/20  border-r-0 text-white placeholder-gray-400 rounded-r-none"
+							/>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="text-white border border-l-0 border-white/20 rounded-l-none"
+							>
+								<ArrowRight className="h-4 w-4" />
+							</Button>
+						</div>
+					</div>
 
 					{/* Support */}
 					<div>
@@ -58,6 +72,23 @@ export default function Footer() {
 						</h3>
 						<div className="space-y-3 text-gray-400">
 							{footerSections.account.items.map((item, index) => (
+								<p
+									key={index}
+									className="hover:text-white cursor-pointer transition-colors"
+								>
+									{item}
+								</p>
+							))}
+						</div>
+					</div>
+
+					{/* Quick Links */}
+					<div>
+						<h3 className="text-xl font-bold mb-4">
+							{footerSections.quickLinks.title}
+						</h3>
+						<div className="space-y-3 text-gray-400">
+							{footerSections.quickLinks.items.map((item, index) => (
 								<p
 									key={index}
 									className="hover:text-white cursor-pointer transition-colors"
