@@ -5,8 +5,8 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth.js";
 
 export async function GET(request) {
-	try {
-		await dbConnect();
+        try {
+                await dbConnect();
 
 		const cookieStore = await cookies();
 		const token = cookieStore.get("auth_token")?.value;
@@ -18,7 +18,15 @@ export async function GET(request) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+                let decoded;
+                try {
+                        decoded = verifyToken(token);
+                } catch (err) {
+                        return NextResponse.json(
+                                { message: "Invalid or expired token" },
+                                { status: 401 }
+                        );
+                }
 
 		const user = await User.findById(decoded.id).select("addresses");
 		if (!user) {
@@ -42,8 +50,8 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-	try {
-		await dbConnect();
+        try {
+                await dbConnect();
 
 		const cookieStore = await cookies();
 		const token = cookieStore.get("auth_token")?.value;
@@ -55,7 +63,15 @@ export async function POST(request) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+                let decoded;
+                try {
+                        decoded = verifyToken(token);
+                } catch (err) {
+                        return NextResponse.json(
+                                { message: "Invalid or expired token" },
+                                { status: 401 }
+                        );
+                }
 
 		// Check if request has body content
 		const contentType = request.headers.get("content-type");
@@ -140,9 +156,15 @@ export async function POST(request) {
                 });
         } catch (error) {
                 console.error("Add address error:", error);
+                if (error.name === "ValidationError") {
+                        return NextResponse.json(
+                                { success: false, message: error.message },
+                                { status: 400 }
+                        );
+                }
                 return NextResponse.json(
                         { success: false, message: "Internal server error" },
                         { status: 500 }
                 );
-	}
+        }
 }

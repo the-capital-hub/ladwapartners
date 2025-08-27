@@ -16,7 +16,15 @@ export async function PUT(request, { params }) {
       );
     }
 
-    const decoded = verifyToken(token);
+    let decoded;
+    try {
+      decoded = verifyToken(token);
+    } catch (err) {
+      return NextResponse.json(
+        { message: "Invalid or expired token" },
+        { status: 401 }
+      );
+    }
     const body = await request.json();
     const { addressId } = params;
 
@@ -49,6 +57,12 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ success: true, address });
   } catch (error) {
     console.error("Update address error:", error);
+    if (error.name === "ValidationError") {
+      return NextResponse.json(
+        { success: false, message: error.message },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { success: false, message: "Internal server error" },
       { status: 500 }
@@ -68,7 +82,15 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    const decoded = verifyToken(token);
+    let decoded;
+    try {
+      decoded = verifyToken(token);
+    } catch (err) {
+      return NextResponse.json(
+        { message: "Invalid or expired token" },
+        { status: 401 }
+      );
+    }
     const { addressId } = params;
 
     const user = await User.findById(decoded.id);
