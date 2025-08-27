@@ -39,9 +39,9 @@ export default function ProductFilters() {
 		setFilters({ priceRange: value });
 	};
 
-	const handleStockChange = (checked) => {
-		setFilters({ inStock: checked });
-	};
+        const handleStockChange = (status) => {
+                setFilters({ stockStatus: status });
+        };
 
 	const handleDiscountChange = (value) => {
 		setFilters({ discount: Number.parseInt(value) || 0 });
@@ -57,15 +57,15 @@ export default function ProductFilters() {
 	};
 
 	const clearFilters = () => {
-		setFilters({
-			categories: [],
-			priceRange: availableFilters
-				? [availableFilters.priceRange.min, availableFilters.priceRange.max]
-				: [0, 10000],
-			inStock: false,
-			discount: 0,
-			type: "",
-		});
+                setFilters({
+                        categories: [],
+                        priceRange: availableFilters
+                                ? [availableFilters.priceRange.min, availableFilters.priceRange.max]
+                                : [0, 10000],
+                        stockStatus: "all",
+                        discount: 0,
+                        type: "",
+                });
 		applyFilters();
 	};
 
@@ -225,42 +225,46 @@ function FilterContent({
 					Availability
 					<span className="text-gray-400">^</span>
 				</h3>
-				<div className="space-y-3">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<Checkbox
-								id="in-stock"
-								checked={filters.inStock}
-								onCheckedChange={onStockChange}
-								className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-							/>
-							<label
-								htmlFor="in-stock"
-								className="text-sm font-medium leading-none cursor-pointer"
-							>
-								In Stock ({availableFilters.stock.inStock})
-							</label>
-						</div>
-						<span className="text-gray-400">›</span>
-					</div>
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<Checkbox
-								id="out-of-stock"
-								checked={!filters.inStock}
-								onCheckedChange={(checked) => onStockChange(!checked)}
-								className="rounded border-2"
-							/>
-							<label
-								htmlFor="out-of-stock"
-								className="text-sm font-medium leading-none cursor-pointer"
-							>
-								Out of Stock ({availableFilters.stock.outOfStock || 10})
-							</label>
-						</div>
-						<span className="text-gray-400">›</span>
-					</div>
-				</div>
+                                <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                        <Checkbox
+                                                                id="in-stock"
+                                                                checked={filters.stockStatus === "inStock"}
+                                                                onCheckedChange={(checked) =>
+                                                                        onStockChange(checked ? "inStock" : "all")
+                                                                }
+                                                                className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                                        />
+                                                        <label
+                                                                htmlFor="in-stock"
+                                                                className="text-sm font-medium leading-none cursor-pointer"
+                                                        >
+                                                                In Stock ({availableFilters.stock.inStock})
+                                                        </label>
+                                                </div>
+                                                <span className="text-gray-400">›</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                        <Checkbox
+                                                                id="out-of-stock"
+                                                                checked={filters.stockStatus === "outOfStock"}
+                                                                onCheckedChange={(checked) =>
+                                                                        onStockChange(checked ? "outOfStock" : "all")
+                                                                }
+                                                                className="rounded border-2"
+                                                        />
+                                                        <label
+                                                                htmlFor="out-of-stock"
+                                                                className="text-sm font-medium leading-none cursor-pointer"
+                                                        >
+                                                                Out of Stock ({availableFilters.stock.outOfStock || 10})
+                                                        </label>
+                                                </div>
+                                                <span className="text-gray-400">›</span>
+                                        </div>
+                                </div>
 			</div>
 
 			{/* Apply Button */}

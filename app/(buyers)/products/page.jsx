@@ -11,7 +11,7 @@ import { useSearchParams } from "next/navigation";
 export default function ProductsPage() {
 	const searchParams = useSearchParams();
 
-        const { error, fetchProducts, setCurrentCategory, setSearchQuery } =
+        const { error, fetchProducts, setCurrentCategory, setSearchQuery, setFilters } =
                 useProductStore();
 
         // Handle URL parameters
@@ -23,11 +23,22 @@ export default function ProductsPage() {
                 if (search) {
                         setSearchQuery(search);
                 } else if (category || subCategory) {
+                        if (category && !subCategory) {
+                                setFilters({ categories: [category] });
+                        } else {
+                                setFilters({ categories: [] });
+                        }
                         setCurrentCategory(category || "all", subCategory || "");
                 } else {
                         fetchProducts();
                 }
-        }, [searchParams, fetchProducts, setCurrentCategory, setSearchQuery]);
+        }, [
+                searchParams,
+                fetchProducts,
+                setCurrentCategory,
+                setSearchQuery,
+                setFilters,
+        ]);
 
 	if (error) {
 		return (
