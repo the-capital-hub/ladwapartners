@@ -10,13 +10,13 @@ export const useProductStore = create(
 				// Initial State
 				products: [],
 				filteredProducts: [],
-				filters: {
-					categories: [],
-					priceRange: [0, 10000],
-					inStock: false,
-					discount: 0,
-					type: "",
-				},
+                                filters: {
+                                        categories: [],
+                                        priceRange: [0, 10000],
+                                        stockStatus: "all",
+                                        discount: 0,
+                                        type: "",
+                                },
                                 availableFilters: null,
                                 currentCategory: "all",
                                 currentSubCategory: "",
@@ -74,13 +74,13 @@ export const useProductStore = create(
 							params.append("minPrice", filters.priceRange[0].toString());
 						}
 
-						if (filters.priceRange[1] < 10000) {
-							params.append("maxPrice", filters.priceRange[1].toString());
-						}
+                                                if (filters.priceRange[1] < 10000) {
+                                                        params.append("maxPrice", filters.priceRange[1].toString());
+                                                }
 
-						if (filters.inStock) {
-							params.append("inStock", "true");
-						}
+                                                if (filters.stockStatus !== "all") {
+                                                        params.append("stockStatus", filters.stockStatus);
+                                                }
 
 						if (filters.discount > 0) {
 							params.append("discount", filters.discount.toString());
@@ -116,18 +116,19 @@ export const useProductStore = create(
 						const response = await fetch("/api/products/filters");
 						const data = await response.json();
 
-						if (data.success) {
-							set({
-								availableFilters: data.filters,
-								filters: {
-									...get().filters,
-									priceRange: [
-										data.filters.priceRange.min,
-										data.filters.priceRange.max,
-									],
-								},
-							});
-						}
+                                                if (data.success) {
+                                                        set({
+                                                                availableFilters: data.filters,
+                                                                filters: {
+                                                                        ...get().filters,
+                                                                        priceRange: [
+                                                                                data.filters.priceRange.min,
+                                                                                data.filters.priceRange.max,
+                                                                        ],
+                                                                        stockStatus: "all",
+                                                                },
+                                                        });
+                                                }
 					} catch (error) {
 						console.error("Failed to fetch filters:", error);
 					}
