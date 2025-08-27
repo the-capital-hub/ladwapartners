@@ -107,16 +107,15 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   };
 
   return (
-    <AnimatePresence initial={false}>
-      {isMenuOpen && (
-        <motion.nav
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border-t shadow-sm overflow-hidden"
-        >
-          <div className="px-4 lg:px-10">
+
+    <motion.nav
+      initial={false}
+      animate={{ height: isMenuOpen ? "auto" : 0, opacity: isMenuOpen ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white border-t shadow-sm overflow-hidden"
+    >
+      <div className="px-4 lg:px-10">
+
         <div className="flex items-center justify-between py-4">
           {/* Categories */}
           <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap">
@@ -240,8 +239,6 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
           )}
         </AnimatePresence>
       </div>
-        </motion.nav>
-      )}
-    </AnimatePresence>
+    </motion.nav>
   );
 }
