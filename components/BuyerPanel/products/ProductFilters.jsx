@@ -21,13 +21,19 @@ export default function ProductFilters() {
 		fetchFilters();
 	}, [fetchFilters]);
 
-	const handleCategoryChange = (categoryId, checked) => {
-		const newCategories = checked
-			? [...filters.categories, categoryId]
-			: filters.categories.filter((id) => id !== categoryId);
+        const handleCategoryChange = (categoryId, checked) => {
+                // Special case for the "All" option - clear all categories
+                if (categoryId === "all") {
+                        setFilters({ categories: [] });
+                        return;
+                }
 
-		setFilters({ categories: newCategories });
-	};
+                const newCategories = checked
+                        ? [...filters.categories, categoryId]
+                        : filters.categories.filter((id) => id !== categoryId);
+
+                setFilters({ categories: newCategories });
+        };
 
 	const handlePriceChange = (value) => {
 		setFilters({ priceRange: value });
@@ -141,32 +147,28 @@ function FilterContent({
 				<h3 className="text-blue-600 font-medium mb-4">Filters</h3>
 				<div className="space-y-3">
 					{/* All option */}
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<Checkbox
-								id="all"
-								checked={filters.categories.length === 0}
-								onCheckedChange={(checked) => {
-									if (checked) {
-										onCategoryChange("all", true);
-									}
-								}}
-								className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-							/>
-							<label
-								htmlFor="all"
-								className="text-sm font-medium leading-none cursor-pointer"
-							>
-								All (
-								{availableFilters.categories.reduce(
-									(sum, cat) => sum + cat.count,
-									0
-								)}
-								)
-							</label>
-						</div>
-						<span className="text-gray-400">›</span>
-					</div>
+                                        <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                        <Checkbox
+                                                                id="all"
+                                                                checked={filters.categories.length === 0}
+                                                                onCheckedChange={() => onCategoryChange("all")}
+                                                                className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                                        />
+                                                        <label
+                                                                htmlFor="all"
+                                                                className="text-sm font-medium leading-none cursor-pointer"
+                                                        >
+                                                                All (
+                                                                {availableFilters.categories.reduce(
+                                                                        (sum, cat) => sum + cat.count,
+                                                                        0
+                                                                )}
+                                                                )
+                                                        </label>
+                                                </div>
+                                                <span className="text-gray-400">›</span>
+                                        </div>
 
 					{availableFilters.categories.map((category) => (
 						<div

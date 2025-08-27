@@ -43,19 +43,27 @@ export const useProductStore = create(
                                                         sortOrder,
                                                 } = get();
 
-						const params = new URLSearchParams({
-							page: currentPage.toString(),
-							limit: "12",
-							sort: sortBy,
-							order: sortOrder,
-						});
+                                                const params = new URLSearchParams({
+                                                        page: currentPage.toString(),
+                                                        limit: "12",
+                                                        sort: sortBy,
+                                                        order: sortOrder,
+                                                });
 
-                                                if (currentCategory !== "all") {
-                                                        params.append("category", currentCategory);
-                                                }
+                                                // When specific categories are selected via filters, use them
+                                                if (filters.categories.length > 0) {
+                                                        params.append(
+                                                                "categories",
+                                                                filters.categories.join(",")
+                                                        );
+                                                } else {
+                                                        if (currentCategory !== "all") {
+                                                                params.append("category", currentCategory);
+                                                        }
 
-                                                if (currentSubCategory) {
-                                                        params.append("subCategory", currentSubCategory);
+                                                        if (currentSubCategory) {
+                                                                params.append("subCategory", currentSubCategory);
+                                                        }
                                                 }
 
 						if (searchQuery) {

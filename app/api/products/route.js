@@ -13,7 +13,8 @@ export async function GET(request) {
 		const minPrice = searchParams.get("minPrice");
 		const maxPrice = searchParams.get("maxPrice");
 		const inStock = searchParams.get("inStock");
-		const discount = searchParams.get("discount");
+                const discount = searchParams.get("discount");
+                const categories = searchParams.get("categories");
                 const category = searchParams.get("category");
                 const subCategory = searchParams.get("subCategory");
                 const search = searchParams.get("search");
@@ -27,7 +28,9 @@ export async function GET(request) {
 		const query = { published: true };
 
                 // Category filter
-                if (category && category !== "all") {
+                if (categories) {
+                        query.category = { $in: categories.split(",") };
+                } else if (category && category !== "all") {
                         query.category = category;
                 }
 
