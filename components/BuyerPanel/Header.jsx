@@ -116,9 +116,15 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
                                                                 </span>
                                                         )}
                                                 </Button>
-                                                <Button variant="ghost" size="icon" className="bg-white rounded-full">
-                                                        <Heart className="h-5 w-5 md:h-6 md:w-6" />
-                                                </Button>
+                                                <Link href="/wishlist">
+                                                        <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="bg-white rounded-full"
+                                                        >
+                                                                <Heart className="h-5 w-5 md:h-6 md:w-6" />
+                                                        </Button>
+                                                </Link>
                                         </>
                                 )}
 
