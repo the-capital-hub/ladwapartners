@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldCheck, Signpost, HardHat, Flame } from "lucide-react";
+import { ShieldCheck, TrafficCone, HardHat, Flame } from "lucide-react";
 import { motion } from "framer-motion";
 import ProductCard from "@/components/BuyerPanel/products/ProductCard.jsx";
 import products from "@/constants/products.js";
 
 export default function FeaturedCategories() {
         const categories = [
-                { name: "Road Safety", icon: ShieldCheck, slug: "road-safety" },
-                { name: "Road Sign", icon: Signpost, slug: "signage" },
+                { name: "Personal Safety", icon: ShieldCheck, slug: "personal-safety" },
+                { name: "Road Safety", icon: TrafficCone, slug: "road-safety" },
                 { name: "Industrial Safety", icon: HardHat, slug: "industrial-safety" },
                 { name: "Fire Safety", icon: Flame, slug: "fire-safety" },
         ];
@@ -77,23 +77,12 @@ export default function FeaturedCategories() {
                                                                         key={product.id}
                                                                         className="min-w-[280px] max-w-[280px] flex-shrink-0"
                                                                 >
-                                                                        <ProductCard
-                                                                                product={{
-                                                                                        id: product.id,
-                                                                                        title: product.name,
-                                                                                        description: product.description,
-                                                                                        price: product.price,
-                                                                                        salePrice: product.price,
-                                                                                        images: [product.image],
-                                                                                        inStock: product.inStock,
-                                                                                        discountPercentage: 0,
-                                                                                }}
-                                                                        />
+                                                                        <ProductCard product={product} />
                                                                 </div>
                                                         ))}
-                                                </div>
-                                        </div>
-                                )}
+                                               </div>
+                                       </div>
+                               )}
                         </div>
                 </section>
         );
