@@ -27,10 +27,22 @@ export default function WishlistPage() {
                 }
         };
 
-        const moveToCart = (item) => {
-                addItem(item, 1);
-                removeItem(item.id);
-        };
+       const moveToCart = async (item) => {
+               // Ensure the item is added to cart before removing from wishlist
+               await addItem(
+                       {
+                               id: item.id,
+                               name: item.name,
+                               description: item.description,
+                               price: item.price,
+                               originalPrice: item.originalPrice,
+                               image: item.image,
+                               inStock: item.inStock,
+                       },
+                       1
+               );
+               removeItem(item.id);
+       };
 
         const handleGoBack = () => router.back();
 
