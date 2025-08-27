@@ -16,7 +16,7 @@ export async function POST(req) {
                 user.userType !== "admin" ||
                 !(await user.comparePassword(password))
         ) {
-                return Response.json({ message: "Unauthorized" }, { status: 401 });
+                return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
         }
 
 
@@ -31,7 +31,7 @@ export async function POST(req) {
         });
 
 
-        const res = NextResponse.redirect(new URL("/admin/dashboard", req.url));
+        const res = NextResponse.json({ message: "Login successful" });
         res.headers.set("Set-Cookie", cookie);
         return res;
 
