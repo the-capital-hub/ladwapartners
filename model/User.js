@@ -33,6 +33,7 @@ const UserSchema = new mongoose.Schema(
     addresses: [AddressSchema],
     email: { type: String, unique: true, sparse: true },
     mobile: { type: String, unique: true, sparse: true },
+    bio: { type: String },
     password: { type: String, required: true },
     legalName: { type: String, required: true },
     tradeName: { type: String, required: true },
