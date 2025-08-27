@@ -2,21 +2,35 @@
 
 import { motion } from "framer-motion";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
+        Dialog,
+        DialogContent,
+        DialogDescription,
+        DialogFooter,
+        DialogHeader,
+        DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/authStore";
+import { toast } from "react-hot-toast";
 
 export function LogoutPopup({ open, onOpenChange }) {
-	const handleLogout = () => {
-		// Handle logout logic here
-		console.log("Logging out...");
-		onOpenChange(false);
-	};
+        const router = useRouter();
+        const clearUser = useAuthStore((state) => state.clearUser);
+
+        const handleLogout = async () => {
+                try {
+                        await fetch("/api/auth/logout", { method: "POST" });
+                        clearUser();
+                        toast.success("Logged out");
+                        router.push("/login");
+                } catch (error) {
+                        console.error("Logout error:", error);
+                        toast.error("Failed to logout");
+                } finally {
+                        onOpenChange(false);
+                }
+        };
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
