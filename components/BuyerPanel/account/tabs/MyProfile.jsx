@@ -63,10 +63,13 @@ export function MyProfile() {
   const [addressForm, setAddressForm] = useState(emptyAddress);
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [showAddressForm, setShowAddressForm] = useState(false);
+  const [kyc, setKyc] = useState({ status: "loading", kyc: null });
+  const [kycForm, setKycForm] = useState({ gstin: "", businessName: "" });
 
   useEffect(() => {
     loadProfile();
     loadAddresses();
+    loadKyc();
   }, []);
 
   async function loadProfile() {
@@ -97,6 +100,60 @@ export function MyProfile() {
       }
     } catch (error) {
       console.error("Failed to load addresses", error);
+    }
+  }
+
+  async function loadKyc() {
+    try {
+      const res = await fetch("/api/user/kyc", { credentials: "include" });
+      if (res.ok) {
+        const data = await res.json();
+        setKyc(data);
+        if (data.kyc) {
+          setKycForm({
+            gstin: data.kyc.gstin || "",
+            businessName: data.kyc.details?.businessName || "",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load KYC", error);
+    }
+  }
+
+  async function submitKyc() {
+    try {
+      const res = await fetch("/api/user/kyc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          gstin: kycForm.gstin,
+          businessName: kycForm.businessName,
+        }),
+      });
+      if (res.ok) {
+        await loadKyc();
+        Swal.fire({
+          icon: "success",
+          title: "KYC Submitted",
+          text: "Your KYC details have been submitted for review.",
+        });
+      } else {
+        const data = await res.json();
+        Swal.fire({
+          icon: "error",
+          title: "Submission Failed",
+          text: data.message || "Failed to submit KYC.",
+        });
+      }
+    } catch (error) {
+      console.error("Submit KYC failed", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "Failed to submit KYC.",
+      });
     }
   }
 
@@ -447,8 +504,60 @@ export function MyProfile() {
         </Card>
       </motion.div>
 
-      {/* Language & Region */}
+      {/* GST / KYC Section */}
       <motion.div custom={2} initial="hidden" animate="visible" variants={cardVariants}>
+        <Card>
+          <CardHeader>
+            <CardTitle>GST Verification</CardTitle>
+            <CardDescription>
+              Submit your GST details for KYC verification
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {kyc.status === "approved" && kyc.kyc ? (
+              <div className="text-sm space-y-2">
+                <div><span className="font-medium">GSTIN:</span> {kyc.kyc.gstin}</div>
+                <div>
+                  <span className="font-medium">Business Name:</span>{" "}
+                  {kyc.kyc.details?.businessName}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {kyc.status === "rejected" && (
+                  <div className="text-red-500 text-sm">
+                    Last submission rejected {kyc.kyc?.adminRemark && `: ${kyc.kyc.adminRemark}`}
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="gstin">GSTIN</Label>
+                    <Input
+                      id="gstin"
+                      value={kycForm.gstin}
+                      onChange={(e) => setKycForm({ ...kycForm, gstin: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="businessName">Business Name</Label>
+                    <Input
+                      id="businessName"
+                      value={kycForm.businessName}
+                      onChange={(e) =>
+                        setKycForm({ ...kycForm, businessName: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+                <Button onClick={submitKyc}>Submit for Approval</Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
+      {/* Language & Region */}
+      <motion.div custom={3} initial="hidden" animate="visible" variants={cardVariants}>
         <Card>
           <CardHeader>
             <CardTitle>Language & Region</CardTitle>
