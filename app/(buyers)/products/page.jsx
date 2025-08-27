@@ -14,22 +14,20 @@ export default function ProductsPage() {
         const { error, fetchProducts, setCurrentCategory, setSearchQuery } =
                 useProductStore();
 
-	// Handle URL parameters
-	useEffect(() => {
+        // Handle URL parameters
+        useEffect(() => {
                 const category = searchParams.get("category");
                 const subCategory = searchParams.get("subCategory");
                 const search = searchParams.get("search");
 
-                if (category || subCategory) {
+                if (search) {
+                        setSearchQuery(search);
+                } else if (category || subCategory) {
                         setCurrentCategory(category || "all", subCategory || "");
+                } else {
+                        fetchProducts();
                 }
-
-		if (search) {
-			setSearchQuery(search);
-		}
-
-		fetchProducts();
-	}, [searchParams, fetchProducts, setCurrentCategory, setSearchQuery]);
+        }, [searchParams, fetchProducts, setCurrentCategory, setSearchQuery]);
 
 	if (error) {
 		return (

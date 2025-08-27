@@ -22,9 +22,14 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
+    searchQuery: globalSearch,
     currentCategory,
     setCurrentCategory,
   } = useProductStore();
+
+  useEffect(() => {
+    setSearchQuery(globalSearch);
+  }, [globalSearch]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -188,11 +193,18 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
             <div className="relative">
               <Input
                 placeholder="Search products..."
-                className="w-64 pr-10"
+                className="w-64 pr-12"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Button
+                type="submit"
+                size="icon"
+                variant="ghost"
+                className="absolute right-1 top-1/2 -translate-y-1/2"
+              >
+                <Search className="h-4 w-4 text-gray-400" />
+              </Button>
             </div>
           </form>
 
@@ -219,11 +231,18 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
               <div className="relative py-2">
                 <Input
                   placeholder="Search products..."
-                  className="w-full md:w-64"
+                  className="w-full md:w-64 pr-12"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Button
+                  type="submit"
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-1 top-1/2 -translate-y-1/2"
+                >
+                  <Search className="h-4 w-4 text-gray-400" />
+                </Button>
               </div>
             </motion.form>
           )}
