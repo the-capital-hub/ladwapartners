@@ -124,7 +124,7 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 
                                 {isAuthenticated ? (
                                         <div className="flex items-center space-x-2 md:space-x-4">
-                                                <Link href="/account">
+                                                <Link href="/account/profile">
                                                         <div className="flex items-center space-x-2">
                                                                 <Avatar className="h-6 w-6 md:h-8 md:w-8">
                                                                         {profilePic && (
@@ -147,7 +147,7 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
                                                 </Link>
                                         </div>
                                 ) : (
-                                        <Link href="/account">
+                                        <Link href="/login">
                                                 <Button variant="ghost" size="icon" className="bg-white rounded-full">
                                                         <User className="h-5 w-5 md:h-6 md:w-6" />
                                                 </Button>
