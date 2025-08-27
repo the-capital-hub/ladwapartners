@@ -15,6 +15,7 @@ export default function BuyersPanelLayout({ children }) {
     setIsMenuOpen(true);
   }, []);
 
+
   return (
     <div className="relative">
       {/* Navbar fixed over HeroSection */}

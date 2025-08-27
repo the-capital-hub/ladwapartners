@@ -21,9 +21,14 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
+    searchQuery: globalSearch,
     currentCategory,
     setCurrentCategory,
   } = useProductStore();
+
+  useEffect(() => {
+    setSearchQuery(globalSearch);
+  }, [globalSearch]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -102,6 +107,7 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   };
 
   return (
+
     <motion.nav
       initial={false}
       animate={{ height: isMenuOpen ? "auto" : 0, opacity: isMenuOpen ? 1 : 0 }}
@@ -109,6 +115,7 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
       className="bg-white border-t shadow-sm overflow-hidden"
     >
       <div className="px-4 lg:px-10">
+
         <div className="flex items-center justify-between py-4">
           {/* Categories */}
           <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap">
@@ -177,11 +184,18 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
             <div className="relative">
               <Input
                 placeholder="Search products..."
-                className="w-64 pr-10"
+                className="w-64 pr-12"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Button
+                type="submit"
+                size="icon"
+                variant="ghost"
+                className="absolute right-1 top-1/2 -translate-y-1/2"
+              >
+                <Search className="h-4 w-4 text-gray-400" />
+              </Button>
             </div>
           </form>
 
@@ -208,11 +222,18 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
               <div className="relative py-2">
                 <Input
                   placeholder="Search products..."
-                  className="w-full md:w-64"
+                  className="w-full md:w-64 pr-12"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Button
+                  type="submit"
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-1 top-1/2 -translate-y-1/2"
+                >
+                  <Search className="h-4 w-4 text-gray-400" />
+                </Button>
               </div>
             </motion.form>
           )}
