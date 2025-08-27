@@ -1,3 +1,5 @@
+import RoadSafetyLoader from "@/components/Shared/RoadSafetyLoader";
+
 export default function Loading() {
-	return null;
+  return <RoadSafetyLoader />;
 }

@@ -1,9 +1,5 @@
-import LoadingSpinner from "@/components/SellerPanel/LoadingSpinner.jsx";
+import RoadSafetyLoader from "@/components/Shared/RoadSafetyLoader";
 
 export default function Loading() {
-	return (
-		<div className="min-h-screen flex items-center justify-center">
-			<LoadingSpinner />
-		</div>
-	);
+  return <RoadSafetyLoader />;
 }
