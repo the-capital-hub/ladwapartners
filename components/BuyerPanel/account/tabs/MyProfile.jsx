@@ -190,52 +190,54 @@ export function MyProfile() {
           credentials: "include",
           body: JSON.stringify(addressForm),
         });
-      if (res.ok) {
-        const data = await res.json();
-        setAddresses((prev) =>
-          prev.map((addr) => (addr._id === editingAddressId ? data.address : addr))
-        );
-        Swal.fire({
-          icon: "success",
-          title: "Address Updated",
-          text: "The address has been updated successfully.",
-        });
+        if (res.ok) {
+          const data = await res.json();
+          setAddresses((prev) =>
+            prev.map((addr) => (addr._id === editingAddressId ? data.address : addr))
+          );
+          await loadAddresses();
+          Swal.fire({
+            icon: "success",
+            title: "Address Updated",
+            text: "The address has been updated successfully.",
+          });
+        } else {
+          const data = await res.json();
+          Swal.fire({
+            icon: "error",
+            title: "Update Failed",
+            text: data.message || "Failed to update address.",
+          });
+        }
       } else {
-        const data = await res.json();
-        Swal.fire({
-          icon: "error",
-          title: "Update Failed",
-          text: data.message || "Failed to update address.",
+        const res = await fetch("/api/user/addresses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(addressForm),
         });
+        if (res.ok) {
+          const data = await res.json();
+          setAddresses((prev) => [...prev, data.address]);
+          await loadAddresses();
+          Swal.fire({
+            icon: "success",
+            title: "Address Added",
+            text: "New address has been added successfully.",
+          });
+        } else {
+          const data = await res.json();
+          Swal.fire({
+            icon: "error",
+            title: "Save Failed",
+            text: data.message || "Failed to add address.",
+          });
+        }
       }
-    } else {
-      const res = await fetch("/api/user/addresses", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(addressForm),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAddresses((prev) => [...prev, data.address]);
-        Swal.fire({
-          icon: "success",
-          title: "Address Added",
-          text: "New address has been added successfully.",
-        });
-      } else {
-        const data = await res.json();
-        Swal.fire({
-          icon: "error",
-          title: "Save Failed",
-          text: data.message || "Failed to add address.",
-        });
-      }
-    }
-    cancelAddressForm();
-  } catch (error) {
-    console.error("Address save failed", error);
-    Swal.fire({
+      cancelAddressForm();
+    } catch (error) {
+      console.error("Address save failed", error);
+      Swal.fire({
       icon: "error",
       title: "Save Failed",
       text: "Failed to save address.",
@@ -251,6 +253,7 @@ export function MyProfile() {
       });
       if (res.ok) {
         setAddresses((prev) => prev.filter((addr) => addr._id !== id));
+        await loadAddresses();
         Swal.fire({
           icon: "success",
           title: "Address Deleted",
@@ -394,45 +397,51 @@ export function MyProfile() {
             )}
 
             <div className="space-y-4">
-              {addresses.map((addr) => (
-                <div key={addr._id} className="border rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="font-medium">
-                      {addr.tag
-                        ? `${addr.tag.charAt(0).toUpperCase() + addr.tag.slice(1)} Address`
-                        : "Address"}
-                      {addr.isDefault && (
-                        <span className="ml-2 text-xs text-primary">(Default)</span>
-                      )}
+              {addresses.length > 0 ? (
+                addresses.map((addr) => (
+                  <div key={addr._id} className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="font-medium">
+                        {addr.tag
+                          ? `${addr.tag.charAt(0).toUpperCase() + addr.tag.slice(1)} Address`
+                          : "Address"}
+                        {addr.isDefault && (
+                          <span className="ml-2 text-xs text-primary">(Default)</span>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => openEditAddress(addr)}
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteAddress(addr._id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openEditAddress(addr)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => deleteAddress(addr._id)}
-                      >
-                        <Trash2 className="h-4 w-4 mr-1" />
-                        Delete
-                      </Button>
+                    <div className="text-sm text-muted-foreground">
+                      {addr.street}
+                      <br />
+                      {addr.city}, {addr.state}
+                      <br />
+                      {addr.zipCode}, {addr.country}
                     </div>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    {addr.street}
-                    <br />
-                    {addr.city}, {addr.state}
-                    <br />
-                    {addr.zipCode}, {addr.country}
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No addresses saved.
+                </p>
+              )}
             </div>
           </CardContent>
         </Card>
