@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
-import { Logo } from "@/public/images/home/index.js";
+import Logo from "@/public/ladwapartners.png";
 
 export default function Footer() {
 	const footerSections = {
