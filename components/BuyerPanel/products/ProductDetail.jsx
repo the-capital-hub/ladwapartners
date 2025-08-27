@@ -58,23 +58,27 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
                 if (typeof window === "undefined") return;
                 const id = product.id || product._id;
                 let list = JSON.parse(localStorage.getItem("wishlist") || "[]");
-                if (list.some((item) => item.id === id)) {
-                        list = list.filter((item) => item.id !== id);
-                        toast.success("Removed from wishlist");
-                        setIsWishlisted(false);
-                } else {
-                        list.push({
-                                id,
-                                name: product.name,
-                                price: product.price,
-                                image: getDirectGoogleDriveImageUrl(
-                                        product.images?.[0] || product.image || fallbackThumbImage
-                                ),
-                        });
-                        toast.success("Added to wishlist");
-                        setIsWishlisted(true);
-                }
-                localStorage.setItem("wishlist", JSON.stringify(list));
+               if (list.some((item) => item.id === id)) {
+                       list = list.filter((item) => item.id !== id);
+                       toast.success("Removed from wishlist");
+                       setIsWishlisted(false);
+               } else {
+                       // Store full product details so wishlist items can be moved to cart reliably
+                       list.push({
+                               id,
+                               name: product.title || product.name,
+                               description: product.description,
+                               price: product.price,
+                               originalPrice: product.originalPrice,
+                               image: getDirectGoogleDriveImageUrl(
+                                       product.images?.[0] || product.image || fallbackThumbImage
+                               ),
+                               inStock: product.inStock,
+                       });
+                       toast.success("Added to wishlist");
+                       setIsWishlisted(true);
+               }
+               localStorage.setItem("wishlist", JSON.stringify(list));
         };
 
         const handleShare = async () => {
