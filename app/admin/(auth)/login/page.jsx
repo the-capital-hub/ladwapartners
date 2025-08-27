@@ -32,13 +32,18 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
+        // Ensure cookies are persisted and sent with the request
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        const userResponse = await fetch("/api/admin/auth/me");
+        // Fetch the logged in user information with credentials
+        const userResponse = await fetch("/api/admin/auth/me", {
+            credentials: "include",
+        });
         if (userResponse.ok) {
             const userData = await userResponse.json();
             setAdminUser(userData.user);

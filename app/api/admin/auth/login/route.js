@@ -8,6 +8,7 @@ export async function POST(req) {
         await dbConnect();
         const { email, password } = await req.json();
 
+
         const user = await User.findOne({ email });
 
         if (
@@ -17,6 +18,7 @@ export async function POST(req) {
         ) {
                 return Response.json({ message: "Unauthorized" }, { status: 401 });
         }
+
 
         // Issue a token that remains valid for 3 days
         const token = createToken(user, "3d");
@@ -28,7 +30,9 @@ export async function POST(req) {
                 maxAge: 60 * 60 * 24 * 3, // 3 days
         });
 
+
         const res = NextResponse.redirect(new URL("/admin/dashboard", req.url));
         res.headers.set("Set-Cookie", cookie);
         return res;
+
 }

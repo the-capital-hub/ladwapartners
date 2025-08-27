@@ -16,10 +16,12 @@ export async function GET() {
 
                 const decoded = verifyToken(token);
 
+
                 const user = await User.findById(decoded.id).select("-password");
 
                 if (!user || user.userType !== "admin") {
                         return Response.json({ message: "Unauthorized" }, { status: 403 });
+
                 }
 
                 return Response.json({ user });
