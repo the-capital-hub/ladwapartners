@@ -118,30 +118,31 @@ export async function POST(request) {
 		}
 
 		// Add new address
-		const newAddress = {
-			tag,
-			name,
-			street,
-			city,
-			state,
-			zipCode,
-			country,
-			isDefault,
-		};
+                const newAddress = {
+                        tag,
+                        name,
+                        street,
+                        city,
+                        state,
+                        zipCode,
+                        country,
+                        isDefault,
+                };
 
-		user.addresses.push(newAddress);
-		await user.save();
+                user.addresses.push(newAddress);
+                await user.save();
+                const savedAddress = user.addresses[user.addresses.length - 1];
 
-		return NextResponse.json({
-			success: true,
-			message: "Address added successfully",
-			address: newAddress,
-		});
-	} catch (error) {
-		console.error("Add address error:", error);
-		return NextResponse.json(
-			{ success: false, message: "Internal server error" },
-			{ status: 500 }
-		);
+                return NextResponse.json({
+                        success: true,
+                        message: "Address added successfully",
+                        address: savedAddress,
+                });
+        } catch (error) {
+                console.error("Add address error:", error);
+                return NextResponse.json(
+                        { success: false, message: "Internal server error" },
+                        { status: 500 }
+                );
 	}
 }
