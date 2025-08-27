@@ -77,23 +77,12 @@ export default function FeaturedCategories() {
                                                                         key={product.id}
                                                                         className="min-w-[280px] max-w-[280px] flex-shrink-0"
                                                                 >
-                                                                        <ProductCard
-                                                                                product={{
-                                                                                        id: product.id,
-                                                                                        title: product.name,
-                                                                                        description: product.description,
-                                                                                        price: product.price,
-                                                                                        salePrice: product.price,
-                                                                                        images: [product.image],
-                                                                                        inStock: product.inStock,
-                                                                                        discountPercentage: 0,
-                                                                                }}
-                                                                        />
+                                                                        <ProductCard product={product} />
                                                                 </div>
                                                         ))}
-                                                </div>
-                                        </div>
-                                )}
+                                               </div>
+                                       </div>
+                               )}
                         </div>
                 </section>
         );
