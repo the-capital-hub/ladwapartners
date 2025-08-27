@@ -35,6 +35,7 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
     { id: "first-aid", label: "First Aid" },
     { id: "water-safety", label: "Water Safety" },
     { id: "emergency-kit", label: "Emergency Kit" },
+    { id : "about-us", label : "About Us"}
   ];
 
   const VISIBLE_COUNT = 6;

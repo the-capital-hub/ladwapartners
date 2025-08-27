@@ -5,6 +5,7 @@ import { useProductStore } from "@/store/productStore.js";
 // import ProductFilters from "@/components/BuyerPanel/products/ProductFilters.jsx";
 import ProductGrid from "@/components/BuyerPanel/products/ProductGrid.jsx";
 import FeaturedBanner from "@/components/BuyerPanel/products/FeaturedBanner.jsx";
+import ProductsShowcase from "@/components/EachCategoryTopPanel/ProductShowCase";
 import { useSearchParams } from "next/navigation";
 
 export default function ProductsPage() {
@@ -49,6 +50,7 @@ export default function ProductsPage() {
 	return (
 		<div className="h-screen bg-gray-50">
 			{/* Featured Banner */}
+			<ProductsShowcase/>
 			<FeaturedBanner />
 			<div className="container mx-auto p-8">
 				<ProductGrid />

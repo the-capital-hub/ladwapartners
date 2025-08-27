@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Filter, Grid, List, Search } from "lucide-react";
 import ProductGrid from "@/components/BuyerPanel/home/ProductGrid.jsx";
+import ProductsShowcase from "@/components/EachCategoryTopPanel/ProductShowCase";
 
 export default function CategorySection({
 	products = [],
@@ -57,6 +58,7 @@ export default function CategorySection({
 
 	return (
 		<section className="py-8 md:py-16 bg-white">
+			<ProductsShowcase />
 			<div className="px-10">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}

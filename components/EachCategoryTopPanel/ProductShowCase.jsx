@@ -38,13 +38,13 @@ const products = [
 
 const ProductsShowcase = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+    <div className="grid grid-cols-1 md:grid-cols-6 gap-3 p-6">
       {/* First big card */}
       <div
-        className={`${products[0].bgColor} rounded-2xl p-8 flex flex-col md:flex-row justify-between items-center`}
+        className={`${products[0].bgColor} rounded-2xl p-8 flex flex-col md:flex-row justify-between items-center md:col-span-4`}
       >
         <div className="max-w-md">
-          <p className="text-sm mb-2">#1 Ladwa Products</p>
+          <p className="text-sm mb-2 text-white">#1 Ladwa Products</p>
           <h2 className={`text-3xl font-bold mb-4 ${products[0].textColor}`}>
             {products[0].title}
           </h2>
@@ -61,7 +61,7 @@ const ProductsShowcase = () => {
           <Image
             src={products[0].img}
             alt={products[0].title}
-            width={150}
+            width={350}
             height={150}
             priority
             sizes="(max-width: 768px) 100vw, 150px" 
@@ -70,14 +70,14 @@ const ProductsShowcase = () => {
       </div>
 
       {/* Two stacked smaller cards */}
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 md:col-span-2">
         {products.slice(1).map((product) => (
           <div
             key={product.id}
             className={`${product.bgColor} rounded-2xl p-6 flex justify-between items-center`}
           >
             <div>
-              <p className="text-sm mb-2">#1 Ladwa Products</p>
+              <p className="text-sm mb-2 text-red">#1 Ladwa Products</p>
               <h2 className={`text-xl font-bold ${product.textColor}`}>
                 {product.title}
               </h2>
@@ -96,9 +96,10 @@ const ProductsShowcase = () => {
               <Image
                 src={product.img}
                 alt={product.title}
-                width={100}
-                height={100}
-                sizes="(max-width: 768px) 100vw, 100px"
+                width={130}
+                height={150}
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 130px"
               />
             </div>
           </div>

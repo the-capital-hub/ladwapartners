@@ -6,7 +6,7 @@ import { useHomeData } from "@/hooks/useHomeData";
 // import NavigationBar from "@/components/BuyerPanel/NavigationBar.jsx";
 import HeroSection from "@/components/BuyerPanel/home/HeroSection.jsx";
 import FeaturedCategories from "@/components/BuyerPanel/home/FeaturedCategories.jsx";
-import ProductShowcase from "./ProductShowcase";
+import ProductsShowcase from "@/components/EachCategoryTopPanel/ProductShowCase";
 // import ProductShowcase from "@/components/BuyerPanel/home/ProductShowcase.jsx";
 // import TrustedCompanies from "@/components/BuyerPanel/home/TrustedCompanies.jsx";
 // import CategorySection from "@/components/BuyerPanel/home/CategorySection.jsx";
@@ -76,7 +76,7 @@ export default function HomePage() {
                 <div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
                         {/* <NavigationBar /> */}
                         <HeroSection />
-						<ProductShowcase products={discountedProducts} />
+						{/* <ProductsShowcase/> */}
 						{/* <ProductShowcase/> */}
                         <FeaturedCategories />
                        
