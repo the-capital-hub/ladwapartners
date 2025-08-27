@@ -177,7 +177,7 @@ export const useProductStore = create(
 					return get().products.find((product) => product.id === id);
 				},
 
-				// Get up to four featured products optionally filtered by current category.
+                                // Get up to three featured products optionally filtered by current category.
 				// The result is memoized to prevent returning a new array on each call, which
 				// can trigger React's "getSnapshot should be cached" warning when used with
 				// `useSyncExternalStore`.
@@ -206,7 +206,7 @@ export const useProductStore = create(
 
 						lastProducts = products;
 						lastCategory = currentCategory;
-						cached = featured.slice(0, 4);
+                                                cached = featured.slice(0, 3);
 
 						return cached;
 					};

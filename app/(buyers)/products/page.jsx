@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useProductStore } from "@/store/productStore.js";
 // import ProductFilters from "@/components/BuyerPanel/products/ProductFilters.jsx";
 import ProductGrid from "@/components/BuyerPanel/products/ProductGrid.jsx";
-import FeaturedBanner from "@/components/BuyerPanel/products/FeaturedBanner.jsx";
 import ProductBanner from "@/components/BuyerPanel/products/ProductBanner.jsx";
 import { useSearchParams } from "next/navigation";
 
@@ -59,9 +58,7 @@ export default function ProductsPage() {
 
 	return (
 		<div className="h-screen bg-gray-50">
-			{/* Featured Banner */}
-			{/* <FeaturedBanner /> */}
-			<ProductBanner />
+                        <ProductBanner />
 			<div className="container mx-auto p-8">
 				<ProductGrid />
 			</div>
