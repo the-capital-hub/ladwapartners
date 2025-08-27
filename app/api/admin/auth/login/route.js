@@ -15,14 +15,14 @@ export async function POST(req) {
 		return Response.json({ message: "Invalid credentials" }, { status: 401 });
 	}
 
-	const token = createToken(user);
-	const cookie = serialize("auth_token", token, {
-		httpOnly: true,
-		secure: process.env.NODE_ENV === "production",
-		sameSite: "strict",
-		path: "/",
-		maxAge: 60 * 60 * 24 * 7, // 7 days
-	});
+        const token = createToken(user);
+        const cookie = serialize("auth_token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "strict",
+                path: "/",
+                maxAge: 60 * 60 * 24 * 3, // 3 days
+        });
 
 	return new Response(JSON.stringify({ message: "Login successful" }), {
 		status: 200,
