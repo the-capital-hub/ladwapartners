@@ -48,7 +48,9 @@ const ProductSchema = new mongoose.Schema(
 			},
 		},
 
-		// reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+                reviews: [
+                        { type: mongoose.Schema.Types.ObjectId, ref: "Review" },
+                ],
 
 		// Features array to handle product features
 		features: [

@@ -40,6 +40,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 	const [selectedImage, setSelectedImage] = useState(0);
 	const [quantity, setQuantity] = useState(1);
         const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
+        const [reviews, setReviews] = useState([]);
         const router = useRouter();
         const isAuthenticated = useIsAuthenticated();
         const { addItem, isLoading } = useCartStore();
@@ -102,33 +103,21 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
         );
         const isMainImageUnoptimized = mainImageSrc.includes("google");
 
-	// Mock reviews data - you can replace this with real reviews from the API
-	const reviews = [
-		{
-			id: 1,
-			name: "KL RAHUL KUMAR KARTHIK",
-			rating: 5,
-			comment: `The ${product.name} offers superior protection and quality. Each item is carefully crafted to meet ISI standards, ensuring high-quality safety for demanding work conditions. Whether you're working in construction or industrial environments, this product delivers excellent value.`,
-		},
-		{
-			id: 2,
-			name: "VAIBHAV SHARMA",
-			rating: 5,
-			comment: `Excellent quality ${product.name}. The build quality is outstanding and it provides great value for money. Highly recommended for professional use.`,
-		},
-		{
-			id: 3,
-			name: "ANITA GUPTA",
-			rating: 4,
-			comment: `Good product overall. The ${product.name} meets expectations and the delivery was prompt. Would purchase again.`,
-		},
-		{
-			id: 4,
-			name: "RAJESH MEHTA",
-			rating: 4,
-			comment: `Quality product with good durability. The ${product.name} is well-designed and serves its purpose effectively.`,
-		},
-	];
+        useEffect(() => {
+                const fetchReviews = async () => {
+                        try {
+                                const id = product.id || product._id;
+                                const res = await fetch(`/api/products/${id}/reviews`);
+                                if (res.ok) {
+                                        const data = await res.json();
+                                        setReviews(data.reviews || []);
+                                }
+                        } catch (error) {
+                                console.error("Failed to load reviews", error);
+                        }
+                };
+                fetchReviews();
+        }, [product]);
 
 	const quantityOffers = [
 		{
@@ -486,7 +475,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 				</div>
 
 				{/* Reviews & Ratings Section */}
-				<ReviewAndRatings/>
+                            <ReviewAndRatings reviews={reviews} />
 
 				{/* Benefits and Warranty Section */}
 				{/* <motion.div
