@@ -114,6 +114,7 @@ const updateKycStatus = async (id, status) => {
         });
         if (res.ok) {
                 fetchKycs();
+                fetchCustomers();
         }
 };
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect.js";
 import UserKYC from "@/model/UserKYC.js";
+import User from "@/model/User.js";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -25,6 +26,14 @@ export async function PUT(request, { params }) {
     ).populate("user", "email");
     if (!kyc) {
       return NextResponse.json({ success: false, message: "KYC not found" }, { status: 404 });
+    }
+
+    if (kyc.user?._id) {
+      const verificationStatus = status === "approved" ? "APPROVED" : "REJECTED";
+      await User.findByIdAndUpdate(kyc.user._id, {
+        gstVerified: status === "approved",
+        gstVerificationStatus: verificationStatus,
+      });
     }
     if (kyc.user?.email) {
       const subject = `KYC ${status}`;
