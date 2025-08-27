@@ -18,7 +18,6 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
-  const [isDesktop, setIsDesktop] = useState(false);
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
@@ -39,13 +38,6 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
-    const handleChange = (e) => setIsDesktop(e.matches);
-    handleChange(mediaQuery);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
 
   const slugify = (text) =>
     text
@@ -111,9 +103,9 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
 
   return (
     <AnimatePresence initial={false}>
-      {(isMenuOpen || isDesktop) && (
+      {isMenuOpen && (
         <motion.nav
-          initial={isDesktop ? false : { height: 0, opacity: 0 }}
+          initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ duration: 0.3 }}

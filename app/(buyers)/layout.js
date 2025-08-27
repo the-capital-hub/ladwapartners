@@ -9,7 +9,7 @@ import { useState } from "react";
 export default function BuyersPanelLayout({ children }) {
   const pathname = usePathname();
   const showFooter = pathname === "/home" || pathname === "/cart";
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
 
   return (
     <div className="relative">
