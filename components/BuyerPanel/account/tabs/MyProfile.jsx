@@ -22,6 +22,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Edit, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
 import { useAuthStore } from "@/store/authStore";
 
 const cardVariants = {
@@ -122,9 +123,26 @@ export function MyProfile() {
           bio: data.user.bio || "",
         });
         setUser(data.user);
+        Swal.fire({
+          icon: "success",
+          title: "Profile Updated",
+          text: "Your profile has been updated successfully.",
+        });
+      } else {
+        const data = await res.json();
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: data.message || "Could not update profile.",
+        });
       }
     } catch (error) {
       console.error("Failed to update profile", error);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "Failed to update profile.",
+      });
     }
   }
 
@@ -172,29 +190,58 @@ export function MyProfile() {
           credentials: "include",
           body: JSON.stringify(addressForm),
         });
-        if (res.ok) {
-          const data = await res.json();
-          setAddresses((prev) =>
-            prev.map((addr) => (addr._id === editingAddressId ? data.address : addr))
-          );
-        }
-      } else {
-        const res = await fetch("/api/user/addresses", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(addressForm),
+      if (res.ok) {
+        const data = await res.json();
+        setAddresses((prev) =>
+          prev.map((addr) => (addr._id === editingAddressId ? data.address : addr))
+        );
+        Swal.fire({
+          icon: "success",
+          title: "Address Updated",
+          text: "The address has been updated successfully.",
         });
-        if (res.ok) {
-          const data = await res.json();
-          setAddresses((prev) => [...prev, data.address]);
-        }
+      } else {
+        const data = await res.json();
+        Swal.fire({
+          icon: "error",
+          title: "Update Failed",
+          text: data.message || "Failed to update address.",
+        });
       }
-      cancelAddressForm();
-    } catch (error) {
-      console.error("Address save failed", error);
+    } else {
+      const res = await fetch("/api/user/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(addressForm),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setAddresses((prev) => [...prev, data.address]);
+        Swal.fire({
+          icon: "success",
+          title: "Address Added",
+          text: "New address has been added successfully.",
+        });
+      } else {
+        const data = await res.json();
+        Swal.fire({
+          icon: "error",
+          title: "Save Failed",
+          text: data.message || "Failed to add address.",
+        });
+      }
     }
+    cancelAddressForm();
+  } catch (error) {
+    console.error("Address save failed", error);
+    Swal.fire({
+      icon: "error",
+      title: "Save Failed",
+      text: "Failed to save address.",
+    });
   }
+}
 
   async function deleteAddress(id) {
     try {
@@ -204,9 +251,26 @@ export function MyProfile() {
       });
       if (res.ok) {
         setAddresses((prev) => prev.filter((addr) => addr._id !== id));
+        Swal.fire({
+          icon: "success",
+          title: "Address Deleted",
+          text: "Address deleted successfully.",
+        });
+      } else {
+        const data = await res.json();
+        Swal.fire({
+          icon: "error",
+          title: "Delete Failed",
+          text: data.message || "Failed to delete address.",
+        });
       }
     } catch (error) {
       console.error("Delete address failed", error);
+      Swal.fire({
+        icon: "error",
+        title: "Delete Failed",
+        text: "Failed to delete address.",
+      });
     }
   }
 
