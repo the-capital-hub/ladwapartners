@@ -11,7 +11,7 @@ export async function POST(req) {
 	if (!user)
 		return Response.json({ message: "User not found" }, { status: 404 });
 
-	const token = createToken(user); // valid 15 mins
+        const token = createToken(user, "15m"); // valid 15 mins
 	const resetLink = `${process.env.BASE_URL}/reset-password?token=${token}`;
 
 	const transporter = nodemailer.createTransport({
