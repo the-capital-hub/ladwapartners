@@ -1,37 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Barcode, AppStore, GooglePlay } from "@/public/images/home/index.js";
-import { ArrowRight, Facebook, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
+import Logo from "@/public/ladwapartners.png";
 
 export default function Footer() {
-	const footerSections = {
-		support: {
-			title: "Support",
-			links: [
-				{ label: "help@ladwapartners.com", href: "mailto:help@ladwapartners.com" },
-				{ label: "9945234161", href: "#" },
-			],
-		},
-		account: {
-			title: "Account",
-			links: [
-				{ label: "My Account", href: "/account" },
-				{ label: "Login / Register", href: "/auth" },
-				{ label: "Cart", href: "/cart" },
-				{ label: "Wishlist", href: "/wishlist" },
-				{ label: "Shop", href: "/shop" },
-			],
-		},
-		quickLinks: {
-			title: "Quick Link",
-			links: [
-				{ label: "Privacy Policy", href: "/privacy" },
-				{ label: "Terms Of Use", href: "/terms" },
-				{ label: "FAQ", href: "/faq" },
-				{ label: "Contact", href: "/contact" },
-			],
-		},
-	};
+        const footerSections = {
+                support: {
+                        title: "Support",
+                        links: [
+                                { label: "help@ladwapartners.com", href: "mailto:help@ladwapartners.com" },
+                                { label: "9945234161", href: "#" },
+                        ],
+                },
+                account: {
+                        title: "Account",
+                        links: [
+                                { label: "My Account", href: "/account" },
+                                { label: "Login / Register", href: "/auth" },
+                                { label: "Cart", href: "/cart" },
+                                { label: "Wishlist", href: "/wishlist" },
+                                { label: "Shop", href: "/shop" },
+                        ],
+                },
+        };
 
 	return (
 		<footer className="bg-[#211F1D] text-white">
@@ -62,23 +54,20 @@ export default function Footer() {
 			{/* Main Footer */}
 			<div className="py-12">
 				<div className="px-10">
-					<div className="grid grid-cols-1 md:grid-cols-5">
-						{/* Newsletter Subscription */}
-						<div className="w-full">
-							<h4 className="text-lg font-semibold mb-4">Exclusive</h4>
-							<h4 className="text-lg font-semibold mb-4">Subscribe</h4>
-							<p className="mb-4">Get 10% off your first order</p>
-							<div className="w-full flex">
-								<input
-									type="email"
-									placeholder="Enter your email"
-									className="flex-1 px-3 py-2 bg-transparent border border-white rounded-l-lg focus:outline-none focus:border-amber-600"
-								/>
-								<button className="bg-amber-400 hover:bg-amber-500 text-black px-4 py-2 rounded-r-lg">
-									<ArrowRight className="w-6 h-6" />
-								</button>
-							</div>
-						</div>
+                                        <div className="grid grid-cols-1 md:grid-cols-4">
+                                                {/* Logo & About */}
+                                                <div className="w-full space-y-4">
+                                                        <Image
+                                                                src={Logo}
+                                                                alt="Ladwa Partners Logo"
+                                                                width={150}
+                                                                className="object-contain"
+                                                        />
+                                                        <p className="text-sm text-gray-300">
+                                                                Ladwa Partners connects suppliers and buyers for safety
+                                                                products across India.
+                                                        </p>
+                                                </div>
 
 						{/* Footer Links */}
 						{Object.entries(footerSections).map(([key, section]) => (
