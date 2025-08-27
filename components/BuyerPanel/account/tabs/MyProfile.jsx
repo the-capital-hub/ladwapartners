@@ -319,7 +319,9 @@ export function MyProfile() {
                   <Label htmlFor="isDefault">Set as default</Label>
                 </div>
                 <div className="mt-4 flex gap-2">
-                  <Button size="sm" onClick={submitAddress}>Save</Button>
+                  <Button size="sm" onClick={submitAddress}>
+                    {editingAddressId ? "Update" : "Save"}
+                  </Button>
                   <Button size="sm" variant="ghost" onClick={cancelAddressForm}>
                     Cancel
                   </Button>
@@ -340,11 +342,21 @@ export function MyProfile() {
                       )}
                     </div>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" onClick={() => openEditAddress(addr)}>
-                        <Edit className="h-4 w-4" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openEditAddress(addr)}
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        Edit
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => deleteAddress(addr._id)}>
-                        <Trash2 className="h-4 w-4" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => deleteAddress(addr._id)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Delete
                       </Button>
                     </div>
                   </div>
