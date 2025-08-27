@@ -18,7 +18,6 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
-  const [isDesktop, setIsDesktop] = useState(false);
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
@@ -39,13 +38,6 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
-    const handleChange = (e) => setIsDesktop(e.matches);
-    handleChange(mediaQuery);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
 
   const slugify = (text) =>
     text
@@ -110,16 +102,13 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   };
 
   return (
-    <AnimatePresence initial={false}>
-      {(isMenuOpen || isDesktop) && (
-        <motion.nav
-          initial={isDesktop ? false : { height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border-t shadow-sm overflow-hidden"
-        >
-          <div className="px-4 lg:px-10">
+    <motion.nav
+      initial={false}
+      animate={{ height: isMenuOpen ? "auto" : 0, opacity: isMenuOpen ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white border-t shadow-sm overflow-hidden"
+    >
+      <div className="px-4 lg:px-10">
         <div className="flex items-center justify-between py-4">
           {/* Categories */}
           <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap">
@@ -229,8 +218,6 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
           )}
         </AnimatePresence>
       </div>
-        </motion.nav>
-      )}
-    </AnimatePresence>
+    </motion.nav>
   );
 }
