@@ -21,7 +21,9 @@ export function middleware(req) {
 
                 // Additional checks for admin-only routes
                 if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
-                        if (decoded.email !== "admin@safetyonline.com") {
+
+                        if (decoded.userType !== "admin") {
+
                                 if (pathname.startsWith("/api")) {
                                         return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
                                 }

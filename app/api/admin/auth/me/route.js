@@ -16,15 +16,12 @@ export async function GET() {
 
                 const decoded = verifyToken(token);
 
-                // Ensure the token belongs to the admin account
-                if (decoded.email !== "admin@safetyonline.com") {
-                        return Response.json({ message: "Unauthorized" }, { status: 403 });
-                }
 
                 const user = await User.findById(decoded.id).select("-password");
 
-                if (!user) {
-                        return Response.json({ message: "User  not found" }, { status: 404 });
+                if (!user || user.userType !== "admin") {
+                        return Response.json({ message: "Unauthorized" }, { status: 403 });
+
                 }
 
                 return Response.json({ user });

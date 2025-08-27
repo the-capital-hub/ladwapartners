@@ -2,21 +2,23 @@ import { dbConnect } from "@/lib/dbConnect";
 import User from "@/model/User.js";
 import { createToken } from "@/lib/auth";
 import { serialize } from "cookie";
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
         await dbConnect();
         const { email, password } = await req.json();
 
-        // Only allow the dedicated admin account to access the admin panel
-        if (email !== "admin@safetyonline.com") {
-                return Response.json({ message: "Unauthorized" }, { status: 403 });
+
+        const user = await User.findOne({ email });
+
+        if (
+                !user ||
+                user.userType !== "admin" ||
+                !(await user.comparePassword(password))
+        ) {
+                return Response.json({ message: "Unauthorized" }, { status: 401 });
         }
 
-        const user = await User.findOne({ email, userType: "admin" });
-
-        if (!user || !(await user.comparePassword(password))) {
-                return Response.json({ message: "Invalid credentials" }, { status: 401 });
-        }
 
         // Issue a token that remains valid for 3 days
         const token = createToken(user, "3d");
@@ -28,8 +30,9 @@ export async function POST(req) {
                 maxAge: 60 * 60 * 24 * 3, // 3 days
         });
 
-        return new Response(JSON.stringify({ message: "Login successful" }), {
-                status: 200,
-                headers: { "Set-Cookie": cookie },
-        });
+
+        const res = NextResponse.redirect(new URL("/admin/dashboard", req.url));
+        res.headers.set("Set-Cookie", cookie);
+        return res;
+
 }
