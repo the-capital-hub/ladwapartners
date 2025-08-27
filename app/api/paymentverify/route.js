@@ -32,12 +32,13 @@ export async function POST(req) {
 		// }
 
 		// Create order in database
-		const order = new Order({
-			...orderData,
-			transactionId: razorpay_payment_id,
-			paymentStatus: "paid",
-			status: "confirmed",
-		});
+                const order = new Order({
+                        ...orderData,
+                        transactionId: razorpay_payment_id,
+                        paymentStatus: "paid",
+                        paymentCompletedAt: new Date(),
+                        status: "confirmed",
+                });
 
 		await order.save();
 

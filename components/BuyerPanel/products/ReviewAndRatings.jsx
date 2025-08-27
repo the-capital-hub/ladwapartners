@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { CardContent } from '@/components/ui/card';
-import { Star, User, ThumbsUp, MessageSquare, ChevronDown, ChevronRight, ThumbsDown } from 'lucide-react';
+import { Star, User, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const ReviewAndRatings = () => {
+const ReviewAndRatings = ({ reviews = [] }) => {
   const [selectedRating, setSelectedRating] = useState('all');
   const [selectedTopic, setSelectedTopic] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,38 +11,16 @@ const ReviewAndRatings = () => {
   const [showTopicFilter, setShowTopicFilter] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
 
-  // Sample data matching the image
-  const overallRating = 4.5;
-  const totalReviews = 1234;
+  const totalReviews = reviews.length;
+  const overallRating = totalReviews
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews).toFixed(1)
+    : 0;
 
-  const ratingBreakdown = [
-    { stars: 5, count: 2623, percentage: 85 },
-    { stars: 4, count: 131, percentage: 12 },
-    { stars: 3, count: 4, percentage: 2 },
-    { stars: 2, count: 0, percentage: 0 },
-    { stars: 1, count: 0, percentage: 0 },
-  ];
-
-  const reviews = [
-    {
-      id: 1,
-      name: 'Daniel Steward',
-      rating: 5,
-      comment: 'This is amazing product I have.',
-      date: 'July 5, 2020 7:52PM',
-      helpful: 125,
-      replies: 0
-    },
-    {
-      id: 2,
-      name: 'Darlene Robertson',
-      rating: 5,
-      comment: 'This is amazing product I have.',
-      date: 'July 5, 2020 11:42 PM',
-      helpful: 52,
-      replies: 0
-    }
-  ];
+  const ratingBreakdown = [5, 4, 3, 2, 1].map(stars => {
+    const count = reviews.filter(r => r.rating === stars).length;
+    const percentage = totalReviews ? Math.round((count / totalReviews) * 100) : 0;
+    return { stars, count, percentage };
+  });
 
   const filterTabs = [
     { id: 'all', label: 'All Reviews' },
@@ -53,11 +31,11 @@ const ReviewAndRatings = () => {
 
   const ratingOptions = [
     { value: 'all', label: 'All', count: null },
-    { value: '5', label: '5', count: 2623 },
-    { value: '4', label: '4', count: 131 },
-    { value: '3', label: '3', count: 4 },
-    { value: '2', label: '2', count: 0 },
-    { value: '1', label: '1', count: 0 }
+    ...ratingBreakdown.map(r => ({
+      value: String(r.stars),
+      label: String(r.stars),
+      count: r.count
+    }))
   ];
 
   const reviewTopics = [
@@ -325,28 +303,16 @@ const ReviewAndRatings = () => {
                       </p>
 
                       <div className="text-xs text-gray-500 mb-4">
-                        {review.date}
+                        {new Date(review.createdAt).toLocaleString()}
                       </div>
 
-                      <div className="flex flex-col md:flex-row md:items-center justify-between  space-y-3 md:space-y-0 md:space-x-4">
-                        <div className="flex items-center space-x-2">
-                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                            <User className="w-4 h-4 text-gray-600" />
-                          </div>
-                          <span className="text-sm font-medium text-gray-900">
-                            {review.name}
-                          </span>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                          <User className="w-4 h-4 text-gray-600" />
                         </div>
-
-                        <div className="flex items-center  space-x-4 md:ml-auto">
-                          <button className="flex items-center space-x-1 text-black border border-gray-300 rounded-md p-1  hover:text-green-600">
-                            <ThumbsUp className="w-4 h-4" />
-                            <span className="text-sm">{review.helpful}</span>
-                          </button>
-                          <button className="flex items-center space-x-1 text-black border border-gray-300 rounded-md p-1 hover:text-red-600">
-                            <ThumbsDown className="w-4 h-4" />
-                          </button>
-                        </div>
+                        <span className="text-sm font-medium text-gray-900">
+                          {review.user?.firstName} {review.user?.lastName}
+                        </span>
                       </div>
                     </motion.div>
                   ))}
