@@ -25,9 +25,8 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 	const router = useRouter();
         const { addItem, isLoading } = useCartStore();
         const isAuthenticated = useIsAuthenticated();
+        const isGstVerified = useIsGstVerified();
         const [quantity, setQuantity] = useState(1);
-
-        console.log("product", product);
 
         const fallbackImage =
                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
@@ -273,9 +272,9 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 					{/* Content */}
 					<div className="p-6 flex-1 flex flex-col">
 						<div className="flex-1" onClick={handleViewProduct}>
-							<h3 className="font-bold text-lg mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
-								{product.name}
-							</h3>
+                                                        <h3 className="font-bold text-lg mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
+                                                                {product.title}
+                                                        </h3>
 							<p className="text-gray-600 text-sm mb-3 font-normal line-clamp-2">
 								{product.description}
 							</p>
@@ -318,10 +317,18 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 							</div>
 						</div>
 
-						{/* Price + Stock */}
-						<div className="space-y-2 my-4">
-							{isAuthenticated ? (
-								<div className="flex items-center gap-3">
+                                                {/* Price + Stock */}
+                                                <div className="space-y-2 my-4">
+                                                        {!isAuthenticated ? (
+                                                                <p className="text-red-600 font-medium">
+                                                                        Please login to see price
+                                                                </p>
+                                                        ) : !isGstVerified ? (
+                                                                <p className="text-red-600 font-medium">
+                                                                        Please verify your GST number
+                                                                </p>
+                                                        ) : (
+                                                                <div className="flex items-center gap-3">
                                                                         <p className="text-xl font-bold">
                                                                                 ₹{product.price.toLocaleString()}
                                                                         </p>
@@ -335,12 +342,8 @@ export default function ProductCard({ product, viewMode = "grid" }) {
                                                                                         {product.discountPercentage.toLocaleString()}% OFF
                                                                                 </div>
                                                                         )}
-								</div>
-							) : (
-								<p className="text-red-600 font-medium">
-									Please login to see price
-								</p>
-							)}
+                                                                </div>
+                                                        )}
 
 							{/* Stock */}
 							<p
