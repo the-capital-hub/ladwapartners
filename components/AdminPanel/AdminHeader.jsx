@@ -27,13 +27,37 @@ export function AdminHeader() {
 	const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const fullName = useUserFullName();
-	const email = useUserEmail();
-	const profilePic = useUserProfilePic();
-	const isAuthenticated = useIsAuthenticated();
+        const email = useUserEmail();
+        const profilePic = useUserProfilePic();
+        const isAuthenticated = useIsAuthenticated();
 
+        const initials =
+                fullName
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase() || "AD";
+        const pastelColors = [
+                "bg-red-200",
+                "bg-green-200",
+                "bg-blue-200",
+                "bg-yellow-200",
+                "bg-purple-200",
+                "bg-pink-200",
+                "bg-indigo-200",
+                "bg-teal-200",
+        ];
+        const colorClass =
+                pastelColors[
+                        initials
+                                ? (initials.charCodeAt(0) + (initials.charCodeAt(1) || 0)) %
+                                  pastelColors.length
+                                : 0
+                ];
 
-	return (
-		<>
+        return (
+                <>
 			<motion.header
 				className="flex items-center justify-between py-4 px-6 bg-white"
 				initial={{ opacity: 0, y: -20 }}
@@ -61,27 +85,33 @@ export function AdminHeader() {
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" className="relative h-8 w-8 rounded-full">
-								<Avatar className="h-8 w-8">
-									<AvatarImage src={profilePic} alt="Admin" />
-									<AvatarFallback>AD</AvatarFallback>
-								</Avatar>
-							</Button>
-						</DropdownMenuTrigger>
+                                                                <Avatar className="h-8 w-8">
+                                                                        {profilePic && (
+                                                                                <AvatarImage src={profilePic} alt="Admin" />
+                                                                        )}
+                                                                        <AvatarFallback className={`${colorClass} text-black`}>
+                                                                                {initials}
+                                                                        </AvatarFallback>
+                                                                </Avatar>
+                                                        </Button>
+                                                </DropdownMenuTrigger>
 
 						<DropdownMenuContent className="w-56" align="end" forceMount>
 							{/* User Info Header */}
-							<div className="flex items-center gap-3 p-3">
-								<Avatar className="h-10 w-10">
-									<AvatarImage src={profilePic} alt={fullName || "Admin"} />
-									<AvatarFallback>
-										{fullName ? fullName.charAt(0) : "A"}
-									</AvatarFallback>
-								</Avatar>
-								<div className="flex flex-col">
-									<span className="font-medium">{fullName || "Admin User"}</span>
-									<span className="text-xs text-muted-foreground">
-										{email || "admin@example.com"}
-									</span>
+                                                        <div className="flex items-center gap-3 p-3">
+                                                                <Avatar className="h-10 w-10">
+                                                                        {profilePic && (
+                                                                                <AvatarImage src={profilePic} alt={fullName || "Admin"} />
+                                                                        )}
+                                                                        <AvatarFallback className={`${colorClass} text-black`}>
+                                                                                {initials}
+                                                                        </AvatarFallback>
+                                                                </Avatar>
+                                                                <div className="flex flex-col">
+                                                                        <span className="font-medium">{fullName || "Admin User"}</span>
+                                                                        <span className="text-xs text-muted-foreground">
+                                                                                {email || "admin@example.com"}
+                                                                        </span>
 								</div>
 							</div>
 							<DropdownMenuSeparator />
