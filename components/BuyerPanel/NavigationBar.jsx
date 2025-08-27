@@ -118,14 +118,14 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
 
         <div className="flex items-center justify-between py-4">
           {/* Categories */}
-          <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap">
+          <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap py-1">
             {navItems.map((item) => {
               if (item.href) {
                 return (
                   <Button
                     key={item.id}
                     variant="ghost"
-                    className="hover:bg-gray-100"
+                    className="px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100"
                     onClick={() => handleNavigation(item.href)}
                   >
                     {item.label}
@@ -137,11 +137,11 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
                 <div key={item.id} className="flex items-center">
                   <Button
                     variant="ghost"
-                    className={
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                       currentCategory === item.id
                         ? "bg-black text-white"
                         : "hover:bg-gray-100"
-                    }
+                    }`}
                     onClick={() => handleCategoryClick(item.id)}
                   >
                     {item.label}
@@ -151,17 +151,18 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost"
-                          className="p-0 ml-1 hover:bg-gray-100"
+                          className="p-0 ml-1 rounded-md hover:bg-gray-100"
                         >
                           <ChevronDown className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent>
+                      <DropdownMenuContent className="p-2 bg-white border rounded-md shadow-lg">
                         {item.subCategories.map((sub) => {
                           const subSlug = slugify(sub);
                           return (
                             <DropdownMenuItem
                               key={subSlug}
+                              className="rounded-md px-2 py-1.5 text-sm hover:bg-gray-100"
                               onSelect={() => handleCategoryClick(item.id, subSlug)}
                             >
                               {sub}
