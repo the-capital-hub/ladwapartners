@@ -21,9 +21,14 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
+    searchQuery: globalSearch,
     currentCategory,
     setCurrentCategory,
   } = useProductStore();
+
+  useEffect(() => {
+    setSearchQuery(globalSearch);
+  }, [globalSearch]);
 
   useEffect(() => {
     const fetchCategories = async () => {
