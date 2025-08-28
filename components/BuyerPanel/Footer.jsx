@@ -16,7 +16,7 @@ export default function Footer() {
 		},
 		quickLinks: {
 			title: "Quick Link",
-			items: ["Privacy Policy", "Terms Of Use", "FAQ", "Contact"],
+			items: ["Privacy Policy", "Terms Of Use", "FAQ", "Contact Us"],
 		},
 	};
 
