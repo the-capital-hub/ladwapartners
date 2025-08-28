@@ -10,8 +10,13 @@ import { useSearchParams } from "next/navigation";
 export default function ProductsPage() {
 	const searchParams = useSearchParams();
 
-	const { error, fetchProducts, setCurrentCategory, setSearchQuery } =
-		useProductStore();
+	const {
+		error,
+		fetchProducts,
+		setCurrentCategory,
+		setSearchQuery,
+		setFilters,
+	} = useProductStore();
 
 	// Handle URL parameters
 	useEffect(() => {
@@ -19,16 +24,25 @@ export default function ProductsPage() {
 		const subCategory = searchParams.get("subCategory");
 		const search = searchParams.get("search");
 
-		if (category || subCategory) {
-			setCurrentCategory(category || "all", subCategory || "");
-		}
-
 		if (search) {
 			setSearchQuery(search);
+		} else if (category || subCategory) {
+			if (category && !subCategory) {
+				setFilters({ categories: [category] });
+			} else {
+				setFilters({ categories: [] });
+			}
+			setCurrentCategory(category || "all", subCategory || "");
+		} else {
+			fetchProducts();
 		}
-
-		fetchProducts();
-	}, [searchParams, fetchProducts, setCurrentCategory, setSearchQuery]);
+	}, [
+		searchParams,
+		fetchProducts,
+		setCurrentCategory,
+		setSearchQuery,
+		setFilters,
+	]);
 
 	if (error) {
 		return (
@@ -49,7 +63,6 @@ export default function ProductsPage() {
 
 	return (
 		<div className="h-screen bg-gray-50">
-			{/* <FeaturedBanner /> */}
 			<ProductBanner />
 			<div className="container mx-auto p-8">
 				<ProductGrid />

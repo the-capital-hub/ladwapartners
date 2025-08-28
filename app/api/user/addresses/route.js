@@ -5,8 +5,8 @@ import { cookies } from "next/headers";
 import { verifyToken } from "@/lib/auth.js";
 
 export async function GET(request) {
-	try {
-		await dbConnect();
+        try {
+                await dbConnect();
 
 		const cookieStore = await cookies();
 		const token = cookieStore.get("auth_token")?.value;
@@ -18,7 +18,15 @@ export async function GET(request) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+                let decoded;
+                try {
+                        decoded = verifyToken(token);
+                } catch (err) {
+                        return NextResponse.json(
+                                { message: "Invalid or expired token" },
+                                { status: 401 }
+                        );
+                }
 
 		const user = await User.findById(decoded.id).select("addresses");
 		if (!user) {
@@ -42,8 +50,8 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
-	try {
-		await dbConnect();
+        try {
+                await dbConnect();
 
 		const cookieStore = await cookies();
 		const token = cookieStore.get("auth_token")?.value;
@@ -55,7 +63,15 @@ export async function POST(request) {
 			);
 		}
 
-		const decoded = verifyToken(token);
+                let decoded;
+                try {
+                        decoded = verifyToken(token);
+                } catch (err) {
+                        return NextResponse.json(
+                                { message: "Invalid or expired token" },
+                                { status: 401 }
+                        );
+                }
 
 		// Check if request has body content
 		const contentType = request.headers.get("content-type");
@@ -118,30 +134,37 @@ export async function POST(request) {
 		}
 
 		// Add new address
-		const newAddress = {
-			tag,
-			name,
-			street,
-			city,
-			state,
-			zipCode,
-			country,
-			isDefault,
-		};
+                const newAddress = {
+                        tag,
+                        name,
+                        street,
+                        city,
+                        state,
+                        zipCode,
+                        country,
+                        isDefault,
+                };
 
-		user.addresses.push(newAddress);
-		await user.save();
+                user.addresses.push(newAddress);
+                await user.save();
+                const savedAddress = user.addresses[user.addresses.length - 1];
 
-		return NextResponse.json({
-			success: true,
-			message: "Address added successfully",
-			address: newAddress,
-		});
-	} catch (error) {
-		console.error("Add address error:", error);
-		return NextResponse.json(
-			{ success: false, message: "Internal server error" },
-			{ status: 500 }
-		);
-	}
+                return NextResponse.json({
+                        success: true,
+                        message: "Address added successfully",
+                        address: savedAddress,
+                });
+        } catch (error) {
+                console.error("Add address error:", error);
+                if (error.name === "ValidationError") {
+                        return NextResponse.json(
+                                { success: false, message: error.message },
+                                { status: 400 }
+                        );
+                }
+                return NextResponse.json(
+                        { success: false, message: "Internal server error" },
+                        { status: 500 }
+                );
+        }
 }

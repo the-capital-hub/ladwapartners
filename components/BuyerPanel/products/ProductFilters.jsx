@@ -21,21 +21,27 @@ export default function ProductFilters() {
 		fetchFilters();
 	}, [fetchFilters]);
 
-	const handleCategoryChange = (categoryId, checked) => {
-		const newCategories = checked
-			? [...filters.categories, categoryId]
-			: filters.categories.filter((id) => id !== categoryId);
+        const handleCategoryChange = (categoryId, checked) => {
+                // Special case for the "All" option - clear all categories
+                if (categoryId === "all") {
+                        setFilters({ categories: [] });
+                        return;
+                }
 
-		setFilters({ categories: newCategories });
-	};
+                const newCategories = checked
+                        ? [...filters.categories, categoryId]
+                        : filters.categories.filter((id) => id !== categoryId);
+
+                setFilters({ categories: newCategories });
+        };
 
 	const handlePriceChange = (value) => {
 		setFilters({ priceRange: value });
 	};
 
-	const handleStockChange = (checked) => {
-		setFilters({ inStock: checked });
-	};
+        const handleStockChange = (status) => {
+                setFilters({ stockStatus: status });
+        };
 
 	const handleDiscountChange = (value) => {
 		setFilters({ discount: Number.parseInt(value) || 0 });
@@ -51,15 +57,15 @@ export default function ProductFilters() {
 	};
 
 	const clearFilters = () => {
-		setFilters({
-			categories: [],
-			priceRange: availableFilters
-				? [availableFilters.priceRange.min, availableFilters.priceRange.max]
-				: [0, 10000],
-			inStock: false,
-			discount: 0,
-			type: "",
-		});
+                setFilters({
+                        categories: [],
+                        priceRange: availableFilters
+                                ? [availableFilters.priceRange.min, availableFilters.priceRange.max]
+                                : [0, 10000],
+                        stockStatus: "all",
+                        discount: 0,
+                        type: "",
+                });
 		applyFilters();
 	};
 
@@ -141,32 +147,28 @@ function FilterContent({
 				<h3 className="text-blue-600 font-medium mb-4">Filters</h3>
 				<div className="space-y-3">
 					{/* All option */}
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<Checkbox
-								id="all"
-								checked={filters.categories.length === 0}
-								onCheckedChange={(checked) => {
-									if (checked) {
-										onCategoryChange("all", true);
-									}
-								}}
-								className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-							/>
-							<label
-								htmlFor="all"
-								className="text-sm font-medium leading-none cursor-pointer"
-							>
-								All (
-								{availableFilters.categories.reduce(
-									(sum, cat) => sum + cat.count,
-									0
-								)}
-								)
-							</label>
-						</div>
-						<span className="text-gray-400">›</span>
-					</div>
+                                        <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                        <Checkbox
+                                                                id="all"
+                                                                checked={filters.categories.length === 0}
+                                                                onCheckedChange={() => onCategoryChange("all")}
+                                                                className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                                        />
+                                                        <label
+                                                                htmlFor="all"
+                                                                className="text-sm font-medium leading-none cursor-pointer"
+                                                        >
+                                                                All (
+                                                                {availableFilters.categories.reduce(
+                                                                        (sum, cat) => sum + cat.count,
+                                                                        0
+                                                                )}
+                                                                )
+                                                        </label>
+                                                </div>
+                                                <span className="text-gray-400">›</span>
+                                        </div>
 
 					{availableFilters.categories.map((category) => (
 						<div
@@ -223,42 +225,46 @@ function FilterContent({
 					Availability
 					<span className="text-gray-400">^</span>
 				</h3>
-				<div className="space-y-3">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<Checkbox
-								id="in-stock"
-								checked={filters.inStock}
-								onCheckedChange={onStockChange}
-								className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
-							/>
-							<label
-								htmlFor="in-stock"
-								className="text-sm font-medium leading-none cursor-pointer"
-							>
-								In Stock ({availableFilters.stock.inStock})
-							</label>
-						</div>
-						<span className="text-gray-400">›</span>
-					</div>
-					<div className="flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<Checkbox
-								id="out-of-stock"
-								checked={!filters.inStock}
-								onCheckedChange={(checked) => onStockChange(!checked)}
-								className="rounded border-2"
-							/>
-							<label
-								htmlFor="out-of-stock"
-								className="text-sm font-medium leading-none cursor-pointer"
-							>
-								Out of Stock ({availableFilters.stock.outOfStock || 10})
-							</label>
-						</div>
-						<span className="text-gray-400">›</span>
-					</div>
-				</div>
+                                <div className="space-y-3">
+                                        <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                        <Checkbox
+                                                                id="in-stock"
+                                                                checked={filters.stockStatus === "inStock"}
+                                                                onCheckedChange={(checked) =>
+                                                                        onStockChange(checked ? "inStock" : "all")
+                                                                }
+                                                                className="rounded border-2 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                                                        />
+                                                        <label
+                                                                htmlFor="in-stock"
+                                                                className="text-sm font-medium leading-none cursor-pointer"
+                                                        >
+                                                                In Stock ({availableFilters.stock.inStock})
+                                                        </label>
+                                                </div>
+                                                <span className="text-gray-400">›</span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-3">
+                                                        <Checkbox
+                                                                id="out-of-stock"
+                                                                checked={filters.stockStatus === "outOfStock"}
+                                                                onCheckedChange={(checked) =>
+                                                                        onStockChange(checked ? "outOfStock" : "all")
+                                                                }
+                                                                className="rounded border-2"
+                                                        />
+                                                        <label
+                                                                htmlFor="out-of-stock"
+                                                                className="text-sm font-medium leading-none cursor-pointer"
+                                                        >
+                                                                Out of Stock ({availableFilters.stock.outOfStock || 10})
+                                                        </label>
+                                                </div>
+                                                <span className="text-gray-400">›</span>
+                                        </div>
+                                </div>
 			</div>
 
 			{/* Apply Button */}

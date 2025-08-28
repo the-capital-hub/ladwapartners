@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -70,24 +70,59 @@ export default function AdminCustomersPage() {
                 open: false,
                 customer: null,
         });
-        const [gstPopup, setGstPopup] = useState({ open: false, customer: null });
-	const isAuthenticated = useIsAuthenticated();
-	const [isRedirecting, setIsRedirecting] = useState(false);
-	const router = useRouter();	useEffect(() => {
-		if (!isAuthenticated) {
-			setIsRedirecting(true);
-			const timer = setTimeout(() => {
-				router.push("/admin/login");
-			}, 3);
-			
-			return () => clearTimeout(timer);
-		}
-	}, [isAuthenticated, router]);
+        
+const [gstPopup, setGstPopup] = useState({ open: false, customer: null });
+const [kycRequests, setKycRequests] = useState([]);
+const [kycLoading, setKycLoading] = useState(false);
+const isAuthenticated = useIsAuthenticated();
+const [isRedirecting, setIsRedirecting] = useState(false);
+const router = useRouter();
 
-	
-	useEffect(() => {
-		fetchCustomers();
-	}, []);
+useEffect(() => {
+        if (!isAuthenticated) {
+                setIsRedirecting(true);
+                const timer = setTimeout(() => {
+                        router.push("/admin/login");
+                }, 3);
+
+                return () => clearTimeout(timer);
+        }
+}, [isAuthenticated, router]);
+
+const fetchKycs = async () => {
+        setKycLoading(true);
+        try {
+                const res = await fetch("/api/admin/kyc");
+                if (res.ok) {
+                        const data = await res.json();
+                        setKycRequests(data.data || []);
+                }
+        } finally {
+                setKycLoading(false);
+        }
+};
+
+const updateKycStatus = async (id, status) => {
+        let remark = "";
+        if (status === "rejected") {
+                remark = prompt("Reason for rejection?") || "";
+        }
+        const res = await fetch(`/api/admin/kyc/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status, remark }),
+        });
+        if (res.ok) {
+                fetchKycs();
+                fetchCustomers();
+        }
+};
+
+useEffect(() => {
+        fetchCustomers();
+        fetchKycs();
+}, []);
+
 
 	const handleSearch = (value) => {
 		setFilters({ search: value });
@@ -189,28 +224,74 @@ export default function AdminCustomersPage() {
 	return (
 		<>
 			<div className="space-y-6">
-				<motion.div
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.3 }}
-				>
-					<div className="flex items-center gap-3">
-						<div className="p-2 bg-blue-100 rounded-lg">
-							<User className="w-6 h-6 text-blue-600" />
-						</div>
-						<div>
-							<h1 className="text-3xl font-bold text-gray-900">Customers</h1>
-							<p className="text-gray-600">Manage your customer accounts</p>
-						</div>
-					</div>
-				</motion.div>
+                                <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                >
+                                        <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-blue-100 rounded-lg">
+                                                        <User className="w-6 h-6 text-blue-600" />
+                                                </div>
+                                                <div>
+                                                        <h1 className="text-3xl font-bold text-gray-900">Customers</h1>
+                                                        <p className="text-gray-600">Manage your customer accounts</p>
+                                                </div>
+                                        </div>
+                                </motion.div>
 
-				<Card>
-					<CardHeader>
-						<div className="flex flex-col gap-4">
-							{/* Export/Import Row */}
-							<div className="flex flex-wrap gap-4 items-center justify-between">
-								<div className="flex gap-4 items-center">
+                                <Card>
+                                        <CardHeader>
+                                                <CardTitle>KYC Requests</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                                {kycLoading ? (
+                                                        <div className="py-8 text-center text-gray-600">Loading...</div>
+                                                ) : (
+                                                        <Table>
+                                                                <TableHeader>
+                                                                        <TableRow>
+                                                                                <TableHead>User</TableHead>
+                                                                                <TableHead>GSTIN</TableHead>
+                                                                                <TableHead>Status</TableHead>
+                                                                                <TableHead>Actions</TableHead>
+                                                                        </TableRow>
+                                                                </TableHeader>
+                                                                <TableBody>
+                                                                        {kycRequests.map((k) => (
+                                                                                <TableRow key={k._id}>
+                                                                                        <TableCell>{k.user?.email}</TableCell>
+                                                                                        <TableCell>{k.gstin}</TableCell>
+                                                                                        <TableCell className="capitalize">{k.status}</TableCell>
+                                                                                        <TableCell>
+                                                                                                {k.status === "pending" && (
+                                                                                                        <div className="flex gap-2">
+                                                                                                                <Button size="sm" onClick={() => updateKycStatus(k._id, "approved")}>Approve</Button>
+                                                                                                                <Button size="sm" variant="destructive" onClick={() => updateKycStatus(k._id, "rejected")}>Reject</Button>
+                                                                                                        </div>
+                                                                                                )}
+                                                                                        </TableCell>
+                                                                                </TableRow>
+                                                                        ))}
+                                                                        {kycRequests.length === 0 && (
+                                                                                <TableRow>
+                                                                                        <TableCell colSpan={4} className="text-center text-sm text-muted-foreground">
+                                                                                                No KYC requests
+                                                                                        </TableCell>
+                                                                                </TableRow>
+                                                                        )}
+                                                                </TableBody>
+                                                        </Table>
+                                                )}
+                                        </CardContent>
+                                </Card>
+
+                                <Card>
+                                        <CardHeader>
+                                                <div className="flex flex-col gap-4">
+                                                        {/* Export/Import Row */}
+                                                        <div className="flex flex-wrap gap-4 items-center justify-between">
+                                                                <div className="flex gap-4 items-center">
 									<Button
 										variant="outline"
 										className="text-orange-600 border-orange-600 bg-transparent"

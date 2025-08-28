@@ -18,13 +18,17 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
-  const [isDesktop, setIsDesktop] = useState(false);
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
+    searchQuery: globalSearch,
     currentCategory,
     setCurrentCategory,
   } = useProductStore();
+
+  useEffect(() => {
+    setSearchQuery(globalSearch);
+  }, [globalSearch]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -39,13 +43,6 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
     fetchCategories();
   }, []);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
-    const handleChange = (e) => setIsDesktop(e.matches);
-    handleChange(mediaQuery);
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, []);
 
   const slugify = (text) =>
     text
@@ -110,26 +107,25 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   };
 
   return (
-    <AnimatePresence initial={false}>
-      {(isMenuOpen || isDesktop) && (
-        <motion.nav
-          initial={isDesktop ? false : { height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-white border-t shadow-sm overflow-hidden"
-        >
-          <div className="px-4 lg:px-10">
+
+    <motion.nav
+      initial={false}
+      animate={{ height: isMenuOpen ? "auto" : 0, opacity: isMenuOpen ? 1 : 0 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white border-t shadow-sm overflow-hidden"
+    >
+      <div className="px-4 lg:px-10">
+
         <div className="flex items-center justify-between py-4">
           {/* Categories */}
-          <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap">
+          <div className="flex items-center space-x-4 overflow-x-auto hide-scrollbar whitespace-nowrap py-1">
             {navItems.map((item) => {
               if (item.href) {
                 return (
                   <Button
                     key={item.id}
                     variant="ghost"
-                    className="hover:bg-gray-100"
+                    className="px-3 py-2 text-sm font-medium rounded-md transition-colors hover:bg-gray-100"
                     onClick={() => handleNavigation(item.href)}
                   >
                     {item.label}
@@ -141,11 +137,11 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
                 <div key={item.id} className="flex items-center">
                   <Button
                     variant="ghost"
-                    className={
+                    className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                       currentCategory === item.id
                         ? "bg-black text-white"
                         : "hover:bg-gray-100"
-                    }
+                    }`}
                     onClick={() => handleCategoryClick(item.id)}
                   >
                     {item.label}
@@ -155,17 +151,18 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost"
-                          className="p-0 ml-1 hover:bg-gray-100"
+                          className="p-0 ml-1 rounded-md hover:bg-gray-100"
                         >
                           <ChevronDown className="h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent>
+                      <DropdownMenuContent className="p-2 bg-white border rounded-md shadow-lg">
                         {item.subCategories.map((sub) => {
                           const subSlug = slugify(sub);
                           return (
                             <DropdownMenuItem
                               key={subSlug}
+                              className="rounded-md px-2 py-1.5 text-sm hover:bg-gray-100"
                               onSelect={() => handleCategoryClick(item.id, subSlug)}
                             >
                               {sub}
@@ -188,11 +185,18 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
             <div className="relative">
               <Input
                 placeholder="Search products..."
-                className="w-64 pr-10"
+                className="w-64 pr-12"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Button
+                type="submit"
+                size="icon"
+                variant="ghost"
+                className="absolute right-1 top-1/2 -translate-y-1/2"
+              >
+                <Search className="h-4 w-4 text-gray-400" />
+              </Button>
             </div>
           </form>
 
@@ -219,18 +223,23 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
               <div className="relative py-2">
                 <Input
                   placeholder="Search products..."
-                  className="w-full md:w-64"
+                  className="w-full md:w-64 pr-12"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Button
+                  type="submit"
+                  size="icon"
+                  variant="ghost"
+                  className="absolute right-1 top-1/2 -translate-y-1/2"
+                >
+                  <Search className="h-4 w-4 text-gray-400" />
+                </Button>
               </div>
             </motion.form>
           )}
         </AnimatePresence>
       </div>
-        </motion.nav>
-      )}
-    </AnimatePresence>
+    </motion.nav>
   );
 }

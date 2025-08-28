@@ -28,8 +28,6 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 	const isGstVerified = useIsGstVerified();
 	const [quantity, setQuantity] = useState(1);
 
-	// console.log("product", product);
-
 	const fallbackImage =
 		"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
 	const imageSrc = getDirectGoogleDriveImageUrl(
@@ -276,7 +274,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 					<div className="p-6 flex-1 flex flex-col">
 						<div className="flex-1" onClick={handleViewProduct}>
 							<h3 className="font-bold text-lg mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
-								{product.name}
+								{product.title}
 							</h3>
 							<p className="text-gray-600 text-sm mb-3 font-normal line-clamp-2">
 								{product.description}
@@ -320,9 +318,17 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 							</div>
 						</div>
 
-						{/* Price + Stock */}
+						{/* Price + Stock - Fixed duplicate section */}
 						<div className="space-y-2 my-4">
-							{isAuthenticated ? (
+							{!isAuthenticated ? (
+								<p className="text-red-600 font-medium">
+									Please login to see price
+								</p>
+							) : !isGstVerified ? (
+								<p className="text-red-600 font-medium">
+									Please verify your GST number
+								</p>
+							) : (
 								<div className="flex items-center gap-3">
 									<p className="text-xl font-bold">
 										₹{product.price.toLocaleString()}
@@ -338,10 +344,6 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 										</div>
 									)}
 								</div>
-							) : (
-								<p className="text-red-600 font-medium">
-									Please login to see price
-								</p>
 							)}
 
 							{/* Stock */}
@@ -359,7 +361,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 							<div className="w-full flex gap-2">
 								<Button
 									onClick={handleBuyNow}
-									disabled={!product.inStock || isLoading}
+									disabled={!product.inStock || isLoading || !isAuthenticated}
 									className="bg-blue-600 text-white hover:bg-blue-800 rounded-full flex-shrink-0 whitespace-nowrap flex-1"
 									size="sm"
 								>
@@ -374,7 +376,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 								>
 									<HeartPlus className="h-4 w-4" />
 								</Button>
-								{/* <Button
+								<Button
 									variant="outline"
 									size="icon"
 									onClick={handleAddToCart}
@@ -382,7 +384,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 									className="rounded-full border-gray-300 hover:border-gray-400 bg-transparent"
 								>
 									<ShoppingCart className="h-4 w-4" />
-								</Button> */}
+								</Button>
 							</div>
 						</div>
 					</div>

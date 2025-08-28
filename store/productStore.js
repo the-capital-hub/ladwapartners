@@ -10,13 +10,13 @@ export const useProductStore = create(
 				// Initial State
 				products: [],
 				filteredProducts: [],
-				filters: {
-					categories: [],
-					priceRange: [0, 10000],
-					inStock: false,
-					discount: 0,
-					type: "",
-				},
+                                filters: {
+                                        categories: [],
+                                        priceRange: [0, 10000],
+                                        stockStatus: "all",
+                                        discount: 0,
+                                        type: "",
+                                },
                                 availableFilters: null,
                                 currentCategory: "all",
                                 currentSubCategory: "",
@@ -43,19 +43,27 @@ export const useProductStore = create(
                                                         sortOrder,
                                                 } = get();
 
-						const params = new URLSearchParams({
-							page: currentPage.toString(),
-							limit: "12",
-							sort: sortBy,
-							order: sortOrder,
-						});
+                                                const params = new URLSearchParams({
+                                                        page: currentPage.toString(),
+                                                        limit: "12",
+                                                        sort: sortBy,
+                                                        order: sortOrder,
+                                                });
 
-                                                if (currentCategory !== "all") {
-                                                        params.append("category", currentCategory);
-                                                }
+                                                // When specific categories are selected via filters, use them
+                                                if (filters.categories.length > 0) {
+                                                        params.append(
+                                                                "categories",
+                                                                filters.categories.join(",")
+                                                        );
+                                                } else {
+                                                        if (currentCategory !== "all") {
+                                                                params.append("category", currentCategory);
+                                                        }
 
-                                                if (currentSubCategory) {
-                                                        params.append("subCategory", currentSubCategory);
+                                                        if (currentSubCategory) {
+                                                                params.append("subCategory", currentSubCategory);
+                                                        }
                                                 }
 
 						if (searchQuery) {
@@ -66,13 +74,13 @@ export const useProductStore = create(
 							params.append("minPrice", filters.priceRange[0].toString());
 						}
 
-						if (filters.priceRange[1] < 10000) {
-							params.append("maxPrice", filters.priceRange[1].toString());
-						}
+                                                if (filters.priceRange[1] < 10000) {
+                                                        params.append("maxPrice", filters.priceRange[1].toString());
+                                                }
 
-						if (filters.inStock) {
-							params.append("inStock", "true");
-						}
+                                                if (filters.stockStatus !== "all") {
+                                                        params.append("stockStatus", filters.stockStatus);
+                                                }
 
 						if (filters.discount > 0) {
 							params.append("discount", filters.discount.toString());
@@ -108,18 +116,19 @@ export const useProductStore = create(
 						const response = await fetch("/api/products/filters");
 						const data = await response.json();
 
-						if (data.success) {
-							set({
-								availableFilters: data.filters,
-								filters: {
-									...get().filters,
-									priceRange: [
-										data.filters.priceRange.min,
-										data.filters.priceRange.max,
-									],
-								},
-							});
-						}
+                                                if (data.success) {
+                                                        set({
+                                                                availableFilters: data.filters,
+                                                                filters: {
+                                                                        ...get().filters,
+                                                                        priceRange: [
+                                                                                data.filters.priceRange.min,
+                                                                                data.filters.priceRange.max,
+                                                                        ],
+                                                                        stockStatus: "all",
+                                                                },
+                                                        });
+                                                }
 					} catch (error) {
 						console.error("Failed to fetch filters:", error);
 					}
@@ -168,7 +177,7 @@ export const useProductStore = create(
 					return get().products.find((product) => product.id === id);
 				},
 
-				// Get up to four featured products optionally filtered by current category.
+                                // Get up to three featured products optionally filtered by current category.
 				// The result is memoized to prevent returning a new array on each call, which
 				// can trigger React's "getSnapshot should be cached" warning when used with
 				// `useSyncExternalStore`.
@@ -197,7 +206,7 @@ export const useProductStore = create(
 
 						lastProducts = products;
 						lastCategory = currentCategory;
-						cached = featured.slice(0, 4);
+                                                cached = featured.slice(0, 3);
 
 						return cached;
 					};

@@ -11,9 +11,10 @@ export async function GET(request) {
 
 		// Extract query parameters
 		const minPrice = searchParams.get("minPrice");
-		const maxPrice = searchParams.get("maxPrice");
-		const inStock = searchParams.get("inStock");
-		const discount = searchParams.get("discount");
+                const maxPrice = searchParams.get("maxPrice");
+                const stockStatus = searchParams.get("stockStatus");
+                const discount = searchParams.get("discount");
+                const categories = searchParams.get("categories");
                 const category = searchParams.get("category");
                 const subCategory = searchParams.get("subCategory");
                 const search = searchParams.get("search");
@@ -27,7 +28,9 @@ export async function GET(request) {
 		const query = { published: true };
 
                 // Category filter
-                if (category && category !== "all") {
+                if (categories) {
+                        query.category = { $in: categories.split(",") };
+                } else if (category && category !== "all") {
                         query.category = category;
                 }
 
@@ -62,11 +65,13 @@ export async function GET(request) {
                         query.price = priceQuery;
                 }
 
-		// Stock filter
-		if (inStock === "true") {
-			query.inStock = true;
-			query.stocks = { $gt: 0 };
-		}
+                // Stock filter
+                if (stockStatus === "inStock") {
+                        query.inStock = true;
+                        query.stocks = { $gt: 0 };
+                } else if (stockStatus === "outOfStock") {
+                        query.$or = [{ inStock: false }, { stocks: { $lte: 0 } }];
+                }
 
 		// Discount filter
                 if (discount) {

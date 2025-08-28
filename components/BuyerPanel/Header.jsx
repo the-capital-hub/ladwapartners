@@ -6,20 +6,46 @@ import Logo from "@/public/ladwapartners.png";
 
 import { Button } from "@/components/ui/button";
 import { Menu, ShoppingCart, Heart, User, X } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useCartStore } from "@/store/cartStore";
 import MiniCart from "./cart/MiniCart";
 import {
-	useUserFullName,
-	useUserEmail,
-	useUserProfilePic,
-	useIsAuthenticated,
+        useUserFullName,
+        useUserEmail,
+        useUserProfilePic,
+        useIsAuthenticated,
 } from "@/store/authStore.js";
 
 export default function Header({ onMenuToggle, isMenuOpen }) {
 	const fullName = useUserFullName();
 	const email = useUserEmail();
 	const profilePic = useUserProfilePic();
-	const isAuthenticated = useIsAuthenticated();
+        const isAuthenticated = useIsAuthenticated();
+
+        const initials =
+                fullName
+                        ?.split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase() || "";
+        const pastelColors = [
+                "bg-red-200",
+                "bg-green-200",
+                "bg-blue-200",
+                "bg-yellow-200",
+                "bg-purple-200",
+                "bg-pink-200",
+                "bg-indigo-200",
+                "bg-teal-200",
+        ];
+        const colorClass =
+                pastelColors[
+                        initials
+                                ? (initials.charCodeAt(0) + (initials.charCodeAt(1) || 0)) %
+                                  pastelColors.length
+                                : 0
+                ];
 
 	// console.log("isAuthenticated", isAuthenticated);
 

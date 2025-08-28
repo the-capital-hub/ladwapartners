@@ -91,12 +91,13 @@ const OrderSchema = new mongoose.Schema(
 			],
 			required: true,
 		},
-		paymentStatus: {
-			type: String,
-			enum: ["pending", "paid", "failed", "refunded"],
-			default: "pending",
-		},
-		transactionId: String,
+                paymentStatus: {
+                        type: String,
+                        enum: ["pending", "paid", "failed", "refunded"],
+                        default: "pending",
+                },
+                transactionId: String,
+                paymentCompletedAt: Date,
 
 		// Order Status
 		status: {
