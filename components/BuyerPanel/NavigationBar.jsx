@@ -52,7 +52,7 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
 
   const staticItems = [
     { id: "home", label: "Home", href: "/home" },
-    { id: "about-us", label: "About us", href: "/home#about-us" },
+    { id: "about-us", label: "Contact Us", href: "/contact" },
   ];
 
   const orderedSlugs = [
