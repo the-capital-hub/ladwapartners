@@ -14,10 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useProductStore } from "@/store/productStore.js";
 
-export default function NavigationBar({ isMenuOpen, onMenuClose }) {
-  const [searchQuery, setSearchQuery] = useState("");
+export default function NavigationBar({
+  isMenuOpen,
+  onMenuClose,
+  categories = [],
+}) {
+  const [localSearch, setLocalSearch] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [categoryData, setCategoryData] = useState([]);
+  const [categoryData, setCategoryData] = useState(categories);
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
@@ -27,21 +31,12 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   } = useProductStore();
 
   useEffect(() => {
-    setSearchQuery(globalSearch);
+    setLocalSearch(globalSearch);
   }, [globalSearch]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch("/api/admin/categories?limit=100");
-        const data = await res.json();
-        if (data.success) setCategoryData(data.categories || []);
-      } catch (error) {
-        console.error("Failed to load categories", error);
-      }
-    };
-    fetchCategories();
-  }, []);
+    setCategoryData(categories);
+  }, [categories]);
 
 
   const slugify = (text) =>
@@ -52,7 +47,7 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
 
   const staticItems = [
     { id: "home", label: "Home", href: "/home" },
-    { id: "about-us", label: "About us", href: "/home#about-us" },
+    { id: "about-us", label: "Contact Us", href: "/contact" },
   ];
 
   const orderedSlugs = [
@@ -77,6 +72,9 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   const navItems = [...staticItems, ...dynamicItems];
 
   const handleCategoryClick = (categoryId, subCategory) => {
+    // Clear any existing search before navigating to a category
+    setGlobalSearch("");
+    setLocalSearch("");
     setCurrentCategory(categoryId, subCategory);
 
     const params = new URLSearchParams({ category: categoryId });
@@ -89,6 +87,9 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   };
 
   const handleNavigation = (href) => {
+    // Clear search when navigating to static routes
+    setGlobalSearch("");
+    setLocalSearch("");
     if (href.includes("#")) {
       window.location.href = href;
     } else {
@@ -99,9 +100,12 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      setGlobalSearch(searchQuery);
-      router.push(`/products?search=${encodeURIComponent(searchQuery)}`);
+    const query = localSearch.trim();
+    if (query) {
+      // Reset category to search across all products
+      setCurrentCategory("all", "");
+      setGlobalSearch(query);
+      router.push(`/products?search=${encodeURIComponent(query)}`);
       setMobileSearchOpen(false); // close after search on mobile
     }
   };
@@ -186,8 +190,8 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
               <Input
                 placeholder="Search products..."
                 className="w-64 pr-12"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
               />
               <Button
                 type="submit"
@@ -224,8 +228,8 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
                 <Input
                   placeholder="Search products..."
                   className="w-full md:w-64 pr-12"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  value={localSearch}
+                  onChange={(e) => setLocalSearch(e.target.value)}
                 />
                 <Button
                   type="submit"
