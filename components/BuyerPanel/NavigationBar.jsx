@@ -14,10 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useProductStore } from "@/store/productStore.js";
 
-export default function NavigationBar({ isMenuOpen, onMenuClose }) {
+export default function NavigationBar({
+  isMenuOpen,
+  onMenuClose,
+  categories = [],
+}) {
   const [localSearch, setLocalSearch] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [categoryData, setCategoryData] = useState([]);
+  const [categoryData, setCategoryData] = useState(categories);
   const router = useRouter();
   const {
     setSearchQuery: setGlobalSearch,
@@ -31,17 +35,8 @@ export default function NavigationBar({ isMenuOpen, onMenuClose }) {
   }, [globalSearch]);
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch("/api/admin/categories?limit=100");
-        const data = await res.json();
-        if (data.success) setCategoryData(data.categories || []);
-      } catch (error) {
-        console.error("Failed to load categories", error);
-      }
-    };
-    fetchCategories();
-  }, []);
+    setCategoryData(categories);
+  }, [categories]);
 
 
   const slugify = (text) =>
