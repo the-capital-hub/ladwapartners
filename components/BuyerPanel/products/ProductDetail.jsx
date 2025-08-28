@@ -3,14 +3,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+// import { Badge } from "@/components/ui/badge";
+// import { Card, CardContent } from "@/components/ui/card";
 import {
 	ArrowLeft,
 	ShoppingCart,
-	ChevronLeft, ChevronRight,
+	ChevronLeft,
+	ChevronRight,
 	Heart,
-
 	Minus,
 	Plus,
 	MapPin,
@@ -39,89 +39,87 @@ import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
 export default function ProductDetail({ product, relatedProducts = [] }) {
 	const [selectedImage, setSelectedImage] = useState(0);
 	const [quantity, setQuantity] = useState(1);
-        const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
-        const [reviews, setReviews] = useState([]);
-        const router = useRouter();
-        const isAuthenticated = useIsAuthenticated();
-        const { addItem, isLoading } = useCartStore();
+	const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
+	const [reviews, setReviews] = useState([]);
+	const router = useRouter();
+	const isAuthenticated = useIsAuthenticated();
+	const { addItem, isLoading } = useCartStore();
 
-        const [isWishlisted, setIsWishlisted] = useState(false);
+	const [isWishlisted, setIsWishlisted] = useState(false);
 
-        useEffect(() => {
-                if (typeof window === "undefined") return;
-                const list = JSON.parse(localStorage.getItem("wishlist") || "[]");
-                const id = product.id || product._id;
-                setIsWishlisted(list.some((item) => item.id === id));
-        }, [product]);
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		const list = JSON.parse(localStorage.getItem("wishlist") || "[]");
+		const id = product.id || product._id;
+		setIsWishlisted(list.some((item) => item.id === id));
+	}, [product]);
 
-        const toggleWishlist = () => {
-                if (typeof window === "undefined") return;
-                const id = product.id || product._id;
-                let list = JSON.parse(localStorage.getItem("wishlist") || "[]");
-               if (list.some((item) => item.id === id)) {
-                       list = list.filter((item) => item.id !== id);
-                       toast.success("Removed from wishlist");
-                       setIsWishlisted(false);
-               } else {
-                       // Store full product details so wishlist items can be moved to cart reliably
-                       list.push({
-                               id,
-                               name: product.title || product.name,
-                               description: product.description,
-                               price: product.price,
-                               originalPrice: product.originalPrice,
-                               image: getDirectGoogleDriveImageUrl(
-                                       product.images?.[0] || product.image || fallbackThumbImage
-                               ),
-                               inStock: product.inStock,
-                       });
-                       toast.success("Added to wishlist");
-                       setIsWishlisted(true);
-               }
-               localStorage.setItem("wishlist", JSON.stringify(list));
-        };
+	const toggleWishlist = () => {
+		if (typeof window === "undefined") return;
+		const id = product.id || product._id;
+		let list = JSON.parse(localStorage.getItem("wishlist") || "[]");
+		if (list.some((item) => item.id === id)) {
+			list = list.filter((item) => item.id !== id);
+			toast.success("Removed from wishlist");
+			setIsWishlisted(false);
+		} else {
+			// Store full product details so wishlist items can be moved to cart reliably
+			list.push({
+				id,
+				name: product.title || product.name,
+				description: product.description,
+				price: product.price,
+				originalPrice: product.originalPrice,
+				image: getDirectGoogleDriveImageUrl(
+					product.images?.[0] || product.image || fallbackThumbImage
+				),
+				inStock: product.inStock,
+			});
+			toast.success("Added to wishlist");
+			setIsWishlisted(true);
+		}
+		localStorage.setItem("wishlist", JSON.stringify(list));
+	};
 
-        const handleShare = async () => {
-                try {
-                        const url = typeof window !== "undefined" ? window.location.href : "";
-                        if (navigator.share) {
-                                await navigator.share({ title: product.name, url });
-                        } else if (navigator.clipboard) {
-                                await navigator.clipboard.writeText(url);
-                                toast.success("Link copied to clipboard");
-                        }
-                } catch (error) {
-                        toast.error("Failed to share");
-                }
-        };
+	const handleShare = async () => {
+		try {
+			const url = typeof window !== "undefined" ? window.location.href : "";
+			if (navigator.share) {
+				await navigator.share({ title: product.name, url });
+			} else if (navigator.clipboard) {
+				await navigator.clipboard.writeText(url);
+				toast.success("Link copied to clipboard");
+			}
+		} catch (error) {
+			toast.error("Failed to share");
+		}
+	};
 
-        const fallbackMainImage =
-                "https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
-        const fallbackThumbImage =
-                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
+	const fallbackMainImage =
+		"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
+	const fallbackThumbImage =
+		"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
 
-        const mainImageSrc = getDirectGoogleDriveImageUrl(
-                product.images?.[selectedImage] ||
-                        product.image ||
-                        fallbackMainImage
-        );
-        const isMainImageUnoptimized = mainImageSrc.includes("google");
+	const mainImageSrc = getDirectGoogleDriveImageUrl(
+		product.images?.[selectedImage] || product.image || fallbackMainImage
+	);
+	const isMainImageUnoptimized = mainImageSrc.includes("google");
 
-        useEffect(() => {
-                const fetchReviews = async () => {
-                        try {
-                                const id = product.id || product._id;
-                                const res = await fetch(`/api/products/${id}/reviews`);
-                                if (res.ok) {
-                                        const data = await res.json();
-                                        setReviews(data.reviews || []);
-                                }
-                        } catch (error) {
-                                console.error("Failed to load reviews", error);
-                        }
-                };
-                fetchReviews();
-        }, [product]);
+	useEffect(() => {
+		const fetchReviews = async () => {
+			try {
+				const id = product.id || product._id;
+				const res = await fetch(`/api/products/${id}/reviews`);
+				if (res.ok) {
+					const data = await res.json();
+					setReviews(data.reviews || []);
+				}
+			} catch (error) {
+				console.error("Failed to load reviews", error);
+			}
+		};
+		fetchReviews();
+	}, [product]);
 
 	const quantityOffers = [
 		{
@@ -153,22 +151,22 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 	const handleAddToCart = async (e) => {
 		e.stopPropagation();
 
-               // Use the unified addItem function
-               await addItem(
-                       {
-                               id: product.id || product._id,
-                               name: product.title,
-                               description: product.description,
-                               price: product.price,
-                               originalPrice: product.originalPrice,
-                               image: getDirectGoogleDriveImageUrl(
-                                       product.images?.[0] || product.image
-                               ),
-                               inStock: product.inStock,
-                       },
-                       quantity
-               );
-       };
+		// Use the unified addItem function
+		await addItem(
+			{
+				id: product.id || product._id,
+				name: product.title,
+				description: product.description,
+				price: product.price,
+				originalPrice: product.originalPrice,
+				image: getDirectGoogleDriveImageUrl(
+					product.images?.[0] || product.image
+				),
+				inStock: product.inStock,
+			},
+			quantity
+		);
+	};
 
 	const handleBuyNow = async (e) => {
 		e.stopPropagation();
@@ -186,8 +184,6 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 		}
 	};
 
-
-
 	// const colors = [
 	// 	"bg-blue-500",
 	// 	"bg-black",
@@ -200,8 +196,9 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 		return Array.from({ length: 5 }, (_, i) => (
 			<Star
 				key={i}
-				className={`w-4 h-4 ${i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-					}`}
+				className={`w-4 h-4 ${
+					i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+				}`}
 			/>
 		));
 	};
@@ -236,89 +233,93 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 						{/* Product Images Section */}
 						<div className="relative">
 							{/* Main Product Image */}
-                                                        <div className="relative bg-gray-50 rounded-lg overflow-hidden">
-                                                                <div className="relative h-96 md:h-[66vh]">
-                                                                        <Image
-                                                                                src={mainImageSrc}
-                                                                                alt={product.name}
-                                                                                fill
-                                                                                sizes="100vw"
-                                                                                className="object-contain p-8"
-                                                                                unoptimized={isMainImageUnoptimized}
-                                                                        />
-                                                                </div>
-                                                        </div>
+							<div className=" bg-gray-50 rounded-lg overflow-hidden">
+								<div className="relative h-96 md:h-[66vh]">
+									<Image
+										src={mainImageSrc}
+										alt={product.name}
+										fill
+										sizes="100vw"
+										className="object-contain p-8"
+										// unoptimized={isMainImageUnoptimized}
+									/>
+									{/* Navigation arrows - positioned at bottom right */}
+									<div className="absolute top-1/2 right-1/2 transform translate-x-1/2 flex justify-between w-full px-10">
+										<button className="bg-gray-100 rounded-xl p-2  hover:bg-gray-200">
+											<ChevronLeft className="h-5 w-5 text-black" />
+										</button>
+										<button className="bg-gray-100 rounded-xl p-2 hover:bg-gray-200">
+											<ChevronRight className="h-5 w-5 text-black" />
+										</button>
+									</div>
+								</div>
+							</div>
 
 							{/* Share and Wishlist Icons - positioned on right side */}
-                                                        <div className="absolute top-0 right-0 flex flex-col items-center space-y-2 p-2">
-                                                                <button
-                                                                        onClick={handleShare}
-                                                                        className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
-                                                                >
-                                                                        <Share className="h-5 w-5 text-black" />
-                                                                </button>
-                                                                <button
-                                                                        onClick={toggleWishlist}
-                                                                        className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
-                                                                >
-                                                                        <Heart
-                                                                                className={`h-5 w-5 ${isWishlisted
-                                                                                        ? "fill-red-500 text-red-500"
-                                                                                        : "text-black"
-                                                                                }`}
-                                                                        />
-                                                                </button>
-                                                        </div>
+							<div className="absolute top-0 right-0 flex flex-col items-center space-y-2 p-2">
+								<button
+									onClick={handleShare}
+									className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
+								>
+									<Share className="h-5 w-5 text-black" />
+								</button>
+								<button
+									onClick={toggleWishlist}
+									className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
+								>
+									<Heart
+										className={`h-5 w-5 ${
+											isWishlisted ? "fill-red-500 text-red-500" : "text-black"
+										}`}
+									/>
+								</button>
+							</div>
 
 							{/* Navigation arrows - positioned at bottom right */}
-							<div className="absolute bottom-[24%] right-2 flex flex-col space-y-2">
+							{/* <div className="absolute bottom-[24%] right-2 flex flex-col space-y-2">
 								<button className="bg-gray-100 rounded-xl p-2  hover:bg-gray-200">
 									<ChevronLeft className="h-5 w-5 text-black" />
 								</button>
 								<button className="bg-gray-100 rounded-xl p-2 hover:bg-gray-200">
 									<ChevronRight className="h-5 w-5 text-black" />
 								</button>
-							</div>
+							</div> */}
 
 							{/* Thumbnail Images */}
-                                                        <div className="flex gap-2 mt-4">
-                                                                {product.images?.slice(0, 4).map((image, index) => {
-                                                                        const src = getDirectGoogleDriveImageUrl(
-                                                                                image ||
-                                                                                        fallbackThumbImage
-                                                                        );
-                                                                        const unopt = src.includes("google");
-                                                                        return (
-                                                                                <button
-                                                                                        key={index}
-                                                                                        onClick={() => setSelectedImage(index)}
-                                                                                        className={`relative w-16 h-16 md:w-20 md:h-20 border rounded-lg overflow-hidden flex-shrink-0 ${selectedImage === index
-                                                                                                ? "border-blue-500"
-                                                                                                : "border-gray-200 hover:border-gray-300"
-                                                                                                }`}
-                                                                                >
-                                                                                        <Image
-                                                                                                src={src}
-                                                                                                alt={`${product.name} view ${index + 1}`}
-                                                                                                fill
-                                                                                                sizes="80px"
-                                                                                                className="object-contain p-1"
-                                                                                                unoptimized={unopt}
-                                                                                        />
-                                                                                </button>
-                                                                        );
-                                                                })}
-                                                        </div>
+							<div className="flex gap-2 mt-4">
+								{product.images?.slice(0, 4).map((image, index) => {
+									const src = getDirectGoogleDriveImageUrl(
+										image || fallbackThumbImage
+									);
+									const unopt = src.includes("google");
+									return (
+										<button
+											key={index}
+											onClick={() => setSelectedImage(index)}
+											className={`relative w-16 h-16 md:w-20 md:h-20 border rounded-lg overflow-hidden flex-shrink-0 ${
+												selectedImage === index
+													? "border-blue-500"
+													: "border-gray-200 hover:border-gray-300"
+											}`}
+										>
+											<Image
+												src={src}
+												alt={`${product.name} view ${index + 1}`}
+												fill
+												sizes="80px"
+												className="object-contain p-1"
+												// unoptimized={unopt}
+											/>
+										</button>
+									);
+								})}
+							</div>
 						</div>
 
 						{/* Product Details Section */}
 						<div className="">
-
-
 							{/* Category */}
-							<div className="text-gray-500 text-sm">
-								Ladwa
-							</div>
+							<div className="text-gray-500 text-sm">Ladwa</div>
 
 							{/* Product Name */}
 							<h1 className="text-2xl mb-4 md:text-3xl font-bold text-gray-900 leading-tight">
@@ -347,11 +348,11 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 								</div>
 							</div>
 
-
-
 							{/* Update Quantity */}
 							<div className="border-b-2 flex items-center py-5 gap-6 border-dotted mb-4">
-								<div className="text-gray-700 font-medium mb-3">Update Qty:</div>
+								<div className="text-gray-700 font-medium mb-3">
+									Update Qty:
+								</div>
 								<div className="flex items-center gap-4">
 									<div className="flex items-center">
 										<button
@@ -361,9 +362,7 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 										>
 											<Minus className="h-4 w-4 text-gray-600" />
 										</button>
-										<span className="px-4 py-2 font-medium">
-											{quantity}
-										</span>
+										<span className="px-4 py-2 font-medium">{quantity}</span>
 										<button
 											onClick={() => handleQuantityChange(1)}
 											disabled={quantity >= product.stocks}
@@ -376,20 +375,12 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 							</div>
 
 							{/* Product Description */}
-							<div className="space-y-4 mb-4 text-gray-700 text-sm leading-relaxed">
-								<div>
-									<span className="font-semibold">Set of Four Speed Breakers:</span> {product.description.setOfFour}
-								</div>
-								<div>
-									<span className="font-semibold">75mm Height:</span> {product.description.height}
-								</div>
-								<div>
-									<span className="font-semibold">1 Meter Long:</span> {product.description.meterLong}
-								</div>
-								<div>
-									<span className="font-semibold">Traffic Speed Control:</span> {product.description.trafficControl}
-								</div>
-							</div>
+							{/* <div className="space-y-4 mb-4 text-gray-700 text-sm leading-relaxed">
+								<div>{product.description.setOfFour}</div>
+								<div>{product.description.height}</div>
+								<div>{product.description.meterLong}</div>
+								<div>{product.description.trafficControl}</div>
+							</div> */}
 
 							{/* Action Buttons */}
 							<div className="flex gap-3">
@@ -409,77 +400,82 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 								</button>
 							</div>
 
-                                                        {/* Product Specification */}
-                                                        <div className="space-y-2 py-4 border-t border-gray-200 text-sm text-gray-600">
-                                                                <h3 className="font-semibold text-black mb-2">Product Specification</h3>
-                                                                <table className="w-full text-left text-sm">
-                                                                        <tbody>
-                                                                                {product.length && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Length</td>
-                                                                                                <td>{product.length}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                                {product.width && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Width</td>
-                                                                                                <td>{product.width}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                                {product.height && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Height</td>
-                                                                                                <td>{product.height}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                                {product.weight && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Weight</td>
-                                                                                                <td>{product.weight}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                                {product.colour && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Color</td>
-                                                                                                <td>{product.colour}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                                {product.material && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Material</td>
-                                                                                                <td>{product.material}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                                {product.brand && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Brand</td>
-                                                                                                <td>{product.brand}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                                {product.size && (
-                                                                                        <tr>
-                                                                                                <td className="pr-4">Size</td>
-                                                                                                <td>{product.size}</td>
-                                                                                        </tr>
-                                                                                )}
-                                                                        </tbody>
-                                                                </table>
-                                                                <div>
-                                                                        <span className="font-semibold">Category:</span>{" "}
-                                                                        <span className="text-blue-600 hover:underline cursor-pointer">
-                                                                                {product.category}
-                                                                        </span>
-                                                                </div>
-                                                        </div>
+							{/* Product Specification */}
+							<div className="space-y-2 py-4 border-t border-gray-200 text-sm text-gray-600">
+								<h3 className="font-semibold text-black mb-2">
+									Product Specification
+								</h3>
+								<table className="w-full text-left text-sm">
+									<tbody>
+										{product.length && (
+											<tr>
+												<td className="pr-4">Length</td>
+												<td>{product.length}</td>
+											</tr>
+										)}
+										{product.width && (
+											<tr>
+												<td className="pr-4">Width</td>
+												<td>{product.width}</td>
+											</tr>
+										)}
+										{product.height && (
+											<tr>
+												<td className="pr-4">Height</td>
+												<td>{product.height}</td>
+											</tr>
+										)}
+										{product.weight && (
+											<tr>
+												<td className="pr-4">Weight</td>
+												<td>{product.weight}</td>
+											</tr>
+										)}
+										{product.colour && (
+											<tr>
+												<td className="pr-4">Color</td>
+												<td>{product.colour}</td>
+											</tr>
+										)}
+										{product.material && (
+											<tr>
+												<td className="pr-4">Material</td>
+												<td>{product.material}</td>
+											</tr>
+										)}
+										{product.brand && (
+											<tr>
+												<td className="pr-4">Brand</td>
+												<td>{product.brand}</td>
+											</tr>
+										)}
+										{product.size && (
+											<tr>
+												<td className="pr-4">Size</td>
+												<td>{product.size}</td>
+											</tr>
+										)}
+									</tbody>
+								</table>
+								<div>
+									<span className="font-semibold">Category:</span>{" "}
+									<span className="text-blue-600 hover:underline cursor-pointer">
+										{product.category}
+									</span>
+								</div>
+							</div>
 						</div>
 					</div>
-					<div className="text-sm text-gray-600 mb-7">
-						<span className="font-semibold text-black text-lg md:text-lg"> Description:</span> {product?.description}
+					<div className="text-sm text-gray-600 my-8">
+						<span className="font-semibold text-black text-lg md:text-lg">
+							Description:{" "}
+						</span>
+						{product?.description}
 					</div>
 				</div>
 
 				{/* Reviews & Ratings Section */}
-                            <ReviewAndRatings reviews={reviews} />
+				<ReviewAndRatings />
 
 				{/* Benefits and Warranty Section */}
 				{/* <motion.div
@@ -488,9 +484,9 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.5, delay: 0.8 }}
 				> */}
-					{/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> */}
-						{/* Store Benefits */}
-						{/* <Card>
+				{/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8"> */}
+				{/* Store Benefits */}
+				{/* <Card>
 							<CardContent className="p-6">
 								<h2 className="text-xl font-bold mb-6">Store Benefits</h2>
 								<div className="space-y-4">
@@ -510,8 +506,8 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 							</CardContent>
 						</Card> */}
 
-						{/* Return & Warranty Policy */}
-						{/* <Card>
+				{/* Return & Warranty Policy */}
+				{/* <Card>
 							<CardContent className="p-6">
 								<h2 className="text-xl font-bold mb-6">
 									Return & Warranty Policy
@@ -553,8 +549,6 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 						</div>
 					</motion.div>
 				)}
-
-
 			</div>
 		</div>
 	);

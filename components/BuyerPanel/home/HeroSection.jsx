@@ -11,25 +11,28 @@ import { Outfit } from "next/font/google";
 
 const outfit = Outfit({
 	variable: "--font-outift",
-	subsets: ["latin"]
-})
+	subsets: ["latin"],
+});
 
 export default function HeroSection() {
 	return (
 		<section className="relative w-full min-h-screen flex items-center justify-center text-white overflow-hidden">
-
 			<div className="absolute inset-0 pointer-events-none w-screen left-1/2 transform -translate-x-1/2 hidden md:block">
 				{/* First Section - Highest */}
 				<div
 					className="absolute h-[90%] left-0 border-r border-white/10"
 					style={{
-						top: '0px',
-						bottom: '80px',
-						width: '33.333%',
-						backgroundColor: 'rgba(255, 255, 255, 0.08)',
+						top: "0px",
+						bottom: "80px",
+						width: "33.333%",
+						backgroundColor: "rgba(255, 255, 255, 0.08)",
 					}}
 				>
-					<Image src={hero1} alt="HeroImage" className="h-full w-full object-cover" />
+					<Image
+						src={hero1}
+						alt="HeroImage"
+						className="h-full w-full object-cover"
+					/>
 					{/* Black overlay */}
 					<div className="absolute inset-0 bg-black/60"></div>
 				</div>
@@ -38,19 +41,25 @@ export default function HeroSection() {
 				<div
 					className="absolute h-[85%] border-r border-r-[50%] border-white/30"
 					style={{
-						top: '0px',
-						bottom: '100px',
-						left: '33.333%',
-						width: '33.333%',
-						backgroundColor: 'rgba(255, 255, 255, 0.05)',
-						borderRight: '1px solid rgba(255, 255, 255, 0.3)'
+						top: "0px",
+						bottom: "100px",
+						left: "33.333%",
+						width: "33.333%",
+						backgroundColor: "rgba(255, 255, 255, 0.05)",
+						borderRight: "1px solid rgba(255, 255, 255, 0.3)",
 					}}
 				>
-					<Image src={hero2} alt="HeroImage" className="h-full w-full object-cover" />
+					<Image
+						src={hero2}
+						alt="HeroImage"
+						className="h-full w-full object-cover"
+					/>
 
 					<div className="absolute inset-0 bg-black/60"></div>
 					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
-						<span className="text-[#FFB82D] text-xl font-bold">SAFETY FIRST</span>
+						<span className="text-[#FFB82D] text-xl font-bold">
+							SAFETY FIRST
+						</span>
 					</div>
 				</div>
 
@@ -58,14 +67,18 @@ export default function HeroSection() {
 				<div
 					className="absolute h-[81%]"
 					style={{
-						top: '0px',
-						bottom: '200px',
-						left: '66.666%',
-						width: '33.334%',
-						backgroundColor: 'rgba(255, 255, 255, 0.05)',
+						top: "0px",
+						bottom: "200px",
+						left: "66.666%",
+						width: "33.334%",
+						backgroundColor: "rgba(255, 255, 255, 0.05)",
 					}}
 				>
-					<Image src={hero3} alt="HeroImage" className="h-full w-full object-cover" />
+					<Image
+						src={hero3}
+						alt="HeroImage"
+						className="h-full w-full object-cover"
+					/>
 					<div className="absolute inset-0 bg-black/60"></div>
 					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
 						<span className="text-white text-xl font-bold">FIRST AID KIT</span>
@@ -74,29 +87,33 @@ export default function HeroSection() {
 
 				<div
 					style={{
-						position: 'absolute',
-						bottom: '160px',
-						left: '33.333%',
-						width: '33.333%',
-						height: '1px',
-						backgroundColor: 'rgba(255, 255, 255, 0.3)'
+						position: "absolute",
+						bottom: "160px",
+						left: "33.333%",
+						width: "33.333%",
+						height: "1px",
+						backgroundColor: "rgba(255, 255, 255, 0.3)",
 					}}
 				></div>
 				<div
 					style={{
-						position: 'absolute',
-						bottom: '185px',
-						left: '66.666%',
-						width: '33.334%',
-						height: '1px',
-						backgroundColor: 'rgba(255, 255, 255, 0.3)'
+						position: "absolute",
+						bottom: "185px",
+						left: "66.666%",
+						width: "33.334%",
+						height: "1px",
+						backgroundColor: "rgba(255, 255, 255, 0.3)",
 					}}
 				></div>
 			</div>
 
 			{/* Mobile background image */}
 			<div className="absolute inset-0 md:hidden">
-				<Image src={mobileimg} alt="HeroImage" className="h-full w-full object-cover" />
+				<Image
+					src={mobileimg}
+					alt="HeroImage"
+					className="h-full w-full object-cover"
+				/>
 				{/* Black overlay for mobile */}
 				<div className="absolute inset-0 bg-black/60"></div>
 			</div>
@@ -110,7 +127,7 @@ export default function HeroSection() {
 						transition={{ duration: 0.6 }}
 						className={`bg-white/10 border border-t-[#FFB82D] text-xs md:text-sm font-medium px-3 py-1 md:px-4 md:py-1 rounded-full w-fit ${outfit.className}`}
 					>
-						#1 Platform for Road Safety
+						#1 Platform for Safety Products
 					</motion.span>
 
 					<motion.h1
@@ -119,34 +136,42 @@ export default function HeroSection() {
 						transition={{ duration: 0.8 }}
 						className="text-2xl md:text-3xl lg:text-6xl font-extrabold leading-tight"
 					>
-						DELIVERING SUPERIOR ROAD <br className="hidden md:block" />
+						{/* DELIVERING SUPERIOR ROAD <br className="hidden md:block" />
 						<span className="md:hidden">CONSTRUCTION SOLUTIONS</span>
-						<span className="hidden md:inline">CONSTRUCTION SOLUTIONS</span>
+						<span className="hidden md:inline">CONSTRUCTION SOLUTIONS</span> */}
+						MAKING THE WORLD SAFER
 					</motion.h1>
 
 					<motion.p
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className={`${outfit.className} text-white text-lg md:text-3xl max-w-3xl`}>
-						Trusted Global Brand in Road and Safety Innovation.
+						className={`${outfit.className} text-white text-lg md:text-3xl max-w-3xl`}
+					>
+						Ladwa Partners is an online portal by Ladwa Safety Inc.
 					</motion.p>
 
 					<motion.p
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className={`${outfit.className} text-sm md:text-base mt-4 md:mt-10 max-w-xl`}>
-						Safety is the most basic yet the most important rule of life. It is the sum of
-						safety precautions that determines the safety of the people working
-						near you.
+						className={`${outfit.className} text-sm md:text-base mt-4 md:mt-10 max-w-xl`}
+					>
+						{/* Safety is the most basic yet the most important rule of life. It is
+						the sum of safety precautions that determines the safety of the
+						people working near you. */}
+						Ladwa Partner is an online dealer portal by Ladwa Safety Inc., a
+						pioneer in the manufacture, supply, and export of Traffic Safety
+						Equipment, Industrial Safety Equipment, Security Equipment,
+						Barrication & Retro reflective signages.
 					</motion.p>
 
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className={`${outfit.className} flex flex-wrap items-center gap-4`}>
+						className={`${outfit.className} flex flex-wrap items-center gap-4`}
+					>
 						<Button className="bg-[#FFB82D] hover:bg-yellow-600 text-black font-semibold px-4 py-2 md:px-6 md:py-2 rounded-md text-sm md:text-base">
 							Get Started
 						</Button>
@@ -157,13 +182,20 @@ export default function HeroSection() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className="flex items-center gap-6 md:gap-10 pt-4">
+						className="flex items-center gap-6 md:gap-10 pt-4"
+					>
 						<div>
-							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">8K+</h3>
-							<p className="text-white text-sm md:text-base">Project Completed</p>
+							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">
+								8K+
+							</h3>
+							<p className="text-white text-sm md:text-base">
+								Project Completed
+							</p>
 						</div>
 						<div>
-							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">5.5K+</h3>
+							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">
+								5.5K+
+							</h3>
 							<p className="text-white text-sm md:text-base">Customers Happy</p>
 						</div>
 					</motion.div>

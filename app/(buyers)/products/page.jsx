@@ -2,42 +2,47 @@
 
 import { useEffect } from "react";
 import { useProductStore } from "@/store/productStore.js";
-// import ProductFilters from "@/components/BuyerPanel/products/ProductFilters.jsx";
 import ProductGrid from "@/components/BuyerPanel/products/ProductGrid.jsx";
+// import FeaturedBanner from "@/components/BuyerPanel/products/FeaturedBanner.jsx";
 import ProductBanner from "@/components/BuyerPanel/products/ProductBanner.jsx";
 import { useSearchParams } from "next/navigation";
 
 export default function ProductsPage() {
 	const searchParams = useSearchParams();
 
-        const { error, fetchProducts, setCurrentCategory, setSearchQuery, setFilters } =
-                useProductStore();
+	const {
+		error,
+		fetchProducts,
+		setCurrentCategory,
+		setSearchQuery,
+		setFilters,
+	} = useProductStore();
 
-        // Handle URL parameters
-        useEffect(() => {
-                const category = searchParams.get("category");
-                const subCategory = searchParams.get("subCategory");
-                const search = searchParams.get("search");
+	// Handle URL parameters
+	useEffect(() => {
+		const category = searchParams.get("category");
+		const subCategory = searchParams.get("subCategory");
+		const search = searchParams.get("search");
 
-                if (search) {
-                        setSearchQuery(search);
-                } else if (category || subCategory) {
-                        if (category && !subCategory) {
-                                setFilters({ categories: [category] });
-                        } else {
-                                setFilters({ categories: [] });
-                        }
-                        setCurrentCategory(category || "all", subCategory || "");
-                } else {
-                        fetchProducts();
-                }
-        }, [
-                searchParams,
-                fetchProducts,
-                setCurrentCategory,
-                setSearchQuery,
-                setFilters,
-        ]);
+		if (search) {
+			setSearchQuery(search);
+		} else if (category || subCategory) {
+			if (category && !subCategory) {
+				setFilters({ categories: [category] });
+			} else {
+				setFilters({ categories: [] });
+			}
+			setCurrentCategory(category || "all", subCategory || "");
+		} else {
+			fetchProducts();
+		}
+	}, [
+		searchParams,
+		fetchProducts,
+		setCurrentCategory,
+		setSearchQuery,
+		setFilters,
+	]);
 
 	if (error) {
 		return (
@@ -58,7 +63,7 @@ export default function ProductsPage() {
 
 	return (
 		<div className="h-screen bg-gray-50">
-                        <ProductBanner />
+			<ProductBanner />
 			<div className="container mx-auto p-8">
 				<ProductGrid />
 			</div>

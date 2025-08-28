@@ -7,8 +7,8 @@ const ProductSchema = new mongoose.Schema(
 		longDescription: { type: String, required: true },
 		images: [{ type: String }],
 		category: { type: String, required: true },
-                subCategory: { type: String },
-                mrp: { type: Number, required: true },
+		subCategory: { type: String },
+		mrp: { type: Number, required: true },
 		featureImage: { type: String },
 		mainImageLink: { type: String },
 		length: { type: Number },
@@ -48,9 +48,7 @@ const ProductSchema = new mongoose.Schema(
 			},
 		},
 
-                reviews: [
-                        { type: mongoose.Schema.Types.ObjectId, ref: "Review" },
-                ],
+		reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
 
 		// Features array to handle product features
 		features: [
