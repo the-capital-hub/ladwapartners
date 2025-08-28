@@ -1,5 +1,7 @@
+"use client";
+
 import React from "react";
-import { motion } from "framer-motion";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import FireExtinguisherImg from "@/public/images/products/productBanner/FireExtinguisher.png";
 import SafetyCombo from "@/public/images/products/productBanner/SafetyCombo.png";
@@ -17,7 +19,7 @@ const ProductBanner = () => {
 			bgColor: "bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600",
 			textColor: "text-white",
 			buttonColor: "bg-white text-orange-600 hover:bg-gray-100",
-			image: SafetyCombo.src,
+			image: SafetyCombo,
 			imageAlt: "Safety equipment including helmet, gloves and tools",
 		},
 		{
@@ -29,7 +31,7 @@ const ProductBanner = () => {
 			bgColor: "bg-gradient-to-br from-pink-200 to-pink-300",
 			textColor: "text-gray-800",
 			buttonColor: "bg-red-500 text-white hover:bg-red-600",
-			image: FireExtinguisherImg.src,
+			image: FireExtinguisherImg,
 			imageAlt: "Fire extinguisher",
 			compact: true,
 		},
@@ -42,62 +44,19 @@ const ProductBanner = () => {
 			bgColor: "bg-gradient-to-br from-yellow-200 to-yellow-300",
 			textColor: "text-gray-800",
 			buttonColor: "bg-yellow-500 text-white hover:bg-yellow-600",
-			image: YellowCap.src,
+			image: YellowCap,
 			imageAlt: "Yellow safety helmet",
 			compact: true,
 		},
 	];
 
-	const containerVariants = {
-		hidden: { opacity: 0 },
-		visible: {
-			opacity: 1,
-			transition: {
-				staggerChildren: 0.2,
-				delayChildren: 0.1,
-			},
-		},
-	};
-
-	const itemVariants = {
-		hidden: { opacity: 0, y: 20 },
-		visible: {
-			opacity: 1,
-			y: 0,
-			transition: {
-				duration: 0.6,
-				ease: "easeOut",
-			},
-		},
-	};
-
-	const imageVariants = {
-		hidden: { opacity: 0, scale: 0.8, rotate: -10 },
-		visible: {
-			opacity: 1,
-			scale: 1,
-			rotate: 0,
-			transition: {
-				duration: 0.8,
-				ease: "easeOut",
-			},
-		},
-	};
-
 	const MainBanner = ({ banner }) => (
-		<motion.div
+		<div
 			className={`${banner.bgColor} ${banner.textColor} rounded-2xl p-8 overflow-hidden relative h-full`}
-			variants={itemVariants}
-			whileHover={{ scale: 1.02 }}
-			transition={{ duration: 0.3 }}
 		>
 			<div className="flex flex-col lg:flex-row items-center justify-between h-full">
 				<div className="flex-1 space-y-6 z-10 relative">
-					<motion.div
-						initial={{ opacity: 0, x: -20 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ delay: 0.3, duration: 0.6 }}
-					>
+					<div>
 						<p className="text-sm font-medium opacity-90 mb-2">
 							{banner.subtitle}
 						</p>
@@ -109,112 +68,81 @@ const ProductBanner = () => {
 								{banner.description}
 							</p>
 						)}
-					</motion.div>
+					</div>
 
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.6, duration: 0.6 }}
-					>
+					<div>
 						<Button
-							className={`${banner.buttonColor} px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:shadow-lg`}
+							className={`${banner.buttonColor} px-8 py-3 rounded-lg font-semibold transition-colors duration-200`}
 							size="lg"
 						>
 							{banner.buttonText}
 						</Button>
-					</motion.div>
+					</div>
 				</div>
 
-				<motion.div
-					className="flex-1 flex justify-center lg:justify-end mt-8 lg:mt-0"
-					variants={imageVariants}
-				>
-					<div className="relative">
-						<motion.img
+				<div className="flex-1 flex justify-center lg:justify-end mt-8 lg:mt-0">
+					<div className="relative w-80 h-64 flex items-center justify-center">
+						<Image
 							src={banner.image}
 							alt={banner.imageAlt}
-							className="w-80 h-64 object-contain"
-							whileHover={{ scale: 1.05, rotate: 2 }}
-							transition={{ duration: 0.3 }}
+							fill
+							className="object-contain"
+							sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							// priority
 						/>
-						{/* Decorative elements */}
-						<motion.div
-							className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full"
-							animate={{ y: [0, -10, 0] }}
-							transition={{ duration: 3, repeat: Infinity }}
-						/>
-						<motion.div
-							className="absolute -bottom-4 -left-4 w-6 h-6 bg-white/15 rounded-full"
-							animate={{ y: [0, 10, 0] }}
-							transition={{ duration: 4, repeat: Infinity }}
-						/>
+
+						{/* Static decorative elements */}
+						<div className="absolute -top-4 -right-4 w-8 h-8 bg-white/20 rounded-full z-10" />
+						<div className="absolute -bottom-4 -left-4 w-6 h-6 bg-white/15 rounded-full z-10" />
 					</div>
-				</motion.div>
+				</div>
 			</div>
-		</motion.div>
+		</div>
 	);
 
 	const CompactBanner = ({ banner }) => (
-		<motion.div
+		<div
 			className={`${banner.bgColor} ${banner.textColor} rounded-2xl p-6 overflow-hidden relative`}
-			variants={itemVariants}
-			whileHover={{ scale: 1.03 }}
-			transition={{ duration: 0.3 }}
 		>
 			<div className="flex justify-between">
-				<div className="space-y-4 z-10 relative">
-					<motion.div
-						initial={{ opacity: 0, x: -15 }}
-						animate={{ opacity: 1, x: 0 }}
-						transition={{ delay: 0.4, duration: 0.6 }}
-					>
+				<div className="space-y-4 z-10 relative flex-1">
+					<div>
 						<p className="text-xs font-medium opacity-80">{banner.subtitle}</p>
 						<h2 className="text-xl lg:text-2xl font-bold leading-tight mt-2">
 							{banner.title.toUpperCase()}
 						</h2>
-					</motion.div>
+					</div>
 
-					<motion.div
-						initial={{ opacity: 0, y: 15 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ delay: 0.7, duration: 0.6 }}
-					>
+					<div>
 						<Button
-							className={`${banner.buttonColor} px-6 py-2 rounded-lg font-semibold text-sm transition-all duration-300 hover:shadow-md`}
+							className={`${banner.buttonColor} px-6 py-2 rounded-lg font-semibold text-sm transition-colors duration-200`}
 						>
 							{banner.buttonText}
 						</Button>
-					</motion.div>
+					</div>
 				</div>
 
-				<motion.div className="w-32 h-auto" variants={imageVariants}>
-					<div className="relative">
-						<motion.img
+				<div className="w-32 h-auto flex items-center justify-center">
+					<div className="relative w-24 h-20 lg:w-32 lg:h-28 flex items-center justify-center">
+						<Image
 							src={banner.image}
 							alt={banner.imageAlt}
-							className="w-24 h-20 lg:w-32 lg:h-28 object-contain"
-							whileHover={{ scale: 1.1, rotate: 5 }}
-							transition={{ duration: 0.3 }}
+							fill
+							className="object-contain"
+							sizes="(max-width: 1024px) 96px, 128px"
+							// priority
 						/>
-						{/* Floating decoration */}
-						<motion.div
-							className="absolute -top-2 -right-2 w-4 h-4 bg-white/25 rounded-full"
-							animate={{ scale: [1, 1.2, 1] }}
-							transition={{ duration: 2, repeat: Infinity }}
-						/>
+
+						{/* Static decoration */}
+						<div className="absolute -top-2 -right-2 w-4 h-4 bg-white/25 rounded-full z-10" />
 					</div>
-				</motion.div>
+				</div>
 			</div>
-		</motion.div>
+		</div>
 	);
 
 	return (
-		<motion.div
-			className="py-4 px-8 space-y-6"
-			variants={containerVariants}
-			initial="hidden"
-			animate="visible"
-		>
+		<div className="py-4 px-8 space-y-6">
 			{/* Main Banner */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				{/* Large Banner */}
@@ -229,7 +157,7 @@ const ProductBanner = () => {
 					))}
 				</div>
 			</div>
-		</motion.div>
+		</div>
 	);
 };
 

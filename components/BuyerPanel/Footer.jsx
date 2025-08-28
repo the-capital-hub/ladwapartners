@@ -10,7 +10,7 @@ export default function Footer() {
 	const footerSections = {
 		support: {
 			title: "Support",
-			items: ["hello@ladwapartners.com", "9945234161"],
+			items: ["sales@ladwaspartner.com", "+91 9945234161"],
 		},
 		account: {
 			title: "Account",

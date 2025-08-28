@@ -2,27 +2,26 @@
 
 import { useEffect } from "react";
 import { useProductStore } from "@/store/productStore.js";
-// import ProductFilters from "@/components/BuyerPanel/products/ProductFilters.jsx";
 import ProductGrid from "@/components/BuyerPanel/products/ProductGrid.jsx";
-import FeaturedBanner from "@/components/BuyerPanel/products/FeaturedBanner.jsx";
+// import FeaturedBanner from "@/components/BuyerPanel/products/FeaturedBanner.jsx";
 import ProductBanner from "@/components/BuyerPanel/products/ProductBanner.jsx";
 import { useSearchParams } from "next/navigation";
 
 export default function ProductsPage() {
 	const searchParams = useSearchParams();
 
-        const { error, fetchProducts, setCurrentCategory, setSearchQuery } =
-                useProductStore();
+	const { error, fetchProducts, setCurrentCategory, setSearchQuery } =
+		useProductStore();
 
 	// Handle URL parameters
 	useEffect(() => {
-                const category = searchParams.get("category");
-                const subCategory = searchParams.get("subCategory");
-                const search = searchParams.get("search");
+		const category = searchParams.get("category");
+		const subCategory = searchParams.get("subCategory");
+		const search = searchParams.get("search");
 
-                if (category || subCategory) {
-                        setCurrentCategory(category || "all", subCategory || "");
-                }
+		if (category || subCategory) {
+			setCurrentCategory(category || "all", subCategory || "");
+		}
 
 		if (search) {
 			setSearchQuery(search);
@@ -50,7 +49,6 @@ export default function ProductsPage() {
 
 	return (
 		<div className="h-screen bg-gray-50">
-			{/* Featured Banner */}
 			{/* <FeaturedBanner /> */}
 			<ProductBanner />
 			<div className="container mx-auto p-8">

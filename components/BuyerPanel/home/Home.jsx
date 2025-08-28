@@ -15,7 +15,7 @@ import FeaturedSection from "@/components/BuyerPanel/home/FeaturedSection.jsx";
 import AboutLadwaPartners from "./AboutLadwaPartners";
 import AboutUsLadwaPartners from "./AboutUsLadwaPartners";
 import ResearchAndDevelopment from "./ResearchAndDevelopment";
-import WithOur from "./WithOur";
+import ClientCarousel from "@/components/BuyerPanel/home/ClientCarousel.jsx";
 
 export default function HomePage() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -72,19 +72,20 @@ export default function HomePage() {
 	}
 
 	return (
-                <div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
-                        {/* <NavigationBar /> */}
-                        <HeroSection />
-                        <FeaturedCategories />
-                        {/* <ProductShowcase products={discountedProducts} /> */}
-                        <AboutLadwaPartners/>
-						<FeaturedSection
-							topSellingProducts={topSellingProducts}
-							bestSellingProduct={bestSellingProduct}
-							featuredProducts={featuredProducts}
-						/>
-                        {/* <TrustedCompanies /> */}
-                        <AboutUsLadwaPartners/>
+		<div className="min-h-[calc(100vh-68px)] bg-white hide-scrollbar">
+			{/* <NavigationBar /> */}
+			<HeroSection />
+			<FeaturedCategories />
+			{/* <ProductShowcase products={discountedProducts} /> */}
+			<AboutLadwaPartners />
+			<ClientCarousel />
+			<FeaturedSection
+				topSellingProducts={topSellingProducts}
+				bestSellingProduct={bestSellingProduct}
+				featuredProducts={featuredProducts}
+			/>
+			{/* <TrustedCompanies /> */}
+			<AboutUsLadwaPartners />
 
 			{/* <CategorySection
 				products={categoryProducts}
@@ -98,11 +99,10 @@ export default function HomePage() {
 				isLoading={isLoading}
 			/> */}
 			<SupportSection />
-			<ResearchAndDevelopment/>
+			<ResearchAndDevelopment />
 			{/* <WithOur/> */}
 
-			
-{/* 
+			{/* 
 			<SearchSection
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
