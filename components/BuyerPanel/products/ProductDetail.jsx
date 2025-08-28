@@ -39,61 +39,61 @@ import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
 export default function ProductDetail({ product, relatedProducts = [] }) {
 	const [selectedImage, setSelectedImage] = useState(0);
 	const [quantity, setQuantity] = useState(1);
-        const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
-        const [reviews, setReviews] = useState([]);
-        const router = useRouter();
-        const isAuthenticated = useIsAuthenticated();
-        const { addItem, isLoading } = useCartStore();
+	const [selectedQuantityOffer, setSelectedQuantityOffer] = useState(null);
+	const [reviews, setReviews] = useState([]);
+	const router = useRouter();
+	const isAuthenticated = useIsAuthenticated();
+	const { addItem, isLoading } = useCartStore();
 
-        const [isWishlisted, setIsWishlisted] = useState(false);
+	const [isWishlisted, setIsWishlisted] = useState(false);
 
-        useEffect(() => {
-                if (typeof window === "undefined") return;
-                const list = JSON.parse(localStorage.getItem("wishlist") || "[]");
-                const id = product.id || product._id;
-                setIsWishlisted(list.some((item) => item.id === id));
-        }, [product]);
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		const list = JSON.parse(localStorage.getItem("wishlist") || "[]");
+		const id = product.id || product._id;
+		setIsWishlisted(list.some((item) => item.id === id));
+	}, [product]);
 
-        const toggleWishlist = () => {
-                if (typeof window === "undefined") return;
-                const id = product.id || product._id;
-                let list = JSON.parse(localStorage.getItem("wishlist") || "[]");
-               if (list.some((item) => item.id === id)) {
-                       list = list.filter((item) => item.id !== id);
-                       toast.success("Removed from wishlist");
-                       setIsWishlisted(false);
-               } else {
-                       // Store full product details so wishlist items can be moved to cart reliably
-                       list.push({
-                               id,
-                               name: product.title || product.name,
-                               description: product.description,
-                               price: product.price,
-                               originalPrice: product.originalPrice,
-                               image: getDirectGoogleDriveImageUrl(
-                                       product.images?.[0] || product.image || fallbackThumbImage
-                               ),
-                               inStock: product.inStock,
-                       });
-                       toast.success("Added to wishlist");
-                       setIsWishlisted(true);
-               }
-               localStorage.setItem("wishlist", JSON.stringify(list));
-        };
+	const toggleWishlist = () => {
+		if (typeof window === "undefined") return;
+		const id = product.id || product._id;
+		let list = JSON.parse(localStorage.getItem("wishlist") || "[]");
+		if (list.some((item) => item.id === id)) {
+			list = list.filter((item) => item.id !== id);
+			toast.success("Removed from wishlist");
+			setIsWishlisted(false);
+		} else {
+			// Store full product details so wishlist items can be moved to cart reliably
+			list.push({
+				id,
+				name: product.title || product.name,
+				description: product.description,
+				price: product.price,
+				originalPrice: product.originalPrice,
+				image: getDirectGoogleDriveImageUrl(
+					product.images?.[0] || product.image || fallbackThumbImage
+				),
+				inStock: product.inStock,
+			});
+			toast.success("Added to wishlist");
+			setIsWishlisted(true);
+		}
+		localStorage.setItem("wishlist", JSON.stringify(list));
+	};
 
-        const handleShare = async () => {
-                try {
-                        const url = typeof window !== "undefined" ? window.location.href : "";
-                        if (navigator.share) {
-                                await navigator.share({ title: product.name, url });
-                        } else if (navigator.clipboard) {
-                                await navigator.clipboard.writeText(url);
-                                toast.success("Link copied to clipboard");
-                        }
-                } catch (error) {
-                        toast.error("Failed to share");
-                }
-        };
+	const handleShare = async () => {
+		try {
+			const url = typeof window !== "undefined" ? window.location.href : "";
+			if (navigator.share) {
+				await navigator.share({ title: product.name, url });
+			} else if (navigator.clipboard) {
+				await navigator.clipboard.writeText(url);
+				toast.success("Link copied to clipboard");
+			}
+		} catch (error) {
+			toast.error("Failed to share");
+		}
+	};
 
 	const fallbackMainImage =
 		"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
@@ -105,21 +105,21 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 	);
 	const isMainImageUnoptimized = mainImageSrc.includes("google");
 
-        useEffect(() => {
-                const fetchReviews = async () => {
-                        try {
-                                const id = product.id || product._id;
-                                const res = await fetch(`/api/products/${id}/reviews`);
-                                if (res.ok) {
-                                        const data = await res.json();
-                                        setReviews(data.reviews || []);
-                                }
-                        } catch (error) {
-                                console.error("Failed to load reviews", error);
-                        }
-                };
-                fetchReviews();
-        }, [product]);
+	useEffect(() => {
+		const fetchReviews = async () => {
+			try {
+				const id = product.id || product._id;
+				const res = await fetch(`/api/products/${id}/reviews`);
+				if (res.ok) {
+					const data = await res.json();
+					setReviews(data.reviews || []);
+				}
+			} catch (error) {
+				console.error("Failed to load reviews", error);
+			}
+		};
+		fetchReviews();
+	}, [product]);
 
 	const quantityOffers = [
 		{
@@ -256,35 +256,34 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 							</div>
 
 							{/* Share and Wishlist Icons - positioned on right side */}
-                                                        <div className="absolute top-0 right-0 flex flex-col items-center space-y-2 p-2">
-                                                                <button
-                                                                        onClick={handleShare}
-                                                                        className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
-                                                                >
-                                                                        <Share className="h-5 w-5 text-black" />
-                                                                </button>
-                                                                <button
-                                                                        onClick={toggleWishlist}
-                                                                        className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
-                                                                >
-                                                                        <Heart
-                                                                                className={`h-5 w-5 ${isWishlisted
-                                                                                        ? "fill-red-500 text-red-500"
-                                                                                        : "text-black"
-                                                                                }`}
-                                                                        />
-                                                                </button>
-                                                        </div>
+							<div className="absolute top-0 right-0 flex flex-col items-center space-y-2 p-2">
+								<button
+									onClick={handleShare}
+									className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
+								>
+									<Share className="h-5 w-5 text-black" />
+								</button>
+								<button
+									onClick={toggleWishlist}
+									className="p-2 hover:bg-gray-200 rounded-xl bg-gray-100"
+								>
+									<Heart
+										className={`h-5 w-5 ${
+											isWishlisted ? "fill-red-500 text-red-500" : "text-black"
+										}`}
+									/>
+								</button>
+							</div>
 
 							{/* Navigation arrows - positioned at bottom right */}
-							<div className="absolute bottom-[24%] right-2 flex flex-col space-y-2">
+							{/* <div className="absolute bottom-[24%] right-2 flex flex-col space-y-2">
 								<button className="bg-gray-100 rounded-xl p-2  hover:bg-gray-200">
 									<ChevronLeft className="h-5 w-5 text-black" />
 								</button>
 								<button className="bg-gray-100 rounded-xl p-2 hover:bg-gray-200">
 									<ChevronRight className="h-5 w-5 text-black" />
 								</button>
-							</div>
+							</div> */}
 
 							{/* Thumbnail Images */}
 							<div className="flex gap-2 mt-4">

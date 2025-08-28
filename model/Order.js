@@ -91,13 +91,13 @@ const OrderSchema = new mongoose.Schema(
 			],
 			required: true,
 		},
-                paymentStatus: {
-                        type: String,
-                        enum: ["pending", "paid", "failed", "refunded"],
-                        default: "pending",
-                },
-                transactionId: String,
-                paymentCompletedAt: Date,
+		paymentStatus: {
+			type: String,
+			enum: ["pending", "paid", "failed", "refunded"],
+			default: "pending",
+		},
+		transactionId: String,
+		paymentCompletedAt: Date,
 
 		// Order Status
 		status: {
@@ -158,7 +158,7 @@ const OrderSchema = new mongoose.Schema(
 );
 
 // Indexes for better query performance
-OrderSchema.index({ orderNumber: 1 });
+// OrderSchema.index({ orderNumber: 1 });
 OrderSchema.index({ userId: 1 });
 OrderSchema.index({ status: 1 });
 OrderSchema.index({ orderDate: -1 });
