@@ -36,9 +36,19 @@ export async function GET(request) {
 
                 // Subcategory filter
                 if (subCategory) {
-                        const formattedSub = subCategory.replace(/-/g, " ");
+                        // The subcategory value comes from the client in a slugified form
+                        // where any sequence of non-alphanumeric characters (spaces, slashes, etc.)
+                        // is replaced with "-". To match it against the stored subCategory string
+                        // we build a regex that allows any non-alphanumeric characters in place
+                        // of each hyphen. This ensures categories like "Bollards/ spring post" or
+                        // "Q managers" are matched correctly.
+                        const regexPattern = subCategory
+                                .split("-")
+                                .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+                                .join("[^a-zA-Z0-9]+");
+
                         query.subCategory = {
-                                $regex: new RegExp(`^${formattedSub}$`, "i"),
+                                $regex: new RegExp(`^${regexPattern}$`, "i"),
                         };
                 }
 
