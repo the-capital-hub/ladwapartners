@@ -42,10 +42,9 @@ import {
 	Layers,
 	Ticket,
 	Languages,
-	DollarSign,
-	Eye,
-	Palette,
-	Cog,
+        Eye,
+        Palette,
+        Cog,
 } from "lucide-react";
 import Logo from "@/public/ladwapartners.png";
 import { useIsAuthenticated } from "@/store/adminAuthStore.js";
@@ -103,7 +102,7 @@ const menuItems = [
 	// 		{
 	// 			title: "Currencies",
 	// 			href: "/admin/international/currencies",
-	// 			icon: DollarSign,
+	// 			icon: IndianRupee,
 	// 		},
 	// 	],
 	// },

@@ -130,10 +130,10 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
                                                                                 <div className="flex-1">
                                                                                         <h4 className="font-medium">{product.productName}</h4>
                                                                                         <p className="text-sm text-gray-600">
-                                                                                                Qty: {product.quantity} × ${product.price.toFixed(2)}
+                                                                                                Qty: {product.quantity} × ₹{product.price.toFixed(2)}
                                                                                         </p>
                                                                                 </div>
-                                                                                <p className="font-medium">${product.totalPrice.toFixed(2)}</p>
+                                                                                <p className="font-medium">₹{product.totalPrice.toFixed(2)}</p>
                                                                         </div>
                                                                 ))}
                                                         </div>
@@ -148,30 +148,30 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
                                                         <div className="space-y-2">
                                                                 <div className="flex justify-between">
                                                                         <span>Subtotal</span>
-                                                                        <span>${order.subtotal.toFixed(2)}</span>
+                                                                        <span>₹{order.subtotal.toFixed(2)}</span>
                                                                 </div>
                                                                 {order.tax > 0 && (
                                                                         <div className="space-y-1">
                                                                                 <div className="flex justify-between">
                                                                                         <span>GST (18%)</span>
-                                                                                        <span>${order.tax.toFixed(2)}</span>
+                                                                                        <span>₹{order.tax.toFixed(2)}</span>
                                                                                 </div>
                                                                                 {order.gst?.cgst > 0 && (
                                                                                         <div className="flex justify-between text-xs pl-2">
                                                                                                 <span>CGST (9%)</span>
-                                                                                                <span>${order.gst.cgst.toFixed(2)}</span>
+                                                                                                <span>₹{order.gst.cgst.toFixed(2)}</span>
                                                                                         </div>
                                                                                 )}
                                                                                 {order.gst?.sgst > 0 && (
                                                                                         <div className="flex justify-between text-xs pl-2">
                                                                                                 <span>SGST (9%)</span>
-                                                                                                <span>${order.gst.sgst.toFixed(2)}</span>
+                                                                                                <span>₹{order.gst.sgst.toFixed(2)}</span>
                                                                                         </div>
                                                                                 )}
                                                                                 {order.gst?.igst > 0 && (
                                                                                         <div className="flex justify-between text-xs pl-2">
                                                                                                 <span>IGST (18%)</span>
-                                                                                                <span>${order.gst.igst.toFixed(2)}</span>
+                                                                                                <span>₹{order.gst.igst.toFixed(2)}</span>
                                                                                         </div>
                                                                                 )}
                                                                         </div>
@@ -179,19 +179,19 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
                                                                 {order.shippingCost > 0 && (
                                                                         <div className="flex justify-between">
                                                                                 <span>Shipping</span>
-                                                                                <span>${order.shippingCost.toFixed(2)}</span>
+                                                                                <span>₹{order.shippingCost.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                                 {order.discount > 0 && (
                                                                         <div className="flex justify-between text-green-600">
                                                                                 <span>Discount</span>
-                                                                                <span>- ${order.discount.toFixed(2)}</span>
+                                                                                <span>-₹{order.discount.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                                 <Separator className="my-2" />
                                                                 <div className="flex justify-between font-semibold">
                                                                         <span>Total</span>
-                                                                        <span>${order.totalAmount.toFixed(2)}</span>
+                                                                        <span>₹{order.totalAmount.toFixed(2)}</span>
                                                                 </div>
                                                         </div>
                                                 </CardContent>
