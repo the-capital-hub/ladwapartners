@@ -6,36 +6,39 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Package, Truck, Home, Download } from "lucide-react";
+import { CheckCircle, Package, Truck, Home, Download, Eye } from "lucide-react";
 import Link from "next/link";
+import { InvoicePopup } from "@/components/AdminPanel/Popups/InvoicePopup.jsx";
+import { useAdminOrderStore } from "@/store/adminOrderStore.js";
 
 export default function OrderSuccessPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [orderDetails, setOrderDetails] = useState(null);
+        const [orderDetails, setOrderDetails] = useState(null);
+        const [invoiceOpen, setInvoiceOpen] = useState(false);
+        const { downloadInvoice } = useAdminOrderStore();
 
 	const orderId = searchParams.get("orderId");
 	const orderNumber = searchParams.get("orderNumber");
 
-	useEffect(() => {
-		if (!orderId || !orderNumber) {
-			router.push("/");
-			return;
-		}
+        useEffect(() => {
+                const fetchOrder = async () => {
+                        if (!orderId || !orderNumber) {
+                                router.push("/");
+                                return;
+                        }
+                        const res = await fetch(`/api/admin/orders/${orderId}`);
+                        const data = await res.json();
+                        if (data.success) {
+                                setOrderDetails(data.order);
+                        }
+                };
+                fetchOrder();
+        }, [orderId, orderNumber, router]);
 
-		// You can fetch order details here if needed
-		setOrderDetails({
-			orderId,
-			orderNumber,
-			estimatedDelivery: new Date(
-				Date.now() + 7 * 24 * 60 * 60 * 1000
-			).toLocaleDateString(),
-		});
-	}, [orderId, orderNumber, router]);
-
-	if (!orderDetails) {
-		return <div>Loading...</div>;
-	}
+        if (!orderDetails) {
+                return <div>Loading...</div>;
+        }
 
 	return (
 		<div className="min-h-screen bg-gray-50 py-8">
@@ -71,23 +74,26 @@ export default function OrderSuccessPage() {
 						</CardHeader>
 						<CardContent className="space-y-4">
 							<div className="flex justify-between items-center">
-								<span className="text-gray-600">Order Number:</span>
-								<Badge variant="secondary" className="font-mono">
-									{orderDetails.orderNumber}
-								</Badge>
-							</div>
-							<div className="flex justify-between items-center">
-								<span className="text-gray-600">Order ID:</span>
-								<span className="font-medium">{orderDetails.orderId}</span>
-							</div>
-							<div className="flex justify-between items-center">
-								<span className="text-gray-600">Estimated Delivery:</span>
-								<span className="font-medium">
-									{orderDetails.estimatedDelivery}
-								</span>
-							</div>
-						</CardContent>
-					</Card>
+                                                                <span className="text-gray-600">Order Number:</span>
+                                                                <Badge variant="secondary" className="font-mono">
+                                                                        {orderDetails.orderNumber}
+                                                                </Badge>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                                <span className="text-gray-600">Order ID:</span>
+                                                                <span className="font-medium">{orderDetails._id}</span>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                                <span className="text-gray-600">Estimated Delivery:</span>
+                                                                <span className="font-medium">
+                                                                        {new Date(
+                                                                                Date.now() +
+                                                                                7 * 24 * 60 * 60 * 1000
+                                                                        ).toLocaleDateString()}
+                                                                </span>
+                                                        </div>
+                                                </CardContent>
+                                        </Card>
 
 					{/* Order Status Steps */}
 					<Card>
@@ -130,17 +136,29 @@ export default function OrderSuccessPage() {
 								Track Order
 							</Link>
 						</Button>
-						<Button variant="outline" className="flex-1 bg-transparent">
-							<Download className="w-4 h-4 mr-2" />
-							Download Invoice
-						</Button>
-						<Button variant="outline" asChild className="flex-1 bg-transparent">
-							<Link href="/products">
-								<Home className="w-4 h-4 mr-2" />
-								Continue Shopping
-							</Link>
-						</Button>
-					</div>
+                                                <Button
+                                                        variant="outline"
+                                                        className="flex-1 bg-transparent"
+                                                        onClick={() => downloadInvoice(orderDetails._id, orderDetails.orderNumber)}
+                                                >
+                                                        <Download className="w-4 h-4 mr-2" />
+                                                        Download Invoice
+                                                </Button>
+                                                <Button
+                                                        variant="outline"
+                                                        className="flex-1 bg-transparent"
+                                                        onClick={() => setInvoiceOpen(true)}
+                                                >
+                                                        <Eye className="w-4 h-4 mr-2" />
+                                                        View Invoice
+                                                </Button>
+                                                <Button variant="outline" asChild className="flex-1 bg-transparent">
+                                                        <Link href="/products">
+                                                                <Home className="w-4 h-4 mr-2" />
+                                                                Continue Shopping
+                                                        </Link>
+                                                </Button>
+                                        </div>
 
 					{/* Additional Info */}
 					<div className="text-center text-sm text-gray-500">
@@ -152,8 +170,13 @@ export default function OrderSuccessPage() {
 							For any questions, please contact our support team.
 						</p>
 					</div>
-				</motion.div>
-			</div>
-		</div>
-	);
+                                </motion.div>
+                                <InvoicePopup
+                                        open={invoiceOpen}
+                                        onOpenChange={setInvoiceOpen}
+                                        order={orderDetails}
+                                />
+                        </div>
+                </div>
+        );
 }

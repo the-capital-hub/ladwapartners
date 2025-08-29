@@ -750,17 +750,43 @@ export default function CheckoutPage() {
 								)}
 							</span>
 						</div>
-						{orderSummary.discount > 0 && (
-							<div className="flex justify-between text-green-600">
-								<span>Discount</span>
-								<span>-₹{orderSummary.discount.toLocaleString()}</span>
-							</div>
-						)}
-						<Separator />
-						<div className="flex justify-between font-bold text-lg">
-							<span>Total</span>
-							<span>₹{orderSummary.total.toLocaleString()}</span>
-						</div>
+                                                {orderSummary.discount > 0 && (
+                                                        <div className="flex justify-between text-green-600">
+                                                                <span>Discount</span>
+                                                                <span>-₹{orderSummary.discount.toLocaleString()}</span>
+                                                        </div>
+                                                )}
+                                                {orderSummary.tax > 0 && (
+                                                        <div className="space-y-1">
+                                                                <div className="flex justify-between">
+                                                                        <span>GST (18%)</span>
+                                                                        <span>₹{orderSummary.tax.toLocaleString()}</span>
+                                                                </div>
+                                                                {orderSummary.gst.cgst > 0 && (
+                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                                <span>CGST (9%)</span>
+                                                                                <span>₹{orderSummary.gst.cgst.toLocaleString()}</span>
+                                                                        </div>
+                                                                )}
+                                                                {orderSummary.gst.sgst > 0 && (
+                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                                <span>SGST (9%)</span>
+                                                                                <span>₹{orderSummary.gst.sgst.toLocaleString()}</span>
+                                                                        </div>
+                                                                )}
+                                                                {orderSummary.gst.igst > 0 && (
+                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                                <span>IGST (18%)</span>
+                                                                                <span>₹{orderSummary.gst.igst.toLocaleString()}</span>
+                                                                        </div>
+                                                                )}
+                                                        </div>
+                                                )}
+                                                <Separator />
+                                                <div className="flex justify-between font-bold text-lg">
+                                                        <span>Total</span>
+                                                        <span>₹{orderSummary.total.toLocaleString()}</span>
+                                                </div>
 					</div>
 
 					{/* Free shipping message */}
