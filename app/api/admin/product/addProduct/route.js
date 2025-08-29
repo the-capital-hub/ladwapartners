@@ -17,6 +17,7 @@ export async function POST(request) {
                 const category = formData.get("category");
                 const subCategory = formData.get("subCategory");
                 const mrp = parseFloat(formData.get("mrp"));
+                const hsnCode = formData.get("hsnCode");
                 const imageFiles = formData.getAll("images");
 
                 console.log("Received data:", {
@@ -27,6 +28,7 @@ export async function POST(request) {
                         category,
                         subCategory,
                         mrp,
+                        hsnCode,
                         imageCount: imageFiles.length,
                 });
 
@@ -138,6 +140,7 @@ export async function POST(request) {
                         featureImage: imageUrls[0],
                         category,
                         subCategory,
+                        hsnCode,
                         mrp,
                         published: formData.get("published") === "true",
                         stocks: stocks,

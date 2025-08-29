@@ -31,6 +31,8 @@ export async function POST(request) {
                                         mrp,
                                         category,
                                         subCategory,
+                                        hsnCode,
+                                        featureImage,
                                         mainImageLink,
                                         length,
                                         width,
@@ -101,7 +103,7 @@ export async function POST(request) {
 
                                 const finalCategory = productData.category || category;
 
-                                const featureImageUrl = mainImageLink || "";
+                                const featureImageUrl = featureImage || mainImageLink || "";
 
                                 const parsedLength =
                                         length !== undefined && length !== ""
@@ -130,6 +132,7 @@ export async function POST(request) {
                                         mrp: parsedMrp,
                                         featureImage: featureImageUrl,
                                         mainImageLink,
+                                        hsnCode,
                                         length: Number.isNaN(parsedLength)
                                                 ? undefined
                                                 : parsedLength,

@@ -39,6 +39,7 @@ export async function PUT(request) {
                         ? parseFloat(formData.get("mrp"))
                         : undefined;
                 const mainImageLink = formData.get("mainImageLink");
+                const hsnCode = formData.get("hsnCode");
                 const lengthVal = formData.get("length");
                 const widthVal = formData.get("width");
                 const heightVal = formData.get("height");
@@ -160,6 +161,7 @@ export async function PUT(request) {
                 product.subCategory = subCategory;
                 if (mrp !== undefined && !Number.isNaN(mrp)) product.mrp = mrp;
                 product.mainImageLink = mainImageLink;
+                product.hsnCode = hsnCode;
                 const parsedLength = lengthVal ? parseFloat(lengthVal) : undefined;
                 const parsedWidth = widthVal ? parseFloat(widthVal) : undefined;
                 const parsedHeight = heightVal ? parseFloat(heightVal) : undefined;
