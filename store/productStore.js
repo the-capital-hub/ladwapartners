@@ -135,12 +135,14 @@ export const useProductStore = create(
 				},
 
                                 setCurrentCategory: (category, subCategory = "") => {
+                                        // Only update state here. Fetching will be handled explicitly
+                                        // after related filters are applied to avoid race conditions
+                                        // where outdated filters could lead to empty product lists.
                                         set({
                                                 currentCategory: category,
                                                 currentSubCategory: subCategory,
                                                 currentPage: 1,
                                         });
-                                        get().fetchProducts();
                                 },
 
 				setCurrentPage: (page) => {
