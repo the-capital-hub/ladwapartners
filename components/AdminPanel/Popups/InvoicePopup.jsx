@@ -110,9 +110,9 @@ export function InvoicePopup({ open, onOpenChange, order }) {
 								</Badge>
 							</div>
 							<div className="text-right">
-								<p className="text-3xl font-bold text-orange-500">
-									${order.totalAmount.toFixed(2)}
-								</p>
+                                                               <p className="text-3xl font-bold text-orange-500">
+                                                                       ₹{order.totalAmount.toFixed(2)}
+                                                               </p>
 							</div>
 						</div>
 					</div>
@@ -167,12 +167,12 @@ export function InvoicePopup({ open, onOpenChange, order }) {
 								<div className="col-span-2 text-center flex items-center justify-center">
 									{product.quantity}
 								</div>
-								<div className="col-span-2 text-center flex items-center justify-center">
-									${product.price.toFixed(2)}
-								</div>
-								<div className="col-span-2 text-right flex items-center justify-end">
-									${product.totalPrice.toFixed(2)}
-								</div>
+                                                               <div className="col-span-2 text-center flex items-center justify-center">
+                                                                       ₹{product.price.toFixed(2)}
+                                                               </div>
+                                                               <div className="col-span-2 text-right flex items-center justify-end">
+                                                                       ₹{product.totalPrice.toFixed(2)}
+                                                               </div>
 							</div>
 						))}
 					</div>
@@ -180,57 +180,57 @@ export function InvoicePopup({ open, onOpenChange, order }) {
 					{/* Totals */}
 					<div className="space-y-3">
 						<div className="flex justify-between">
-							<span>Subtotal</span>
-							<span>${order.subtotal.toFixed(2)}</span>
+                                                       <span>Subtotal</span>
+                                                       <span>₹{order.subtotal.toFixed(2)}</span>
 						</div>
                                                 {order.tax > 0 && (
                                                         <div className="space-y-1">
                                                                 <div className="flex justify-between">
-                                                                        <span>GST (18%)</span>
-                                                                        <span>${order.tax.toFixed(2)}</span>
+                                                               <span>GST (18%)</span>
+                                                               <span>₹{order.tax.toFixed(2)}</span>
                                                                 </div>
                                                                 {order.gst?.cgst > 0 && (
                                                                         <div className="flex justify-between text-xs pl-2">
-                                                                                <span>CGST (9%)</span>
-                                                                                <span>${order.gst.cgst.toFixed(2)}</span>
+                                                                               <span>CGST (9%)</span>
+                                                                               <span>₹{order.gst.cgst.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                                 {order.gst?.sgst > 0 && (
                                                                         <div className="flex justify-between text-xs pl-2">
-                                                                                <span>SGST (9%)</span>
-                                                                                <span>${order.gst.sgst.toFixed(2)}</span>
+                                                                               <span>SGST (9%)</span>
+                                                                               <span>₹{order.gst.sgst.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                                 {order.gst?.igst > 0 && (
                                                                         <div className="flex justify-between text-xs pl-2">
-                                                                                <span>IGST (18%)</span>
-                                                                                <span>${order.gst.igst.toFixed(2)}</span>
+                                                                               <span>IGST (18%)</span>
+                                                                               <span>₹{order.gst.igst.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                         </div>
                                                 )}
 						{order.shippingCost > 0 && (
 							<div className="flex justify-between">
-								<span>Shipping</span>
-								<span>${order.shippingCost.toFixed(2)}</span>
+                                                       <span>Shipping</span>
+                                                       <span>₹{order.shippingCost.toFixed(2)}</span>
 							</div>
 						)}
 						{order.discount > 0 && (
 							<div className="flex justify-between text-green-600">
-								<span>Discount</span>
-								<span>-${order.discount.toFixed(2)}</span>
+                                                       <span>Discount</span>
+                                                       <span>-₹{order.discount.toFixed(2)}</span>
 							</div>
 						)}
 						{order.couponApplied && (
 							<div className="flex justify-between text-blue-600">
-								<span>Coupon ({order.couponApplied.couponCode})</span>
-								<span>-${order.couponApplied.discountAmount.toFixed(2)}</span>
+                                                       <span>Coupon ({order.couponApplied.couponCode})</span>
+                                                       <span>-₹{order.couponApplied.discountAmount.toFixed(2)}</span>
 							</div>
 						)}
 						<Separator />
 						<div className="flex justify-between font-bold text-lg">
-							<span>Total Amount</span>
-							<span>${order.totalAmount.toFixed(2)}</span>
+                                                       <span>Total Amount</span>
+                                                       <span>₹{order.totalAmount.toFixed(2)}</span>
 						</div>
 					</div>
 

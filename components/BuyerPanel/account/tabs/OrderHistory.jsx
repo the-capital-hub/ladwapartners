@@ -164,7 +164,7 @@ export function OrderHistory() {
                                                                                                 {new Date(order.orderDate).toLocaleDateString()}
                                                                                         </TableCell>
                                                                                         <TableCell className="font-medium">
-                                                                                                ${order.totalAmount.toFixed(2)}
+                                                                                               ₹{order.totalAmount.toFixed(2)}
                                                                                         </TableCell>
                                                                                         <TableCell>
                                                                                                 <Badge className={getStatusColor(order.status)}>
