@@ -22,30 +22,12 @@ import { useIsAuthenticated } from "@/store/adminAuthStore.js";
 import { useRouter } from "next/navigation";
 
 const currencies = [
-	{
-		id: 1,
-		name: "Dollar",
-		symbol: "$",
-		published: true,
-	},
-	{
-		id: 2,
-		name: "Euro",
-		symbol: "€",
-		published: true,
-	},
-	{
-		id: 3,
-		name: "Pound",
-		symbol: "£",
-		published: true,
-	},
-	{
-		id: 4,
-		name: "Yen",
-		symbol: "¥",
-		published: true,
-	},
+        {
+                id: 1,
+                name: "Indian Rupee",
+                symbol: "₹",
+                published: true,
+        },
 ];
 
 export default function CurrenciesPage() {
