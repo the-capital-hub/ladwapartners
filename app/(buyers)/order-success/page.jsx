@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Package, Truck, Home, Download, Eye } from "lucide-react";
 import Link from "next/link";
 import { InvoicePopup } from "@/components/AdminPanel/Popups/InvoicePopup.jsx";
+import { generateInvoicePDF } from "@/lib/generateInvoicePDF.js";
 
 export default function OrderSuccessPage() {
 	const router = useRouter();
@@ -18,24 +19,20 @@ export default function OrderSuccessPage() {
 
         const downloadInvoice = useCallback(async (id, orderNumber) => {
                 try {
-                        const response = await fetch(`/api/orders/${id}/invoice`);
-                        if (response.ok) {
-                                const blob = await response.blob();
-                                const url = window.URL.createObjectURL(blob);
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = `invoice-${orderNumber}.pdf`;
-                                document.body.appendChild(a);
-                                a.click();
-                                window.URL.revokeObjectURL(url);
-                                document.body.removeChild(a);
-                                return { success: true };
-                        }
-                        return { success: false, message: "Failed to download invoice" };
+                        const blob = await generateInvoicePDF(orderDetails);
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `invoice-${orderNumber}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        return { success: true };
                 } catch (error) {
-                        return { success: false, message: "Failed to download invoice" };
+                        return { success: false, message: "Failed to generate invoice" };
                 }
-        }, []);
+        }, [orderDetails]);
 
 	const orderId = searchParams.get("orderId");
 	const orderNumber = searchParams.get("orderNumber");
