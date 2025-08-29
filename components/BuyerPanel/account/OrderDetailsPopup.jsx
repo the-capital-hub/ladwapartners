@@ -3,8 +3,10 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Package, MapPin, CreditCard, Calendar } from "lucide-react";
+import { Package, MapPin, CreditCard, Calendar, Download } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 export function OrderDetailsPopup({ open, onOpenChange, order }) {
         if (!order) return null;
@@ -32,13 +34,44 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
                 return colors[status] || "bg-gray-100 text-gray-800";
         };
 
+        const downloadInvoice = async () => {
+                try {
+                        const response = await fetch(`/api/orders/${order._id}/invoice`);
+                        if (response.ok) {
+                                const blob = await response.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `invoice-${order.orderNumber}.pdf`;
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                                document.body.removeChild(a);
+                                toast.success("Invoice downloaded");
+                        } else {
+                                toast.error("Failed to download invoice");
+                        }
+                } catch (error) {
+                        toast.error("Failed to download invoice");
+                }
+        };
+
         return (
                 <Dialog open={open} onOpenChange={onOpenChange}>
                         <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                                 <DialogHeader>
-                                        <DialogTitle className="text-xl font-bold">
-                                                Order Details - {order.orderNumber}
-                                        </DialogTitle>
+                                        <div className="flex items-center justify-between gap-4">
+                                                <DialogTitle className="text-xl font-bold">
+                                                        Order Details - {order.orderNumber}
+                                                </DialogTitle>
+                                                <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={downloadInvoice}
+                                                >
+                                                        <Download className="w-4 h-4 mr-2" /> Invoice
+                                                </Button>
+                                        </div>
                                 </DialogHeader>
 
                                 <div className="space-y-6 mt-6">

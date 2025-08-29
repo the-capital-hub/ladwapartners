@@ -548,10 +548,12 @@ export const useCheckoutStore = create(
 											// Reset checkout
 											get().resetCheckout();
 
-											toast.success("Payment successful! Order placed.");
+                                                                                        toast.success("Order placed successfully!");
 
-											// Redirect to success page
-											window.location.href = `/order-success?orderId=${verificationResult.orderId}&orderNumber=${verificationResult.orderNumber}`;
+                                                                                        // Show confirmation then redirect to orders page
+                                                                                        setTimeout(() => {
+                                                                                                window.location.href = "/account/orders";
+                                                                                        }, 2000);
 										} else {
 											toast.error("Payment verification failed");
 										}
@@ -605,10 +607,12 @@ export const useCheckoutStore = create(
 								// Reset checkout
 								get().resetCheckout();
 
-								toast.success("Order placed successfully!");
+                                                                toast.success("Order placed successfully!");
 
-								// Redirect to success page
-								window.location.href = `/order-success?orderId=${result.orderId}&orderNumber=${result.orderNumber}`;
+                                                                // Show confirmation then redirect to orders page
+                                                                setTimeout(() => {
+                                                                        window.location.href = "/account/orders";
+                                                                }, 2000);
 
 								return { success: true, paymentMethod: "cod" };
 							} else {
