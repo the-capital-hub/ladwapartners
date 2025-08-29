@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Package, MapPin, CreditCard, Calendar, Download } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { generateInvoicePDF } from "@/lib/generateInvoicePDF.js";
+
 
 export function OrderDetailsPopup({ open, onOpenChange, order }) {
         if (!order) return null;
@@ -36,23 +38,20 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
 
         const downloadInvoice = async () => {
                 try {
-                        const response = await fetch(`/api/orders/${order._id}/invoice`);
-                        if (response.ok) {
-                                const blob = await response.blob();
-                                const url = window.URL.createObjectURL(blob);
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = `invoice-${order.orderNumber}.pdf`;
-                                document.body.appendChild(a);
-                                a.click();
-                                window.URL.revokeObjectURL(url);
-                                document.body.removeChild(a);
-                                toast.success("Invoice downloaded");
-                        } else {
-                                toast.error("Failed to download invoice");
-                        }
+
+                        const blob = await generateInvoicePDF(order);
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `invoice-${order.orderNumber}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        toast.success("Invoice downloaded");
                 } catch (error) {
-                        toast.error("Failed to download invoice");
+                        toast.error("Failed to generate invoice");
+
                 }
         };
 
