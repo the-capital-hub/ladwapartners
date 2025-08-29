@@ -47,6 +47,12 @@ export default function OrderSuccessPage() {
                                 return;
                         }
                         const res = await fetch(`/api/orders/${orderId}`);
+
+                        if (!res.ok) {
+                                router.push("/");
+                                return;
+                        }
+
                         const data = await res.json();
                         if (data.success) {
                                 setOrderDetails(data.order);
