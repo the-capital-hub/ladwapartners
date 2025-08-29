@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,14 +9,33 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Package, Truck, Home, Download, Eye } from "lucide-react";
 import Link from "next/link";
 import { InvoicePopup } from "@/components/AdminPanel/Popups/InvoicePopup.jsx";
-import { useAdminOrderStore } from "@/store/adminOrderStore.js";
 
 export default function OrderSuccessPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
         const [orderDetails, setOrderDetails] = useState(null);
         const [invoiceOpen, setInvoiceOpen] = useState(false);
-        const { downloadInvoice } = useAdminOrderStore();
+
+        const downloadInvoice = useCallback(async (id, orderNumber) => {
+                try {
+                        const response = await fetch(`/api/orders/${id}/invoice`);
+                        if (response.ok) {
+                                const blob = await response.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `invoice-${orderNumber}.pdf`;
+                                document.body.appendChild(a);
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                                document.body.removeChild(a);
+                                return { success: true };
+                        }
+                        return { success: false, message: "Failed to download invoice" };
+                } catch (error) {
+                        return { success: false, message: "Failed to download invoice" };
+                }
+        }, []);
 
 	const orderId = searchParams.get("orderId");
 	const orderNumber = searchParams.get("orderNumber");
@@ -27,7 +46,11 @@ export default function OrderSuccessPage() {
                                 router.push("/");
                                 return;
                         }
-                        const res = await fetch(`/api/admin/orders/${orderId}`);
+                        const res = await fetch(`/api/orders/${orderId}`);
+                        if (!res.ok) {
+                                router.push("/");
+                                return;
+                        }
                         const data = await res.json();
                         if (data.success) {
                                 setOrderDetails(data.order);
@@ -175,6 +198,7 @@ export default function OrderSuccessPage() {
                                         open={invoiceOpen}
                                         onOpenChange={setInvoiceOpen}
                                         order={orderDetails}
+                                        downloadInvoice={downloadInvoice}
                                 />
                         </div>
                 </div>
