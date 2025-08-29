@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import hero1 from "@/public/images/home/hero1.png";
 import hero2 from "@/public/images/home/her02.png";
 import hero3 from "@/public/images/home/hero3.png";
+import HeroImgNew from "@/public/images/home/HeroImgNew.png";
+import HeroImg1 from "@/public/images/home/HeroImg1.png";
+import HeroImg2 from "@/public/images/home/HeroImg2.png";
+import HeroImg3 from "@/public/images/home/HeroImg3.png";
 import mobileimg from "@/public/images/home/heroimg.png";
 import { Outfit } from "next/font/google";
 
@@ -29,12 +33,12 @@ export default function HeroSection() {
 					}}
 				>
 					<Image
-						src={hero1}
+						src={HeroImg1}
 						alt="HeroImage"
 						className="h-full w-full object-cover"
 					/>
 					{/* Black overlay */}
-					<div className="absolute inset-0 bg-black/60"></div>
+					<div className="absolute inset-0 bg-black/20"></div>
 				</div>
 
 				{/* Second Section - Medium height */}
@@ -50,14 +54,14 @@ export default function HeroSection() {
 					}}
 				>
 					<Image
-						src={hero2}
+						src={HeroImg2}
 						alt="HeroImage"
 						className="h-full w-full object-cover"
 					/>
 
-					<div className="absolute inset-0 bg-black/60"></div>
+					<div className="absolute inset-0 bg-black/20"></div>
 					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
-						<span className="text-[#FFB82D] text-xl font-bold">
+						<span className="text-blue-600 text-xl font-bold">
 							SAFETY FIRST
 						</span>
 					</div>
@@ -75,13 +79,15 @@ export default function HeroSection() {
 					}}
 				>
 					<Image
-						src={hero3}
+						src={HeroImg3}
 						alt="HeroImage"
 						className="h-full w-full object-cover"
 					/>
-					<div className="absolute inset-0 bg-black/60"></div>
+					<div className="absolute inset-0 bg-black/20"></div>
 					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
-						<span className="text-white text-xl font-bold">FIRST AID KIT</span>
+						<span className="text-blue-600 text-xl font-bold">
+							FIRST AID KIT
+						</span>
 					</div>
 				</div>
 
@@ -125,7 +131,8 @@ export default function HeroSection() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6 }}
-						className={`bg-white/10 border border-t-[#FFB82D] text-xs md:text-sm font-medium px-3 py-1 md:px-4 md:py-1 rounded-full w-fit ${outfit.className}`}
+						className={`bg-blue-600 text-white text-xs md:text-sm font-medium px-3 py-1 md:px-4 md:py-1 rounded-full w-fit ${outfit.className}`}
+						// className={`bg-white/10 text-black border border-t-[#FFB82D] text-xs md:text-sm font-medium px-3 py-1 md:px-4 md:py-1 rounded-full w-fit ${outfit.className}`}
 					>
 						#1 Platform for Safety Products
 					</motion.span>
@@ -134,7 +141,7 @@ export default function HeroSection() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className="text-2xl md:text-3xl lg:text-6xl font-extrabold leading-tight"
+						className="text-2xl text-blue-600 md:text-3xl lg:text-6xl font-extrabold leading-tight"
 					>
 						{/* DELIVERING SUPERIOR ROAD <br className="hidden md:block" />
 						<span className="md:hidden">CONSTRUCTION SOLUTIONS</span>
@@ -146,7 +153,7 @@ export default function HeroSection() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className={`${outfit.className} text-white text-lg md:text-3xl max-w-3xl`}
+						className={`${outfit.className} text-blue-600 text-lg md:text-3xl max-w-3xl`}
 					>
 						Ladwa Partners is an online portal by Ladwa Safety Inc.
 					</motion.p>
@@ -155,7 +162,7 @@ export default function HeroSection() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className={`${outfit.className} text-sm md:text-base mt-4 md:mt-10 max-w-xl`}
+						className={`${outfit.className} text-blue-600 text-sm md:text-base mt-4 md:mt-10 max-w-xl`}
 					>
 						{/* Safety is the most basic yet the most important rule of life. It is
 						the sum of safety precautions that determines the safety of the
@@ -172,7 +179,7 @@ export default function HeroSection() {
 						transition={{ duration: 0.8 }}
 						className={`${outfit.className} flex flex-wrap items-center gap-4`}
 					>
-						<Button className="bg-[#FFB82D] hover:bg-yellow-600 text-black font-semibold px-4 py-2 md:px-6 md:py-2 rounded-md text-sm md:text-base">
+						<Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 md:px-6 md:py-2 rounded-md text-sm md:text-base">
 							Get Started
 						</Button>
 					</motion.div>
@@ -185,18 +192,20 @@ export default function HeroSection() {
 						className="flex items-center gap-6 md:gap-10 pt-4"
 					>
 						<div>
-							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">
+							<h3 className="text-blue-600 text-xl md:text-2xl font-bold text-center mb-1">
 								8K+
 							</h3>
-							<p className="text-white text-sm md:text-base">
+							<p className="text-blue-600 text-sm md:text-base">
 								Project Completed
 							</p>
 						</div>
 						<div>
-							<h3 className="text-xl md:text-2xl font-bold text-center mb-1">
+							<h3 className="text-blue-600 text-xl md:text-2xl font-bold text-center mb-1">
 								5.5K+
 							</h3>
-							<p className="text-white text-sm md:text-base">Customers Happy</p>
+							<p className="text-blue-600 text-sm md:text-base">
+								Customers Happy
+							</p>
 						</div>
 					</motion.div>
 				</div>
