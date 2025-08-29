@@ -9,6 +9,7 @@ import { Package, MapPin, CreditCard, Calendar, Download } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { generateInvoicePDF } from "@/lib/generateInvoicePDF.js";
 
+
 export function OrderDetailsPopup({ open, onOpenChange, order }) {
         if (!order) return null;
 
@@ -37,6 +38,7 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
 
         const downloadInvoice = async () => {
                 try {
+
                         const blob = await generateInvoicePDF(order);
                         const url = window.URL.createObjectURL(blob);
                         const a = document.createElement("a");
@@ -49,6 +51,7 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
                         toast.success("Invoice downloaded");
                 } catch (error) {
                         toast.error("Failed to generate invoice");
+
                 }
         };
 
