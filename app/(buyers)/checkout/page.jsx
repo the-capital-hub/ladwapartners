@@ -227,11 +227,11 @@ export default function CheckoutPage() {
 	}, [couponCode, applyCoupon, checkoutType]);
 
 	// Handle payment
-	const handlePayment = useCallback(async () => {
-		if (!isRazorpayLoaded) {
-			toast.error("Payment system is loading. Please wait.");
-			return;
-		}
+        const handlePayment = useCallback(async () => {
+                if (paymentMethod === "razorpay" && !isRazorpayLoaded) {
+                        toast.error("Payment system is loading. Please wait.");
+                        return;
+                }
 
 		if (!getSelectedAddress()) {
 			toast.error("Please select a delivery address");
@@ -251,14 +251,15 @@ export default function CheckoutPage() {
 			console.error("Payment error:", error);
 			toast.error(error.message || "Payment failed. Please try again.");
 		}
-	}, [
-		isRazorpayLoaded,
-		processPayment,
-		user,
-		checkoutType,
-		clearCart,
-		getSelectedAddress,
-	]);
+        }, [
+                isRazorpayLoaded,
+                processPayment,
+                user,
+                checkoutType,
+                clearCart,
+                getSelectedAddress,
+                paymentMethod,
+        ]);
 
 	// Address Step Component
 	const AddressStep = useMemo(

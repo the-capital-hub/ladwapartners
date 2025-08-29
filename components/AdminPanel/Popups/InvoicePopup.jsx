@@ -9,8 +9,9 @@ import { Download, Printer } from "lucide-react";
 import { useAdminOrderStore } from "@/store/adminOrderStore.js";
 import { toast } from "sonner";
 
-export function InvoicePopup({ open, onOpenChange, order }) {
-	const { downloadInvoice } = useAdminOrderStore();
+export function InvoicePopup({ open, onOpenChange, order, downloadInvoice: downloadInvoiceProp }) {
+        const { downloadInvoice: adminDownloadInvoice } = useAdminOrderStore();
+        const downloadInvoice = downloadInvoiceProp || adminDownloadInvoice;
 
 	if (!order) return null;
 
