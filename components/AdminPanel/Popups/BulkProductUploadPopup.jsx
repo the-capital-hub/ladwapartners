@@ -96,8 +96,12 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                 description: row["Description"],
                                 category: row["Product Category"],
                                 subCategory: row["Sub Category"] || row["Sub-Category"],
+                                hsnCode: row["HSN Code"],
                                 price: row["Price"],
                                 mrp: row["MRP"],
+                                featureImage: getDirectGoogleDriveImageUrl(
+                                        row["Feature Image"]
+                                ),
                                 mainImageLink: getDirectGoogleDriveImageUrl(
                                         row["Main Image Link"]
                                 ),
@@ -151,15 +155,17 @@ export function BulkUploadPopup({ open, onOpenChange }) {
 
         const downloadTemplate = () => {
                 const headers = [
+                        "SL .No",
                         "Product Category",
-                        "Sub-Category",
-                        "SKU",
+                        "Sub Category",
+                        "HSN Code",
                         "Product Name",
                         "Description",
                         "Price",
                         "MRP",
                         "Feature Image",
                         "Main Image Link",
+                        "Images URL Link (7 images)",
                         "Length (mm)",
                         "Width (mm)",
                         "height (mm)",
@@ -168,18 +174,19 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Material used / Made Of",
                         "brand",
                         "size",
-                        "Images URL Link",
                 ];
                 const sampleRow = [
+                        "1",
                         "Sample Category",
                         "Sample Sub",
-                        "SKU001",
+                        "HSN001",
                         "Sample Product",
                         "Sample description",
                         "100",
                         "120",
                         "https://example.com/image.jpg",
                         "https://drive.google.com/sample",
+                        "",
                         "10",
                         "5",
                         "3",
@@ -188,7 +195,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Plastic",
                         "BrandX",
                         "L",
-                        "https://example.com/extra1.jpg|https://example.com/extra2.jpg",
                 ];
                 const escapeCsv = (val) =>
                         `"${String(val).replace(/"/g, '""')}"`;

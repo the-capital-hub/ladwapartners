@@ -90,6 +90,7 @@ export const useAdminProductStore = create((set, get) => ({
 			);
                         formData.append("category", productData.category);
                         formData.append("subCategory", productData.subCategory || "");
+                        formData.append("hsnCode", productData.hsnCode || "");
                         formData.append("mrp", productData.mrp ? productData.mrp.toString() : "");
                         formData.append(
                                 "mainImageLink",
@@ -192,6 +193,7 @@ export const useAdminProductStore = create((set, get) => ({
                         );
                         formData.append("category", updateData.category);
                         formData.append("subCategory", updateData.subCategory || "");
+                        formData.append("hsnCode", updateData.hsnCode || "");
                         formData.append(
                                 "mrp",
                                 updateData.mrp ? updateData.mrp.toString() : ""
