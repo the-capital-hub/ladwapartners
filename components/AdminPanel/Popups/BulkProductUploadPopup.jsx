@@ -22,7 +22,10 @@ import {
         TableHeader,
         TableRow,
 } from "@/components/ui/table";
-import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
+import {
+        getDirectGoogleDriveImageUrl,
+        getGoogleDriveFolderImageUrls,
+} from "@/lib/utils";
 
 export function BulkUploadPopup({ open, onOpenChange }) {
         const { bulkUploadProducts } = useAdminProductStore();
@@ -138,6 +141,24 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                         size: row["size"] || row["Size"],
                                 };
                         });
+
+                        // Fetch images from provided Google Drive folders and populate images array
+                        for (const prod of mapped) {
+                                if (prod.imageFolder) {
+                                        try {
+                                                const links = await getGoogleDriveFolderImageUrls(
+                                                        prod.imageFolder
+                                                );
+                                                if (Array.isArray(links) && links.length) {
+                                                        // Limit to 7 images as per template column
+                                                        prod.images = links.slice(0, 7);
+                                                }
+                                        } catch (err) {
+                                                // Ignore errors and leave images undefined
+                                                // Errors will surface during upload if needed
+                                        }
+                                }
+                        }
 
                         const requiredFields = ["title", "price", "mrp", "category"];
                         const invalid = [];
