@@ -85,7 +85,7 @@ export default function HomePage() {
 				featuredProducts={featuredProducts}
 			/>
 			{/* <TrustedCompanies /> */}
-			<AboutUsLadwaPartners />
+			{/* <AboutUsLadwaPartners /> */}
 
 			{/* <CategorySection
 				products={categoryProducts}
