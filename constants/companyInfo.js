@@ -1,5 +1,6 @@
 export const companyInfo = {
     name: "Ladwa Partners",
+    logo: "/ladwapartners.png",
     website: "https://ladwapartners.com",
     email: "contact@ladwapartners.com",
     phone: "+91 8971815400",
