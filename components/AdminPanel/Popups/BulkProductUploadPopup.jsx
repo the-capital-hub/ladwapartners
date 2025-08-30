@@ -105,6 +105,12 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                                 mainImageLink: getDirectGoogleDriveImageUrl(
                                         row["Main Image Link"]
                                 ),
+                                imageFolder:
+                                        row["Images URL Link (7 images)"] ||
+                                        row["Images Folder"] ||
+                                        row["Image Folder"] ||
+                                        row["Image Folder Link"] ||
+                                        row["Google Drive Folder Link"],
                                 length: row["Length (mm)"],
                                 width: row["Width (mm)"],
                                 height: row["height (mm)"],
@@ -164,7 +170,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Price",
                         "MRP",
                         "Feature Image",
-                        "Main Image Link",
                         "Images URL Link (7 images)",
                         "Length (mm)",
                         "Width (mm)",
@@ -185,8 +190,7 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "100",
                         "120",
                         "https://example.com/image.jpg",
-                        "https://drive.google.com/sample",
-                        "",
+                        "https://drive.google.com/drive/folders/sample",
                         "10",
                         "5",
                         "3",
