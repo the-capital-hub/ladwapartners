@@ -99,9 +99,13 @@ export async function POST(request) {
 
                                 let images = productData.images || [];
                                 if (images.length === 0 && productData.imageFolder) {
-                                        images = await getGoogleDriveFolderImageUrls(
-                                                productData.imageFolder
-                                        );
+
+                                        images = (
+                                                await getGoogleDriveFolderImageUrls(
+                                                        productData.imageFolder
+                                                )
+                                        ).slice(0, 7);
+
                                 }
 
                                 const featureImageUrl =
