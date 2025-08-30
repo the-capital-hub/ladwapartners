@@ -3,6 +3,7 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Product from "@/model/Product";
 import Category from "@/model/Category";
+import { getGoogleDriveFolderImageUrls } from "@/lib/utils";
 
 export async function POST(request) {
 	await dbConnect();
@@ -103,7 +104,20 @@ export async function POST(request) {
 
                                 const finalCategory = productData.category || category;
 
-                                const featureImageUrl = featureImage || mainImageLink || "";
+                                let images = Array.isArray(productData.images)
+                                        ? productData.images
+                                        : [];
+                                if (!images.length && productData.imageFolder) {
+                                        images = await getGoogleDriveFolderImageUrls(
+                                                productData.imageFolder
+                                        );
+                                }
+
+                                const featureImageUrl =
+                                        featureImage ||
+                                        mainImageLink ||
+                                        images[0] ||
+                                        "";
 
                                 const parsedLength =
                                         length !== undefined && length !== ""
@@ -149,7 +163,7 @@ export async function POST(request) {
                                         material,
                                         brand,
                                         size,
-                                        images: featureImageUrl ? [featureImageUrl] : [],
+                                        images,
                                         published:
                                                 productData.published !== undefined ? productData.published : true,
                                         stocks: productData.stocks ? Number.parseInt(productData.stocks) : 0,
