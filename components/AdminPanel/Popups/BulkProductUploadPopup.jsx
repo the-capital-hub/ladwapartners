@@ -88,7 +88,7 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                 if (!file) return;
 
                 const reader = new FileReader();
-                reader.onload = (event) => {
+                reader.onload = async (event) => {
                         const text = event.target.result;
                         const rows = parseCSV(text);
                         const mapped = rows.map((row) => {
