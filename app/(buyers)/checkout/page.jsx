@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Script from "next/script";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,8 +42,18 @@ import Image from "next/image";
 export default function CheckoutPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
-	const [couponCode, setCouponCode] = useState("");
+        const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
+        const [couponCode, setCouponCode] = useState("");
+
+        // Load Razorpay script on mount
+        useEffect(() => {
+                const script = document.createElement("script");
+                script.src = "https://checkout.razorpay.com/v1/checkout.js";
+                script.onload = () => setIsRazorpayLoaded(true);
+                script.onerror = () =>
+                        toast.error("Failed to load payment gateway. Please refresh and try again.");
+                document.body.appendChild(script);
+        }, []);
 
 	// Auth store
 	const user = useLoggedInUser();
@@ -179,12 +188,7 @@ export default function CheckoutPage() {
 		router,
 	]);
 
-	// Handle Razorpay script load
-	const handleRazorpayLoad = useCallback(() => {
-		setIsRazorpayLoaded(true);
-	}, []);
-
-	// Handle address selection
+        // Handle address selection
 	const handleAddressSelect = useCallback(
 		(addressId) => {
 			selectAddress(addressId);
@@ -815,12 +819,7 @@ export default function CheckoutPage() {
 
 	return (
 		<>
-			<Script
-				src="https://checkout.razorpay.com/v1/checkout.js"
-				onLoad={handleRazorpayLoad}
-			/>
-
-			<div className="min-h-screen bg-gray-50 py-8">
+                        <div className="min-h-screen bg-gray-50 py-8">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 					{/* Header */}
 					<div className="mb-8">
