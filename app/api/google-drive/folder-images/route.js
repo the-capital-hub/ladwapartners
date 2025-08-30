@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
+
 export const dynamic = "force-dynamic";
+
 
 // Server-side helper to fetch image links from a Google Drive folder
 async function fetchFolderImages(folderId) {
@@ -24,6 +26,7 @@ async function fetchFolderImages(folderId) {
 
   // Fallback: scrape the public embedded folder view
   const embeddedUrl = `https://drive.google.com/embeddedfolderview?id=${folderId}#grid`;
+
   const html = await fetch(embeddedUrl, {
     headers: {
       "User-Agent": "Mozilla/5.0",
@@ -32,6 +35,7 @@ async function fetchFolderImages(folderId) {
   if (!html) return [];
 
   const idRegex = /data-id=['"]([^'"]+)['"]/g;
+
   const links = [];
   let m;
   while ((m = idRegex.exec(html)) !== null) {
