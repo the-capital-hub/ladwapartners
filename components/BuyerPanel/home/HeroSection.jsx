@@ -20,7 +20,7 @@ const outfit = Outfit({
 
 export default function HeroSection() {
 	return (
-		<section className="relative w-full min-h-screen flex items-center justify-center text-white overflow-hidden">
+		<section className="relative w-full min-h-[calc(100vh-80px)] md:min-h-screen flex flex-col items-center justify-center text-white overflow-hidden">
 			<div className="absolute inset-0 pointer-events-none w-screen left-1/2 transform -translate-x-1/2 hidden md:block">
 				{/* First Section - Highest */}
 				<div
@@ -114,18 +114,18 @@ export default function HeroSection() {
 			</div>
 
 			{/* Mobile background image */}
-			<div className="absolute inset-0 md:hidden">
+			<div className="md:hidden w-[300px]">
 				<Image
-					src={mobileimg}
+					src={HeroImg3}
 					alt="HeroImage"
-					className="h-full w-full object-cover"
+					className="h-full w-full object-contain"
 				/>
 				{/* Black overlay for mobile */}
-				<div className="absolute inset-0 bg-black/60"></div>
+				<div className="absolute inset-0 bg-black/30"></div>
 			</div>
 
-			{/* Content */}
-			<div className="relative z-20 max-w-7xl w-full px-4 md:px-6 lg:px-12 grid grid-cols-1 gap-8 mx-auto">
+			{/* Content - max-w-7xl */}
+			<div className="relative z-20 w-full px-10 lg:px-12 grid grid-cols-1 gap-8 mx-auto">
 				<div className="flex flex-col justify-center space-y-4 md:space-y-6">
 					<motion.span
 						initial={{ opacity: 0, y: 20 }}
