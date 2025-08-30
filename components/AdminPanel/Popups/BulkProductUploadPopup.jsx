@@ -91,35 +91,53 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                 reader.onload = (event) => {
                         const text = event.target.result;
                         const rows = parseCSV(text);
-                        const mapped = rows.map((row) => ({
-                                title: row["Product Name"],
-                                description: row["Description"],
-                                category: row["Product Category"],
-                                subCategory: row["Sub Category"] || row["Sub-Category"],
-                                hsnCode: row["HSN Code"],
-                                price: row["Price"],
-                                mrp: row["MRP"],
-                                featureImage: getDirectGoogleDriveImageUrl(
-                                        row["Feature Image"]
-                                ),
-                                mainImageLink: getDirectGoogleDriveImageUrl(
-                                        row["Main Image Link"]
-                                ),
-                                imageFolder:
-                                        row["Images URL Link (7 images)"] ||
-                                        row["Images Folder"] ||
-                                        row["Image Folder"] ||
-                                        row["Image Folder Link"] ||
-                                        row["Google Drive Folder Link"],
-                                length: row["Length (mm)"],
-                                width: row["Width (mm)"],
-                                height: row["height (mm)"],
-                                weight: row["Weight (gms)"],
-                                colour: row["Colour"],
-                                material: row["Material used / Made Of"],
-                                brand: row["brand"],
-                                size: row["size"],
-                        }));
+                        const mapped = rows.map((row) => {
+                                const singleImage =
+                                        row["Main Image Link"] ||
+                                        row["Feature Image"] ||
+                                        row["Image"] ||
+                                        row["Image Link"];
+
+                                return {
+                                        title: row["Product Name"] || row["Title"] || row["Name"],
+                                        description: row["Description"] || row["Desc"],
+                                        category:
+                                                row["Product Category"] ||
+                                                row["Category"],
+                                        subCategory:
+                                                row["Sub Category"] ||
+                                                row["Sub-Category"] ||
+                                                row["SubCategory"],
+                                        hsnCode: row["HSN Code"] || row["HSN"],
+                                        price: row["Price"],
+                                        mrp: row["MRP"] || row["Mrp"],
+                                        featureImage:
+                                                getDirectGoogleDriveImageUrl(singleImage),
+                                        mainImageLink:
+                                                getDirectGoogleDriveImageUrl(singleImage),
+                                        imageFolder:
+                                                row["Images URL Link (7 images)"] ||
+                                                row["Images Folder"] ||
+                                                row["Image Folder"] ||
+                                                row["Image Folder Link"] ||
+                                                row["Google Drive Folder Link"],
+                                        length: row["Length (mm)"] || row["Length"],
+                                        width: row["Width (mm)"] || row["Width"],
+                                        height:
+                                                row["height (mm)"] ||
+                                                row["Height (mm)"] ||
+                                                row["Height"],
+                                        weight:
+                                                row["Weight (gms)"] ||
+                                                row["Weight"],
+                                        colour: row["Colour"] || row["Color"],
+                                        material:
+                                                row["Material used / Made Of"] ||
+                                                row["Material"],
+                                        brand: row["brand"] || row["Brand"],
+                                        size: row["size"] || row["Size"],
+                                };
+                        });
 
                         const requiredFields = ["title", "price", "mrp", "category"];
                         const invalid = [];
@@ -168,7 +186,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Description",
                         "Price",
                         "MRP",
-                        "Feature Image",
                         "Main Image Link",
                         "Images URL Link (7 images)",
                         "Length (mm)",
@@ -188,7 +205,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Sample description",
                         "100",
                         "120",
-                        "https://example.com/feature-image.jpg",
                         "https://example.com/main-image.jpg",
                         "https://drive.google.com/drive/folders/sample",
                         "10",
