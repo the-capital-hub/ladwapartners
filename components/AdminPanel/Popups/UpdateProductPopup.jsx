@@ -60,6 +60,7 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                 longDescription: "",
                 category: "",
                 subCategory: "",
+                hsnCode: "",
                 mrp: "",
                 mainImageLink: "",
                 length: "",
@@ -123,6 +124,7 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                         longDescription: product.longDescription || "",
                                         category: product.category || "",
                                         subCategory: product.subCategory || "",
+                                        hsnCode: product.hsnCode?.toString() || "",
                                         mrp: product.mrp?.toString() || "",
                                         mainImageLink: product.mainImageLink || "",
                                         length: product.length?.toString() || "",
@@ -167,6 +169,7 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                 longDescription: formData.longDescription || formData.description,
                                 category: formData.category,
                                 subCategory: formData.subCategory,
+                                hsnCode: formData.hsnCode,
                                 mrp: formData.mrp ? parseFloat(formData.mrp) : undefined,
                                 mainImageLink: formData.mainImageLink,
                                 length: formData.length ? parseFloat(formData.length) : undefined,
@@ -339,13 +342,27 @@ export function UpdateProductPopup({ open, onOpenChange, product }) {
                                                                                 )?.subCategories?.map((sub) => (
                                                                                         <option key={sub} value={sub} />
                                                                                 ))}
-                                                                </datalist>
-                                                        </div>
+                                                        </datalist>
+                                                </div>
 
+                                                <div>
+                                                        <Label htmlFor="hsnCode">HSN Code</Label>
+                                                        <Input
+                                                                id="hsnCode"
+                                                                placeholder="Enter HSN code"
+                                                                value={formData.hsnCode}
+                                                                onChange={(e) =>
+                                                                        setFormData({
+                                                                                ...formData,
+                                                                                hsnCode: e.target.value,
+                                                                        })
+                                                                }
+                                                                className="mt-1"
+                                                        />
+                                                </div>
 
-
-                                                        <div>
-                                                                <Label htmlFor="mrp">MRP *</Label>
+                                                <div>
+                                                        <Label htmlFor="mrp">MRP *</Label>
                                                                 <Input
                                                                         id="mrp"
                                                                         type="number"

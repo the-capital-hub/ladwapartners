@@ -24,19 +24,19 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import {
-	Calendar,
-	Search,
-	Download,
-	Filter,
-	RotateCcw,
-	Eye,
-	Printer,
-	Edit,
-	Trash2,
-	Package,
-	DollarSign,
-	Clock,
-	CheckCircle,
+        Calendar,
+        Search,
+        Download,
+        Filter,
+        RotateCcw,
+        Eye,
+        Printer,
+        Edit,
+        Trash2,
+        Package,
+        IndianRupee,
+        Clock,
+        CheckCircle,
 } from "lucide-react";
 import { useAdminOrderStore } from "@/store/adminOrderStore.js";
 import { OrderDetailsPopup } from "@/components/AdminPanel/Popups/OrderDetailsPopup.jsx";
@@ -232,14 +232,14 @@ function OrderPage() {
 					<Card>
 						<CardContent className="p-6">
 							<div className="flex items-center">
-								<DollarSign className="h-8 w-8 text-green-600" />
+                                                                <IndianRupee className="h-8 w-8 text-green-600" />
 								<div className="ml-4">
 									<p className="text-sm font-medium text-gray-600">
 										Total Revenue
 									</p>
-									<p className="text-2xl font-bold text-gray-900">
-										${stats.totalRevenue.toFixed(2)}
-									</p>
+                                                                        <p className="text-2xl font-bold text-gray-900">
+                                                                                ₹{stats.totalRevenue.toFixed(2)}
+                                                                        </p>
 								</div>
 							</div>
 						</CardContent>
@@ -498,9 +498,9 @@ function OrderPage() {
 														</p>
 													</div>
 												</TableCell>
-												<TableCell className="font-medium text-green-600">
-													${order.totalAmount.toFixed(2)}
-												</TableCell>
+                                                                                                <TableCell className="font-medium text-green-600">
+                                                                                                        ₹{order.totalAmount.toFixed(2)}
+                                                                                                </TableCell>
 												<TableCell>
 													<Select
 														value={order.status}

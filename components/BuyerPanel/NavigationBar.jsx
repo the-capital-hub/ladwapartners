@@ -45,31 +45,22 @@ export default function NavigationBar({
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)+/g, "");
 
-  const staticItems = [
+  const staticItemsStart = [
     { id: "home", label: "Home", href: "/home" },
-    { id: "about-us", label: "Contact Us", href: "/contact" },
+    { id: "about-us", label: "About Us", href: "/home#about-us" },
   ];
 
-  const orderedSlugs = [
-    "road-safety",
-    "fire-safety",
-    "personal-safety",
-    "industrial-safety",
+  const staticItemsEnd = [
+    { id: "contact-us", label: "Contact Us", href: "/contact" },
   ];
 
-  const dynamicItems = orderedSlugs
-    .map((slug) => {
-      const cat = categoryData.find((c) => c.slug === slug);
-      if (!cat) return null;
-      return {
-        id: cat.slug,
-        label: cat.name,
-        subCategories: cat.subCategories || [],
-      };
-    })
-    .filter(Boolean);
+  const dynamicItems = categoryData.map((cat) => ({
+    id: cat.slug,
+    label: cat.name,
+    subCategories: cat.subCategories || [],
+  }));
 
-  const navItems = [...staticItems, ...dynamicItems];
+  const navItems = [...staticItemsStart, ...dynamicItems, ...staticItemsEnd];
 
   const handleCategoryClick = (categoryId, subCategory) => {
     // Clear any existing search before navigating to a category

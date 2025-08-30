@@ -60,14 +60,20 @@ const OrderSchema = new mongoose.Schema(
 			type: Number,
 			required: true,
 		},
-		tax: {
-			type: Number,
-			default: 0,
-		},
-		shippingCost: {
-			type: Number,
-			default: 0,
-		},
+                tax: {
+                        type: Number,
+                        default: 0,
+                },
+                gst: {
+                        cgst: { type: Number, default: 0 },
+                        sgst: { type: Number, default: 0 },
+                        igst: { type: Number, default: 0 },
+                        total: { type: Number, default: 0 },
+                },
+                shippingCost: {
+                        type: Number,
+                        default: 0,
+                },
 		discount: {
 			type: Number,
 			default: 0,

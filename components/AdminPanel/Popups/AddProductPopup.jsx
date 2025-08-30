@@ -61,6 +61,7 @@ export function AddProductPopup({ open, onOpenChange }) {
                 longDescription: "",
                 category: "",
                 subCategory: "",
+                hsnCode: "",
                 mrp: "",
                 price: "",
                 salePrice: "",
@@ -80,9 +81,10 @@ export function AddProductPopup({ open, onOpenChange }) {
 			const productData = {
 				title: formData.title,
 				description: formData.description,
-				longDescription: formData.longDescription || formData.description,
+                                longDescription: formData.longDescription || formData.description,
                                 category: formData.category,
                                 subCategory: formData.subCategory,
+                                hsnCode: formData.hsnCode,
                                 mrp: parseFloat(formData.mrp),
                                 price: parseFloat(formData.price),
                                 salePrice: formData.salePrice ? parseFloat(formData.salePrice) : 0,
@@ -112,12 +114,13 @@ export function AddProductPopup({ open, onOpenChange }) {
 	};
 
 	const resetForm = () => {
-		setFormData({
+                setFormData({
                         title: "",
                         description: "",
                         longDescription: "",
                         category: "",
                         subCategory: "",
+                        hsnCode: "",
                         mrp: "",
                         price: "",
                         salePrice: "",
@@ -260,23 +263,39 @@ export function AddProductPopup({ open, onOpenChange }) {
                                                                         }
                                                                         className="mt-1"
                                                                 />
-                                                                <datalist id="admin-subcategory-list">
-                                                                        {categories
-                                                                                .find(
-                                                                                        (cat) =>
-                                                                                                cat.slug ===
-                                                                                                formData.category
-                                                                                )?.subCategories?.map((sub) => (
-                                                                                        <option key={sub} value={sub} />
-                                                                                ))}
-                                                                </datalist>
-                                                        </div>
+                                                        <datalist id="admin-subcategory-list">
+                                                                {categories
+                                                                        .find(
+                                                                                (cat) =>
+                                                                                        cat.slug ===
+                                                                                        formData.category
+                                                                        )?.subCategories?.map((sub) => (
+                                                                                <option key={sub} value={sub} />
+                                                                        ))}
+                                                        </datalist>
+                                                </div>
 
-                                                        <div>
-                                                                <Label>Product Type</Label>
-                                                                <Select
-                                                                        value={formData.type}
-                                                                        onValueChange={(value) =>
+                                                <div>
+                                                        <Label htmlFor="hsnCode">HSN Code</Label>
+                                                        <Input
+                                                                id="hsnCode"
+                                                                placeholder="Enter HSN code"
+                                                                value={formData.hsnCode}
+                                                                onChange={(e) =>
+                                                                        setFormData({
+                                                                                ...formData,
+                                                                                hsnCode: e.target.value,
+                                                                        })
+                                                                }
+                                                                className="mt-1"
+                                                        />
+                                                </div>
+
+                                                <div>
+                                                        <Label>Product Type</Label>
+                                                        <Select
+                                                                value={formData.type}
+                                                                onValueChange={(value) =>
                                                                                 setFormData({ ...formData, type: value })
                                                                         }
                                                                 >

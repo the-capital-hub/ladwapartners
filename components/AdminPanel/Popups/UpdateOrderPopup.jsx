@@ -182,7 +182,7 @@ export function UpdateOrderPopup({ open, onOpenChange, order, onUpdate }) {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div>
-								<Label htmlFor="shippingCost">Shipping Cost ($)</Label>
+                                                                <Label htmlFor="shippingCost">Shipping Cost (₹)</Label>
 								<Input
 									id="shippingCost"
 									type="number"
@@ -197,7 +197,7 @@ export function UpdateOrderPopup({ open, onOpenChange, order, onUpdate }) {
 							</div>
 
 							<div>
-								<Label htmlFor="tax">Tax ($)</Label>
+                                                                <Label htmlFor="tax">Tax (₹)</Label>
 								<Input
 									id="tax"
 									type="number"

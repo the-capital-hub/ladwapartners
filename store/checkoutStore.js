@@ -122,13 +122,15 @@ export const useCheckoutStore = create(
 				isAddingNewAddress: false,
 
 				// Order Summary
-				orderSummary: {
-					items: [],
-					subtotal: 0,
-					shippingCost: 0,
-					discount: 0,
-					total: 0,
-				},
+                                orderSummary: {
+                                        items: [],
+                                        subtotal: 0,
+                                        shippingCost: 0,
+                                        discount: 0,
+                                        tax: 0,
+                                        gst: { cgst: 0, sgst: 0, igst: 0 },
+                                        total: 0,
+                                },
 
 				// Applied Coupon (only for buyNow flow)
 				appliedCoupon: null,
@@ -217,18 +219,19 @@ export const useCheckoutStore = create(
 						discount = appliedCoupon?.discountAmount || 0;
 					}
 
-					const total = subtotal + shippingCost - discount;
-
-					set({
-						orderSummary: {
-							items,
-							subtotal,
-							shippingCost,
-							discount,
-							total,
-						},
-					});
-				},
+                                        set({
+                                                orderSummary: {
+                                                        items,
+                                                        subtotal,
+                                                        shippingCost,
+                                                        discount,
+                                                        tax: 0,
+                                                        gst: { cgst: 0, sgst: 0, igst: 0 },
+                                                        total: 0,
+                                                },
+                                        });
+                                        get().recalculateTotal();
+                                },
 
 				// Load user addresses
 				loadUserAddresses: async () => {
@@ -369,13 +372,15 @@ export const useCheckoutStore = create(
 				},
 
 				// Recalculate total
-				recalculateTotal: () => {
-					const {
-						orderSummary,
-						appliedCoupon,
-						cartAppliedCoupon,
-						checkoutType,
-					} = get();
+                                recalculateTotal: () => {
+                                        const {
+                                                orderSummary,
+                                                appliedCoupon,
+                                                cartAppliedCoupon,
+                                                checkoutType,
+                                                savedAddresses,
+                                                selectedAddressId,
+                                        } = get();
 
 					// Calculate shipping cost
 					const shippingCost = orderSummary.subtotal >= 500 ? 0 : 50;
@@ -392,17 +397,45 @@ export const useCheckoutStore = create(
 							(orderSummary.subtotal * appliedCoupon.discount) / 100;
 					}
 
-					const total = orderSummary.subtotal + shippingCost - discount;
+                                        // GST calculation
+                                        const storeState =
+                                                process.env.NEXT_PUBLIC_STORE_STATE || "Karnataka";
+                                        const selectedAddress = savedAddresses.find(
+                                                (addr) => addr._id === selectedAddressId
+                                        );
+                                        let cgst = 0;
+                                        let sgst = 0;
+                                        let igst = 0;
+                                        if (orderSummary.subtotal > 0) {
+                                                if (
+                                                        selectedAddress &&
+                                                        selectedAddress.state === storeState
+                                                ) {
+                                                        cgst = orderSummary.subtotal * 0.09;
+                                                        sgst = orderSummary.subtotal * 0.09;
+                                                } else {
+                                                        igst = orderSummary.subtotal * 0.18;
+                                                }
+                                        }
+                                        const tax = cgst + sgst + igst;
 
-					set({
-						orderSummary: {
-							...orderSummary,
-							shippingCost,
-							discount,
-							total,
-						},
-					});
-				},
+                                        const total =
+                                                orderSummary.subtotal +
+                                                shippingCost +
+                                                tax -
+                                                discount;
+
+                                        set({
+                                                orderSummary: {
+                                                        ...orderSummary,
+                                                        shippingCost,
+                                                        discount,
+                                                        tax,
+                                                        gst: { cgst, sgst, igst },
+                                                        total,
+                                                },
+                                        });
+                                },
 
 				// Get selected address
 				getSelectedAddress: () => {
@@ -447,10 +480,12 @@ export const useCheckoutStore = create(
 							customerEmail: customerInfo.email,
 							customerMobile: customerInfo.mobile,
 							products: orderSummary.items,
-							subtotal: orderSummary.subtotal,
-							shippingCost: orderSummary.shippingCost,
-							discount: orderSummary.discount,
-							totalAmount: orderSummary.total,
+                                                        subtotal: orderSummary.subtotal,
+                                                        shippingCost: orderSummary.shippingCost,
+                                                        discount: orderSummary.discount,
+                                                        tax: orderSummary.tax,
+                                                        gst: orderSummary.gst,
+                                                        totalAmount: orderSummary.total,
 							paymentMethod: paymentMethod,
 							deliveryAddress: {
 								tag: selectedAddress.tag,
@@ -513,10 +548,12 @@ export const useCheckoutStore = create(
 											// Reset checkout
 											get().resetCheckout();
 
-											toast.success("Payment successful! Order placed.");
+                                                                                        toast.success("Order placed successfully!");
 
-											// Redirect to success page
-											window.location.href = `/order-success?orderId=${verificationResult.orderId}&orderNumber=${verificationResult.orderNumber}`;
+                                                                                        // Show confirmation then redirect to orders page
+                                                                                        setTimeout(() => {
+                                                                                                window.location.href = "/account/orders";
+                                                                                        }, 2000);
 										} else {
 											toast.error("Payment verification failed");
 										}
@@ -570,10 +607,12 @@ export const useCheckoutStore = create(
 								// Reset checkout
 								get().resetCheckout();
 
-								toast.success("Order placed successfully!");
+                                                                toast.success("Order placed successfully!");
 
-								// Redirect to success page
-								window.location.href = `/order-success?orderId=${result.orderId}&orderNumber=${result.orderNumber}`;
+                                                                // Show confirmation then redirect to orders page
+                                                                setTimeout(() => {
+                                                                        window.location.href = "/account/orders";
+                                                                }, 2000);
 
 								return { success: true, paymentMethod: "cod" };
 							} else {
@@ -610,13 +649,15 @@ export const useCheckoutStore = create(
 							isDefault: false,
 						},
 						isAddingNewAddress: false,
-						orderSummary: {
-							items: [],
-							subtotal: 0,
-							shippingCost: 0,
-							discount: 0,
-							total: 0,
-						},
+                                                orderSummary: {
+                                                        items: [],
+                                                        subtotal: 0,
+                                                        shippingCost: 0,
+                                                        discount: 0,
+                                                        tax: 0,
+                                                        gst: { cgst: 0, sgst: 0, igst: 0 },
+                                                        total: 0,
+                                                },
 						appliedCoupon: null,
 						cartAppliedCoupon: null,
 						currentStep: 1,

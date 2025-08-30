@@ -5,11 +5,11 @@ import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-	Package,
-	ShoppingCart,
-	Users,
-	DollarSign,
-	AlertTriangle,
+        Package,
+        ShoppingCart,
+        Users,
+        IndianRupee,
+        AlertTriangle,
 	CheckCircle,
 	Clock,
 	Store,
@@ -131,7 +131,7 @@ export default function AdminDashboard() {
 					title="Total Revenue"
 					value={`₹${data.overview.totalRevenue.toLocaleString()}`}
 					change={data.overview.revenueGrowth}
-					icon={DollarSign}
+                                        icon={IndianRupee}
 					color="green"
 					delay={0.2}
 				/>
