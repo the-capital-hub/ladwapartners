@@ -161,7 +161,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
 
         const downloadTemplate = () => {
                 const headers = [
-                        "SL .No",
                         "Product Category",
                         "Sub Category",
                         "HSN Code",
@@ -170,6 +169,7 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Price",
                         "MRP",
                         "Feature Image",
+                        "Main Image Link",
                         "Images URL Link (7 images)",
                         "Length (mm)",
                         "Width (mm)",
@@ -181,7 +181,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "size",
                 ];
                 const sampleRow = [
-                        "1",
                         "Sample Category",
                         "Sample Sub",
                         "HSN001",
@@ -189,7 +188,8 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Sample description",
                         "100",
                         "120",
-                        "https://example.com/image.jpg",
+                        "https://example.com/feature-image.jpg",
+                        "https://example.com/main-image.jpg",
                         "https://drive.google.com/drive/folders/sample",
                         "10",
                         "5",

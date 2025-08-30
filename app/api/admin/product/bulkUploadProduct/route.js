@@ -114,10 +114,17 @@ export async function POST(request) {
                                 }
 
                                 const featureImageUrl =
-                                        featureImage ||
                                         mainImageLink ||
+                                        featureImage ||
                                         images[0] ||
                                         "";
+
+                                if (featureImageUrl) {
+                                        images = [
+                                                featureImageUrl,
+                                                ...images.filter((img) => img !== featureImageUrl),
+                                        ];
+                                }
 
                                 const parsedLength =
                                         length !== undefined && length !== ""
