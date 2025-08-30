@@ -97,8 +97,8 @@ export async function POST(request) {
 
                                 const finalCategory = productData.category || category;
 
-                                let images = [];
-                                if (productData.imageFolder) {
+                                let images = productData.images || [];
+                                if (images.length === 0 && productData.imageFolder) {
                                         images = await getGoogleDriveFolderImageUrls(
                                                 productData.imageFolder
                                         );
