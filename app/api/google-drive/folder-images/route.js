@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-
 // Server-side helper to fetch image links from a Google Drive folder
 async function fetchFolderImages(folderId) {
   const apiKey = process.env.GOOGLE_DRIVE_API_KEY;
@@ -34,14 +33,26 @@ async function fetchFolderImages(folderId) {
   }).then((r) => (r.ok ? r.text() : ""));
   if (!html) return [];
 
+  // First try to scrape data-id attributes rendered in the markup
   const idRegex = /data-id=['"]([^'"]+)['"]/g;
-
-  const links = [];
+  const ids = new Set();
   let m;
   while ((m = idRegex.exec(html)) !== null) {
-    links.push(`https://lh3.googleusercontent.com/d/${m[1]}`);
+    ids.add(m[1]);
   }
-  return links;
+
+  // Some folder views lazy-load items via JSON in <script> tags instead of
+  // rendering data-id attributes. Fall back to pulling any "id" fields from
+  // inline JSON blobs if we didn't get any matches above.
+  if (!ids.size) {
+    const jsonIdRegex = /"id":"([a-zA-Z0-9_-]{10,})"/g;
+    while ((m = jsonIdRegex.exec(html)) !== null) {
+      if (m[1] !== folderId) ids.add(m[1]);
+    }
+  }
+
+  return Array.from(ids).map((id) => `https://lh3.googleusercontent.com/d/${id}`);
+
 }
 
 export async function GET(request) {
