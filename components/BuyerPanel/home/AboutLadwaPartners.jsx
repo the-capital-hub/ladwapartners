@@ -52,6 +52,7 @@ const AboutLadwaPartners = () => {
 
 	return (
 		<section
+			id="about-us"
 			className={`${outfit.className} max-w-6xl mx-auto px-12 py-8 md:px-5 md:py-0`}
 		>
 			<motion.div
@@ -155,7 +156,7 @@ const AboutLadwaPartners = () => {
 							<Image
 								src={img3}
 								alt="Traffic safety sign"
-								className="w-full h-full h-[39vh] object-cover"
+								className="w-full h-[39vh] object-cover"
 							/>
 						</div>
 					</motion.div>
