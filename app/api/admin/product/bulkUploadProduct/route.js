@@ -75,13 +75,6 @@ export async function POST(request) {
                                         let existingCategory = await Category.findOne({ slug: categorySlug });
 
                                         if (existingCategory) {
-                                                // Track duplicate category product
-                                                results.duplicates = results.duplicates || [];
-                                                results.duplicates.push({
-                                                        title,
-                                                        category: existingCategory.name,
-                                                });
-
                                                 if (subCategory) {
                                                         await Category.updateOne(
                                                                 { _id: existingCategory._id },
@@ -104,10 +97,8 @@ export async function POST(request) {
 
                                 const finalCategory = productData.category || category;
 
-                                let images = Array.isArray(productData.images)
-                                        ? productData.images
-                                        : [];
-                                if (!images.length && productData.imageFolder) {
+                                let images = [];
+                                if (productData.imageFolder) {
                                         images = await getGoogleDriveFolderImageUrls(
                                                 productData.imageFolder
                                         );
@@ -119,12 +110,8 @@ export async function POST(request) {
                                         images[0] ||
                                         "";
 
-                                if (featureImageUrl) {
-                                        images = [
-                                                featureImageUrl,
-                                                ...images.filter((img) => img !== featureImageUrl),
-                                        ];
-                                }
+                                const finalMainImageLink =
+                                        mainImageLink || featureImageUrl;
 
                                 const parsedLength =
                                         length !== undefined && length !== ""
@@ -152,7 +139,7 @@ export async function POST(request) {
                                         price: parsedPrice,
                                         mrp: parsedMrp,
                                         featureImage: featureImageUrl,
-                                        mainImageLink,
+                                        mainImageLink: finalMainImageLink,
                                         hsnCode,
                                         length: Number.isNaN(parsedLength)
                                                 ? undefined
