@@ -472,39 +472,46 @@ export const useCheckoutStore = create(
 						const couponToUse =
 							checkoutType === "cart" ? cartAppliedCoupon : appliedCoupon;
 
-						// Prepare order data
-						const orderData = {
-							userId: userId,
-							customerName: customerInfo.name,
-							customerEmail: customerInfo.email,
-							customerMobile: customerInfo.mobile,
-							products: orderSummary.items,
+                                                // Prepare order data
+                                                const defaultBilling =
+                                                        get().savedAddresses.find((addr) => addr.isDefault) ||
+                                                        selectedAddress;
+
+                                                const formatAddress = (addr) => ({
+                                                        tag: addr.tag,
+                                                        name: addr.name,
+                                                        street: addr.street,
+                                                        city: addr.city,
+                                                        state: addr.state,
+                                                        zipCode: addr.zipCode,
+                                                        country: addr.country,
+                                                        fullAddress: `${addr.street}, ${addr.city}, ${addr.state} - ${addr.zipCode}`,
+                                                });
+
+                                                const orderData = {
+                                                        userId: userId,
+                                                        customerName: customerInfo.name,
+                                                        customerEmail: customerInfo.email,
+                                                        customerMobile: customerInfo.mobile,
+                                                        products: orderSummary.items,
                                                         subtotal: orderSummary.subtotal,
                                                         shippingCost: orderSummary.shippingCost,
                                                         discount: orderSummary.discount,
                                                         tax: orderSummary.tax,
                                                         gst: orderSummary.gst,
                                                         totalAmount: orderSummary.total,
-							paymentMethod: paymentMethod,
-							deliveryAddress: {
-								tag: selectedAddress.tag,
-								name: selectedAddress.name,
-								street: selectedAddress.street,
-								city: selectedAddress.city,
-								state: selectedAddress.state,
-								zipCode: selectedAddress.zipCode,
-								country: selectedAddress.country,
-								fullAddress: `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.zipCode}`,
-							},
-							couponApplied: couponToUse
-								? {
-										couponCode: couponToUse.code,
-										discountAmount:
-											couponToUse.discountAmount || orderSummary.discount,
-										discountType: "percentage",
-								  }
-								: null,
-						};
+                                                        paymentMethod: paymentMethod,
+                                                        billToAddress: formatAddress(defaultBilling),
+                                                        shipToAddress: formatAddress(selectedAddress),
+                                                        couponApplied: couponToUse
+                                                                ? {
+                                                                                couponCode: couponToUse.code,
+                                                                                discountAmount:
+                                                                                        couponToUse.discountAmount || orderSummary.discount,
+                                                                                discountType: "percentage",
+                                                                  }
+                                                                : null,
+                                                };
 
 						if (paymentMethod === "razorpay") {
 							// Create Razorpay order
