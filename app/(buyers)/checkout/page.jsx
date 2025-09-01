@@ -767,24 +767,20 @@ export default function CheckoutPage() {
                                                 )}
                                                 {orderSummary.tax > 0 && (
                                                         <div className="space-y-1">
-                                                                <div className="flex justify-between">
-                                                                        <span>GST (18%)</span>
-                                                                        <span>₹{orderSummary.tax.toLocaleString()}</span>
-                                                                </div>
                                                                 {orderSummary.gst.cgst > 0 && (
-                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                        <div className="flex justify-between">
                                                                                 <span>CGST (9%)</span>
                                                                                 <span>₹{orderSummary.gst.cgst.toLocaleString()}</span>
                                                                         </div>
                                                                 )}
                                                                 {orderSummary.gst.sgst > 0 && (
-                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                        <div className="flex justify-between">
                                                                                 <span>SGST (9%)</span>
                                                                                 <span>₹{orderSummary.gst.sgst.toLocaleString()}</span>
                                                                         </div>
                                                                 )}
                                                                 {orderSummary.gst.igst > 0 && (
-                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                        <div className="flex justify-between">
                                                                                 <span>IGST (18%)</span>
                                                                                 <span>₹{orderSummary.gst.igst.toLocaleString()}</span>
                                                                         </div>
