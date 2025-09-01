@@ -106,19 +106,21 @@ export const useCheckoutStore = create(
 					mobile: "",
 				},
 
-				// Delivery Address Management
-				savedAddresses: [],
-				selectedAddressId: null,
-				newAddress: {
-					tag: "home",
-					name: "",
-					street: "",
-					city: "",
-					state: "",
-					zipCode: "",
-					country: "India",
-					isDefault: false,
-				},
+                                // Delivery Address Management
+                                savedAddresses: [],
+                                billingAddress: null,
+                                selectedAddressId: null,
+                                newAddress: {
+                                        tag: "home",
+                                        name: "",
+                                        street: "",
+                                        city: "",
+                                        state: "",
+                                        zipCode: "",
+                                        country: "India",
+                                        isDefault: false,
+                                        addressType: "shipTo",
+                                },
 				isAddingNewAddress: false,
 
 				// Order Summary
@@ -234,28 +236,38 @@ export const useCheckoutStore = create(
                                 },
 
 				// Load user addresses
-				loadUserAddresses: async () => {
-					set({ isLoading: true });
-					try {
-						const data = await paymentAPI.getUserAddresses();
-						if (data.success) {
-							set({ savedAddresses: data.addresses });
+                                loadUserAddresses: async () => {
+                                        set({ isLoading: true });
+                                        try {
+                                                const data = await paymentAPI.getUserAddresses();
+                                                if (data.success) {
+                                                        const billing = data.addresses.find(
+                                                                (addr) => addr.addressType === "billTo"
+                                                        );
+                                                        const shipping = data.addresses.filter(
+                                                                (addr) => addr.addressType === "shipTo"
+                                                        );
 
-							// Auto-select default address if available
-							const defaultAddress = data.addresses.find(
-								(addr) => addr.isDefault
-							);
-							if (defaultAddress) {
-								set({ selectedAddressId: defaultAddress._id });
-							}
-						}
-					} catch (error) {
-						console.error("Failed to load addresses:", error);
-						toast.error("Failed to load saved addresses");
-					} finally {
-						set({ isLoading: false });
-					}
-				},
+                                                        set({
+                                                                savedAddresses: shipping,
+                                                                billingAddress: billing || null,
+                                                        });
+
+                                                        // Auto-select default shipping address if available
+                                                        const defaultAddress = shipping.find(
+                                                                (addr) => addr.isDefault
+                                                        );
+                                                        if (defaultAddress) {
+                                                                set({ selectedAddressId: defaultAddress._id });
+                                                        }
+                                                }
+                                        } catch (error) {
+                                                console.error("Failed to load addresses:", error);
+                                                toast.error("Failed to load saved addresses");
+                                        } finally {
+                                                set({ isLoading: false });
+                                        }
+                                },
 
 				// Add new address
 				addNewAddress: async () => {
@@ -274,23 +286,24 @@ export const useCheckoutStore = create(
 
 					set({ isLoading: true });
 					try {
-						const data = await paymentAPI.addUserAddress(newAddress);
+                                                const data = await paymentAPI.addUserAddress(newAddress);
 						if (data.success) {
 							// Reload addresses
 							await get().loadUserAddresses();
 
 							// Reset new address form
 							set({
-								newAddress: {
-									tag: "home",
-									name: "",
-									street: "",
-									city: "",
-									state: "",
-									zipCode: "",
-									country: "India",
-									isDefault: false,
-								},
+                                                                newAddress: {
+                                                                        tag: "home",
+                                                                        name: "",
+                                                                        street: "",
+                                                                        city: "",
+                                                                        state: "",
+                                                                        zipCode: "",
+                                                                        country: "India",
+                                                                        isDefault: false,
+                                                                        addressType: "shipTo",
+                                                                },
 								isAddingNewAddress: false,
 							});
 
@@ -455,10 +468,10 @@ export const useCheckoutStore = create(
 
 					const selectedAddress = get().getSelectedAddress();
 
-					if (!selectedAddress) {
-						toast.error("Please select a delivery address");
-						return { success: false, error: "No delivery address selected" };
-					}
+                                        if (!selectedAddress) {
+                                                toast.error("Please select a ship to address");
+                                                return { success: false, error: "No ship to address selected" };
+                                        }
 
 					if (orderSummary.items.length === 0) {
 						toast.error("No items to checkout");
@@ -472,39 +485,47 @@ export const useCheckoutStore = create(
 						const couponToUse =
 							checkoutType === "cart" ? cartAppliedCoupon : appliedCoupon;
 
-						// Prepare order data
-						const orderData = {
-							userId: userId,
-							customerName: customerInfo.name,
-							customerEmail: customerInfo.email,
-							customerMobile: customerInfo.mobile,
-							products: orderSummary.items,
+                                                // Prepare order data
+                                                const defaultBilling =
+                                                        get().billingAddress ||
+                                                        get().savedAddresses.find((addr) => addr.isDefault) ||
+                                                        selectedAddress;
+
+                                                const formatAddress = (addr) => ({
+                                                        tag: addr.tag,
+                                                        name: addr.name,
+                                                        street: addr.street,
+                                                        city: addr.city,
+                                                        state: addr.state,
+                                                        zipCode: addr.zipCode,
+                                                        country: addr.country,
+                                                        fullAddress: `${addr.street}, ${addr.city}, ${addr.state} - ${addr.zipCode}`,
+                                                });
+
+                                                const orderData = {
+                                                        userId: userId,
+                                                        customerName: customerInfo.name,
+                                                        customerEmail: customerInfo.email,
+                                                        customerMobile: customerInfo.mobile,
+                                                        products: orderSummary.items,
                                                         subtotal: orderSummary.subtotal,
                                                         shippingCost: orderSummary.shippingCost,
                                                         discount: orderSummary.discount,
                                                         tax: orderSummary.tax,
                                                         gst: orderSummary.gst,
                                                         totalAmount: orderSummary.total,
-							paymentMethod: paymentMethod,
-							deliveryAddress: {
-								tag: selectedAddress.tag,
-								name: selectedAddress.name,
-								street: selectedAddress.street,
-								city: selectedAddress.city,
-								state: selectedAddress.state,
-								zipCode: selectedAddress.zipCode,
-								country: selectedAddress.country,
-								fullAddress: `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state} - ${selectedAddress.zipCode}`,
-							},
-							couponApplied: couponToUse
-								? {
-										couponCode: couponToUse.code,
-										discountAmount:
-											couponToUse.discountAmount || orderSummary.discount,
-										discountType: "percentage",
-								  }
-								: null,
-						};
+                                                        paymentMethod: paymentMethod,
+                                                        billToAddress: formatAddress(defaultBilling),
+                                                        shipToAddress: formatAddress(selectedAddress),
+                                                        couponApplied: couponToUse
+                                                                ? {
+                                                                                couponCode: couponToUse.code,
+                                                                                discountAmount:
+                                                                                        couponToUse.discountAmount || orderSummary.discount,
+                                                                                discountType: "percentage",
+                                                                  }
+                                                                : null,
+                                                };
 
 						if (paymentMethod === "razorpay") {
 							// Create Razorpay order
@@ -677,9 +698,9 @@ export const useCheckoutStore = create(
 					if (!customerInfo.mobile.trim())
 						errors.push("Mobile number is required");
 
-					// Validate delivery address
-					if (!selectedAddressId)
-						errors.push("Please select a delivery address");
+                                        // Validate ship to address
+                                        if (!selectedAddressId)
+                                                errors.push("Please select a ship to address");
 
 					// Validate order items
 					if (orderSummary.items.length === 0) errors.push("No items in order");

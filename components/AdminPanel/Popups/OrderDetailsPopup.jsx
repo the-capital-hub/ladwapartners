@@ -145,30 +145,52 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
 							</CardContent>
 						</Card>
 
-						{/* Delivery Address */}
-						{order.deliveryAddress && (
-							<Card>
-								<CardHeader>
-									<CardTitle className="flex items-center gap-2">
-										<MapPin className="w-5 h-5" />
-										Delivery Address
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-2">
-										<p>{order.deliveryAddress.street}</p>
-										<p>
-											{order.deliveryAddress.city},{" "}
-											{order.deliveryAddress.state}
-										</p>
-										<p>
-											{order.deliveryAddress.zipCode},{" "}
-											{order.deliveryAddress.country}
-										</p>
-									</div>
-								</CardContent>
-							</Card>
-						)}
+                                               {(order.billToAddress || order.shipToAddress) && (
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                {order.billToAddress && (
+                                                                        <Card>
+                                                                                <CardHeader>
+                                                                                        <CardTitle className="flex items-center gap-2">
+                                                                                                <MapPin className="w-5 h-5" />
+                                                                                                Bill To Address
+                                                                                        </CardTitle>
+                                                                                </CardHeader>
+                                                                                <CardContent>
+                                                                                        <div className="space-y-2">
+                                                                                                <p>{order.billToAddress.street}</p>
+                                                                                                <p>
+                                                                                                        {order.billToAddress.city}, {order.billToAddress.state}
+                                                                                                </p>
+                                                                                                <p>
+                                                                                                        {order.billToAddress.zipCode}, {order.billToAddress.country}
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </CardContent>
+                                                                        </Card>
+                                                                )}
+                                                                {order.shipToAddress && (
+                                                                        <Card>
+                                                                                <CardHeader>
+                                                                                        <CardTitle className="flex items-center gap-2">
+                                                                                                <MapPin className="w-5 h-5" />
+                                                                                                Ship To Address
+                                                                                        </CardTitle>
+                                                                                </CardHeader>
+                                                                                <CardContent>
+                                                                                        <div className="space-y-2">
+                                                                                                <p>{order.shipToAddress.street}</p>
+                                                                                                <p>
+                                                                                                        {order.shipToAddress.city}, {order.shipToAddress.state}
+                                                                                                </p>
+                                                                                                <p>
+                                                                                                        {order.shipToAddress.zipCode}, {order.shipToAddress.country}
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </CardContent>
+                                                                        </Card>
+                                                                )}
+                                                        </div>
+                                               )}
 
 						{/* Products */}
 						<Card>

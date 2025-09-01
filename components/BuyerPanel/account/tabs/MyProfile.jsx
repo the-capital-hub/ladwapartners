@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
 import { useAuthStore } from "@/store/authStore";
@@ -46,6 +47,7 @@ const emptyAddress = {
   zipCode: "",
   country: "India",
   isDefault: false,
+  addressType: "shipTo",
 };
 
 export function MyProfile() {
@@ -219,6 +221,7 @@ export function MyProfile() {
       zipCode: address.zipCode || "",
       country: address.country || "India",
       isDefault: address.isDefault || false,
+      addressType: address.addressType || "shipTo",
     });
     setEditingAddressId(address._id);
     setShowAddressForm(true);
@@ -386,7 +389,7 @@ export function MyProfile() {
             <div>
               <CardTitle>Addresses</CardTitle>
               <CardDescription>
-                Manage your shipping and billing addresses
+                Manage your billing and shipping addresses
               </CardDescription>
             </div>
             <Button size="sm" onClick={openNewAddress}>
@@ -398,6 +401,21 @@ export function MyProfile() {
             {showAddressForm && (
               <div className="border rounded-lg p-4 mb-4">
                 <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="addressType">Address Type</Label>
+                    <Select
+                      value={addressForm.addressType}
+                      onValueChange={(v) => setAddressForm((p) => ({ ...p, addressType: v }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="billTo">Bill To</SelectItem>
+                        <SelectItem value="shipTo">Ship To</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="tag">Tag</Label>
                     <Select value={addressForm.tag} onValueChange={(v) => setAddressForm((p) => ({ ...p, tag: v }))}>
@@ -458,12 +476,19 @@ export function MyProfile() {
                 addresses.map((addr) => (
                   <div key={addr._id} className="border rounded-lg p-4">
                     <div className="flex items-center justify-between mb-2">
-                      <div className="font-medium">
-                        {addr.tag
-                          ? `${addr.tag.charAt(0).toUpperCase() + addr.tag.slice(1)} Address`
-                          : "Address"}
+                      <div className="font-medium flex items-center gap-2">
+                        <span>
+                          {addr.tag
+                            ? `${addr.tag.charAt(0).toUpperCase() + addr.tag.slice(1)} Address`
+                            : "Address"}
+                        </span>
+                        {addr.addressType && (
+                          <Badge variant="outline">
+                            {addr.addressType === "billTo" ? "Bill To" : "Ship To"}
+                          </Badge>
+                        )}
                         {addr.isDefault && (
-                          <span className="ml-2 text-xs text-primary">(Default)</span>
+                          <span className="text-xs text-primary">(Default)</span>
                         )}
                       </div>
                       <div className="flex gap-2">
