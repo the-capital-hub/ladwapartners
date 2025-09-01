@@ -70,12 +70,12 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 				description: product.description,
 				price: product.price,
 				originalPrice: product.originalPrice,
-                                image: getDirectGoogleDriveImageUrl(
-                                        product.mainImageLink ||
-                                                product.images?.[0] ||
-                                                product.image ||
-                                                fallbackThumbImage
-                                ),
+				image: getDirectGoogleDriveImageUrl(
+					product.mainImageLink ||
+						product.images?.[0] ||
+						product.image ||
+						fallbackThumbImage
+				),
 				inStock: product.inStock,
 			});
 			toast.success("Added to wishlist");
@@ -98,20 +98,20 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 		}
 	};
 
-        const fallbackMainImage =
-                "https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
-        const fallbackThumbImage =
-                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
+	const fallbackMainImage =
+		"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
+	const fallbackThumbImage =
+		"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
 
-        const images = [
-                product.mainImageLink,
-                ...(product.images || []),
-                product.image,
-        ].filter(Boolean);
+	const images = [
+		product.mainImageLink,
+		...(product.images || []),
+		product.image,
+	].filter(Boolean);
 
-        const mainImageSrc = getDirectGoogleDriveImageUrl(
-                images[selectedImage] || fallbackMainImage
-        );
+	const mainImageSrc = getDirectGoogleDriveImageUrl(
+		images[selectedImage] || fallbackMainImage
+	);
 	const isMainImageUnoptimized = mainImageSrc.includes("google");
 
 	useEffect(() => {
@@ -168,11 +168,9 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 				description: product.description,
 				price: product.price,
 				originalPrice: product.originalPrice,
-                                image: getDirectGoogleDriveImageUrl(
-                                        product.mainImageLink ||
-                                                product.images?.[0] ||
-                                                product.image
-                                ),
+				image: getDirectGoogleDriveImageUrl(
+					product.mainImageLink || product.images?.[0] || product.image
+				),
 				inStock: product.inStock,
 			},
 			quantity
@@ -193,6 +191,14 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 		if (newQuantity >= 1 && newQuantity <= product.stocks) {
 			setQuantity(newQuantity);
 		}
+	};
+
+	const previousImage = () => {
+		setSelectedImage((selectedImage + images.length - 1) % images.length);
+	};
+
+	const nextImage = () => {
+		setSelectedImage((selectedImage + 1) % images.length);
 	};
 
 	// const colors = [
@@ -256,10 +262,16 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 									/>
 									{/* Navigation arrows - positioned at bottom right */}
 									<div className="absolute top-1/2 right-1/2 transform translate-x-1/2 flex justify-between w-full px-10">
-										<button className="bg-gray-100 rounded-xl p-2  hover:bg-gray-200">
+										<button
+											className="bg-gray-100 rounded-xl p-2  hover:bg-gray-200"
+											onClick={previousImage}
+										>
 											<ChevronLeft className="h-5 w-5 text-black" />
 										</button>
-										<button className="bg-gray-100 rounded-xl p-2 hover:bg-gray-200">
+										<button
+											className="bg-gray-100 rounded-xl p-2 hover:bg-gray-200"
+											onClick={nextImage}
+										>
 											<ChevronRight className="h-5 w-5 text-black" />
 										</button>
 									</div>
@@ -298,10 +310,10 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 
 							{/* Thumbnail Images */}
 							<div className="flex gap-2 mt-4">
-                                                                {images.slice(0, 4).map((image, index) => {
-                                                                        const src = getDirectGoogleDriveImageUrl(
-                                                                                image || fallbackThumbImage
-                                                                        );
+								{images.slice(0, 6).map((image, index) => {
+									const src = getDirectGoogleDriveImageUrl(
+										image || fallbackThumbImage
+									);
 									const unopt = src.includes("google");
 									return (
 										<button
