@@ -5,10 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Upload, X, ImageIcon } from "lucide-react";
 
 export function ImageUpload({
-	images = [], // Array of base64 strings
-	onImagesChange,
-	label = "Product Images",
-	required = true,
+        images = [], // Array of base64 strings
+        onImagesChange,
+        label = "Product Images",
+        required = true,
+        maxImages = 5,
 }) {
 	const [isDragging, setIsDragging] = useState(false);
 	const [errors, setErrors] = useState([]);
@@ -43,8 +44,8 @@ export function ImageUpload({
 		const newErrors = [];
 
 		// Check total count limit
-		if (images.length + fileArray.length > MAX_IMAGES) {
-			newErrors.push(`Maximum ${MAX_IMAGES} images allowed`);
+                if (images.length + fileArray.length > maxImages) {
+                        newErrors.push(`Maximum ${maxImages} images allowed`);
 			setErrors(newErrors);
 			return;
 		}
@@ -141,8 +142,8 @@ export function ImageUpload({
 				<Label className="text-sm font-medium">
 					{label} {required && <span className="text-red-500">*</span>}
 				</Label>
-				<p className="text-xs text-gray-500 mt-1">
-					Upload up to {MAX_IMAGES} images. At least 1 image is required.
+                                <p className="text-xs text-gray-500 mt-1">
+                                        Upload up to {maxImages} images. At least 1 image is required.
 					Supported formats: JPEG, PNG, WebP (Max 5MB each)
 				</p>
 			</div>
@@ -233,8 +234,8 @@ export function ImageUpload({
 						hasValidationError ? "text-red-500" : "text-gray-500"
 					}`}
 				>
-					{images.length} / {MAX_IMAGES} images
-				</span>
+                                        {images.length} / {maxImages} images
+                                </span>
 			</div>
 		</div>
 	);

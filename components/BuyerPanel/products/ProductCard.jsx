@@ -28,11 +28,14 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 	const isGstVerified = useIsGstVerified();
 	const [quantity, setQuantity] = useState(1);
 
-	const fallbackImage =
-		"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
-	const imageSrc = getDirectGoogleDriveImageUrl(
-		product.images?.[0] || product.image || fallbackImage
-	);
+        const fallbackImage =
+                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
+        const imageSrc = getDirectGoogleDriveImageUrl(
+                product.mainImageLink ||
+                        product.images?.[0] ||
+                        product.image ||
+                        fallbackImage
+        );
 
 	const changeQuantity = (e, delta) => {
 		e.stopPropagation();
@@ -62,9 +65,11 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 				description: product.description,
 				price: product.price,
 				originalPrice: product.originalPrice,
-				image: getDirectGoogleDriveImageUrl(
-					product.images?.[0] || product.image
-				),
+                                image: getDirectGoogleDriveImageUrl(
+                                        product.mainImageLink ||
+                                                product.images?.[0] ||
+                                                product.image
+                                ),
 				inStock: product.inStock,
 			},
 			quantity

@@ -40,6 +40,7 @@ export async function POST(request, { params }) {
                         unitPrice: product.price,
                         totalPrice: product.price * quantity,
                         productImage:
+                                product.mainImageLink ||
                                 product.images?.[0] ||
                                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
                 };

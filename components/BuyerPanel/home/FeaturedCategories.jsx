@@ -102,7 +102,7 @@ export default function FeaturedCategories() {
 											description: product.description,
 											price: product.price,
 											salePrice: product.price,
-											images: [product.image],
+                                                                                        images: [product.mainImageLink || product.image],
 											inStock: product.inStock,
 											discountPercentage: 0,
 										}}

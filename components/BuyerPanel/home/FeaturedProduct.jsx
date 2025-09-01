@@ -32,7 +32,7 @@ export default function FeaturedProduct({ product }) {
 			name: product.name,
 			description: product.description,
 			price: product.price,
-			image: product.image,
+                        image: product.mainImageLink || product.image,
 			inStock: product.inStock,
 		});
 	};
@@ -117,13 +117,17 @@ export default function FeaturedProduct({ product }) {
 									{product.discountPercentage}% OFF
 								</Badge>
 							)}
-							<Image
-								src={product.image || "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"}
-								alt={product.name}
-								width={400}
-								height={400}
-								className="w-full h-auto rounded max-h-[400px] object-contain"
-							/>
+                                                        <Image
+                                                                src={
+                                                                        product.mainImageLink ||
+                                                                        product.image ||
+                                                                        "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
+                                                                }
+                                                                alt={product.name}
+                                                                width={400}
+                                                                height={400}
+                                                                className="w-full h-auto rounded max-h-[400px] object-contain"
+                                                        />
 						</div>
 						<div className="order-1 lg:order-2">
 							<h3

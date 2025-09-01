@@ -41,8 +41,10 @@ export async function POST(request, { params }) {
                         price: product.price,
                         originalPrice: product.mrp,
                         image:
+                                product.mainImageLink ||
                                 product.images?.[0] ||
                                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                        mainImageLink: product.mainImageLink,
                         quantity: quantity,
                         inStock: product.inStock,
                         availableStock: product.stocks,
