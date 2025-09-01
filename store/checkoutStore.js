@@ -455,10 +455,10 @@ export const useCheckoutStore = create(
 
 					const selectedAddress = get().getSelectedAddress();
 
-					if (!selectedAddress) {
-						toast.error("Please select a delivery address");
-						return { success: false, error: "No delivery address selected" };
-					}
+                                        if (!selectedAddress) {
+                                                toast.error("Please select a ship to address");
+                                                return { success: false, error: "No ship to address selected" };
+                                        }
 
 					if (orderSummary.items.length === 0) {
 						toast.error("No items to checkout");
@@ -677,9 +677,9 @@ export const useCheckoutStore = create(
 					if (!customerInfo.mobile.trim())
 						errors.push("Mobile number is required");
 
-					// Validate delivery address
-					if (!selectedAddressId)
-						errors.push("Please select a delivery address");
+                                        // Validate ship to address
+                                        if (!selectedAddressId)
+                                                errors.push("Please select a ship to address");
 
 					// Validate order items
 					if (orderSummary.items.length === 0) errors.push("No items in order");
