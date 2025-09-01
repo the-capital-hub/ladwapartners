@@ -1,5 +1,6 @@
 import { dbConnect } from "@/lib/dbConnect.js";
 import Product from "@/model/Product.js";
+import mongoose from "mongoose";
 
 export async function GET(request) {
 	await dbConnect();
@@ -24,12 +25,26 @@ export async function GET(request) {
 		const query = {};
 
 		// Search filter
+		// if (search) {
+		// 	query.$or = [
+		// 		{ title: { $regex: search, $options: "i" } },
+		// 		{ description: { $regex: search, $options: "i" } },
+		// 		{ longDescription: { $regex: search, $options: "i" } },
+		// 		{ _id: { $regex: search, $options: "i" } },
+		// 	];
+		// }
+
 		if (search) {
-			query.$or = [
+			const orConditions = [
 				{ title: { $regex: search, $options: "i" } },
 				{ description: { $regex: search, $options: "i" } },
 				{ longDescription: { $regex: search, $options: "i" } },
 			];
+			// Check if search is a valid ObjectId
+			if (mongoose.Types.ObjectId.isValid(search)) {
+				orConditions.push({ _id: new mongoose.Types.ObjectId(search) });
+			}
+			query.$or = orConditions;
 		}
 
 		// Category filter
@@ -45,25 +60,22 @@ export async function GET(request) {
 		}
 
 		// Discount filter
-                if (discount) {
-                        const discountValue = Number.parseInt(discount);
-                        query.$expr = {
-                                $gte: [
-                                        {
-                                                $multiply: [
-                                                        {
-                                                                $divide: [
-                                                                        { $subtract: ["$mrp", "$price"] },
-                                                                        "$mrp",
-                                                                ],
-                                                        },
-                                                        100,
-                                                ],
-                                        },
-                                        discountValue,
-                                ],
-                        };
-                }
+		if (discount) {
+			const discountValue = Number.parseInt(discount);
+			query.$expr = {
+				$gte: [
+					{
+						$multiply: [
+							{
+								$divide: [{ $subtract: ["$mrp", "$price"] }, "$mrp"],
+							},
+							100,
+						],
+					},
+					discountValue,
+				],
+			};
+		}
 
 		// Published filter
 		if (published !== null && published !== undefined) {
