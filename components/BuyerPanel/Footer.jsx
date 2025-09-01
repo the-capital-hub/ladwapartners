@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
 import Logo from "@/public/ladwapartners.png";
 
@@ -14,11 +15,22 @@ export default function Footer() {
 			title: "Account",
 			items: ["My Account", "Login / Register", "Cart", "Wishlist", "Shop"],
 		},
-		quickLinks: {
-			title: "Quick Link",
-			items: ["Privacy Policy", "Terms Of Use", "FAQ", "Contact Us"],
-		},
-	};
+                quickLinks: {
+                        title: "Quick Link",
+                        items: [
+                                { label: "Pricing Policy", href: "/pricing-policy" },
+                                { label: "Shipping Policy", href: "/shipping-policy" },
+                                { label: "Terms & Conditions", href: "/terms-and-conditions" },
+                                { label: "Privacy Policy", href: "/privacy-policy" },
+                                {
+                                        label: "Cancellation & Refund",
+                                        href: "/cancellation-refund-policy",
+                                },
+                                { label: "FAQ", href: "/faq" },
+                                { label: "Contact Us", href: "/contact" },
+                        ],
+                },
+        };
 
 	return (
 		<footer className="bg-black text-white py-8 md:py-16">
@@ -85,12 +97,13 @@ export default function Footer() {
                                                </h3>
                                                <div className="space-y-3 text-gray-400">
                                                        {footerSections.quickLinks.items.map((item, index) => (
-                                                               <p
+                                                               <Link
                                                                        key={index}
-                                                                       className="hover:text-white cursor-pointer transition-colors"
+                                                                       href={item.href}
+                                                                       className="hover:text-white cursor-pointer transition-colors block"
                                                                >
-                                                                       {item}
-                                                               </p>
+                                                                       {item.label}
+                                                               </Link>
                                                        ))}
                                                </div>
                                        </div>
