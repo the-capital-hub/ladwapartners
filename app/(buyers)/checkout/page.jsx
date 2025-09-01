@@ -745,16 +745,6 @@ export default function CheckoutPage() {
 							<span>Subtotal</span>
 							<span>₹{orderSummary.subtotal.toLocaleString()}</span>
 						</div>
-						<div className="flex justify-between">
-							<span>Shipping</span>
-							<span>
-								{orderSummary.shippingCost === 0 ? (
-									<Badge variant="secondary">FREE</Badge>
-								) : (
-									`₹${orderSummary.shippingCost}`
-								)}
-							</span>
-						</div>
                                                 {orderSummary.discount > 0 && (
                                                         <div className="flex justify-between text-green-600">
                                                                 <span>Discount</span>
@@ -794,15 +784,6 @@ export default function CheckoutPage() {
                                                 </div>
 					</div>
 
-					{/* Free shipping message */}
-					{orderSummary.subtotal < 500 && (
-						<div className="p-3 bg-yellow-50 rounded-lg">
-							<p className="text-sm text-yellow-800">
-								Add ₹{(500 - orderSummary.subtotal).toLocaleString()} more for
-								free shipping!
-							</p>
-						</div>
-					)}
 				</CardContent>
 			</Card>
 		);
