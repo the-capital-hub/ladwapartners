@@ -10,40 +10,40 @@ import { useSearchParams } from "next/navigation";
 export default function ProductsPage() {
 	const searchParams = useSearchParams();
 
-        const {
-                error,
-                fetchProducts,
-                setCurrentCategory,
-                setSearchQuery,
-                setFilters,
-        } = useProductStore();
+	const {
+		error,
+		fetchProducts,
+		setCurrentCategory,
+		setSearchQuery,
+		setFilters,
+	} = useProductStore();
 
-        // Handle URL parameters
-        useEffect(() => {
-                const category = searchParams.get("category");
-                const subCategory = searchParams.get("subCategory");
-                const search = searchParams.get("search");
+	// Handle URL parameters
+	useEffect(() => {
+		const category = searchParams.get("category");
+		const subCategory = searchParams.get("subCategory");
+		const search = searchParams.get("search");
 
-                if (search) {
-                        // Searching triggers its own fetch inside setSearchQuery
-                        setSearchQuery(search);
-                } else {
-                        // Apply category filters first, then update store and fetch
-                        if (category && !subCategory) {
-                                setFilters({ categories: [category] });
-                        } else {
-                                setFilters({ categories: [] });
-                        }
-                        setCurrentCategory(category || "all", subCategory || "");
-                        fetchProducts();
-                }
-        }, [
-                searchParams,
-                fetchProducts,
-                setCurrentCategory,
-                setSearchQuery,
-                setFilters,
-        ]);
+		if (search) {
+			// Searching triggers its own fetch inside setSearchQuery
+			setSearchQuery(search);
+		} else {
+			// Apply category filters first, then update store and fetch
+			if (category && !subCategory) {
+				setFilters({ categories: [category] });
+			} else {
+				setFilters({ categories: [] });
+			}
+			setCurrentCategory(category || "all", subCategory || "");
+			fetchProducts();
+		}
+	}, [
+		searchParams,
+		fetchProducts,
+		setCurrentCategory,
+		setSearchQuery,
+		setFilters,
+	]);
 
 	if (error) {
 		return (

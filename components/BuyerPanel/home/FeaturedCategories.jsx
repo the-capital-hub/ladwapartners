@@ -1,8 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ShieldCheck, Signpost, HardHat, Flame } from "lucide-react";
+import {
+	ShieldCheck,
+	Signpost,
+	HardHat,
+	Flame,
+	ChevronLeft,
+	ChevronRight,
+} from "lucide-react";
 import {
 	FireSafety,
 	IndustrialSafety,
@@ -11,9 +18,18 @@ import {
 } from "@/public/images/home/FeatredCategories/index.js";
 import { motion } from "framer-motion";
 import ProductCard from "@/components/BuyerPanel/products/ProductCard.jsx";
-import products from "@/constants/products.js";
+import { useProductStore } from "@/store/productStore.js";
 
 export default function FeaturedCategories() {
+	const {
+		fetchFeaturedProductsForHome,
+		getFeaturedProductsForHome,
+		featuredHomePagination,
+		setFeaturedHomePage,
+		isLoadingFeaturedHome,
+		error,
+	} = useProductStore();
+
 	const categories = [
 		{ name: "Road Safety", icon: RoadSafety.src, slug: "road-safety" },
 		{ name: "Road Sign", icon: RoadSign.src, slug: "signage" },
@@ -26,14 +42,38 @@ export default function FeaturedCategories() {
 	];
 
 	const [selectedCategory, setSelectedCategory] = useState(null);
+	const featuredProducts = getFeaturedProductsForHome();
 
-	const filteredProducts = selectedCategory
-		? products.filter((p) => p.category === selectedCategory).slice(0, 10)
-		: [];
+	// Fetch products when category changes
+	useEffect(() => {
+		fetchFeaturedProductsForHome(selectedCategory, 1);
+	}, [selectedCategory, fetchFeaturedProductsForHome]);
+
+	const handleCategorySelect = (categorySlug) => {
+		setSelectedCategory(categorySlug);
+	};
+
+	const handlePreviousPage = () => {
+		if (featuredHomePagination.currentPage > 1) {
+			setFeaturedHomePage(featuredHomePagination.currentPage - 1);
+		}
+	};
+
+	const handleNextPage = () => {
+		if (
+			featuredHomePagination.currentPage < featuredHomePagination.totalPages
+		) {
+			setFeaturedHomePage(featuredHomePagination.currentPage + 1);
+		}
+	};
+
+	const handlePageSelect = (pageNumber) => {
+		setFeaturedHomePage(pageNumber);
+	};
 
 	return (
 		<section className="py-8 md:py-16 bg-gray-50">
-			<div className="px-10 max-w-6xl mx-auto text-center">
+			<div className="px-10 text-center">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
 					whileInView={{ opacity: 1, y: 0 }}
@@ -56,7 +96,7 @@ export default function FeaturedCategories() {
 					whileInView={{ opacity: 1, y: 0 }}
 					viewport={{ once: true }}
 					transition={{ staggerChildren: 0.1 }}
-					className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
+					className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
 				>
 					{categories.map((cat, index) => {
 						const Icon = cat.icon;
@@ -68,15 +108,14 @@ export default function FeaturedCategories() {
 								whileInView={{ opacity: 1, y: 0 }}
 								viewport={{ once: true }}
 								transition={{ delay: index * 0.1 }}
-								onClick={() => setSelectedCategory(cat.slug)}
+								onClick={() => handleCategorySelect(cat.slug)}
 								className={`p-4 bg-yellow-500 rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col items-center cursor-pointer ${
-									isActive ? "ring-2 ring-yellow-500" : ""
+									isActive ? "ring-2 ring-yellow-600 ring-offset-2" : ""
 								}`}
 							>
-								{/* <Icon className="w-12 h-12 text-yellow-500 mb-4" /> */}
 								<Image
 									src={Icon}
-									alt="cat.name"
+									alt={cat.name}
 									width={100}
 									height={100}
 									className="w-20 h-20 fill-yellow-500 text-yellow-500 mb-4"
@@ -88,29 +127,95 @@ export default function FeaturedCategories() {
 				</motion.div>
 
 				{selectedCategory && (
-					<div className="mt-8 overflow-x-auto">
-						<div className="flex gap-6 pb-2">
-							{filteredProducts.map((product) => (
-								<div
-									key={product.id}
-									className="min-w-[280px] max-w-[280px] flex-shrink-0"
-								>
-									<ProductCard
-										product={{
-											id: product.id,
-											title: product.name,
-											description: product.description,
-											price: product.price,
-											salePrice: product.price,
-                                                                                        images: [product.mainImageLink || product.image],
-											inStock: product.inStock,
-											discountPercentage: 0,
-										}}
-									/>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						className="mt-8"
+					>
+						{isLoadingFeaturedHome ? (
+							<div className="flex justify-center items-center py-8">
+								<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500"></div>
+								<span className="ml-2 text-gray-600">Loading products...</span>
+							</div>
+						) : error ? (
+							<div className="text-red-500 py-4">
+								Error loading products: {error}
+							</div>
+						) : featuredProducts.length > 0 ? (
+							<>
+								<div className="grid grid-cols-1 lg:grid-cols-4 gap-6 pb-2 justify-center md:justify-start">
+									{featuredProducts.map((product) => (
+										<ProductCard
+											product={{
+												id: product.id,
+												title: product.name,
+												description: product.description,
+												price: product.price,
+												salePrice: product.price,
+												images: [product.mainImageLink || product.image],
+												inStock: product.inStock,
+												discountPercentage: 0,
+											}}
+										/>
+									))}
 								</div>
-							))}
-						</div>
-					</div>
+
+								{/* Pagination Controls */}
+								<div className="flex justify-between items-center gap-4 mt-6 px-10">
+									<div className="text-sm text-gray-500">
+										Showing {featuredProducts.length} of{" "}
+										{featuredHomePagination.totalProducts} products
+									</div>
+
+									{featuredHomePagination.totalPages > 1 && (
+										<div className="flex justify-center items-center gap-2">
+											<button
+												onClick={handlePreviousPage}
+												disabled={featuredHomePagination.currentPage === 1}
+												className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+											>
+												<ChevronLeft className="w-4 h-4" />
+											</button>
+
+											<div className="flex gap-1">
+												{Array.from(
+													{ length: featuredHomePagination.totalPages },
+													(_, i) => i + 1
+												).map((pageNumber) => (
+													<button
+														key={pageNumber}
+														onClick={() => handlePageSelect(pageNumber)}
+														className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+															pageNumber === featuredHomePagination.currentPage
+																? "bg-yellow-500 text-white"
+																: "bg-white border border-gray-300 hover:bg-gray-50 text-gray-700"
+														}`}
+													>
+														{pageNumber}
+													</button>
+												))}
+											</div>
+
+											<button
+												onClick={handleNextPage}
+												disabled={
+													featuredHomePagination.currentPage ===
+													featuredHomePagination.totalPages
+												}
+												className="p-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+											>
+												<ChevronRight className="w-4 h-4" />
+											</button>
+										</div>
+									)}
+								</div>
+							</>
+						) : (
+							<div className="text-gray-500 py-8">
+								No products found for this category.
+							</div>
+						)}
+					</motion.div>
 				)}
 			</div>
 		</section>

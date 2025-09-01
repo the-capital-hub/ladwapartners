@@ -10,20 +10,27 @@ export const useProductStore = create(
 				// Initial State
 				products: [],
 				filteredProducts: [],
-                                filters: {
-                                        categories: [],
-                                        priceRange: [0, 10000],
-                                        stockStatus: "all",
-                                        discount: 0,
-                                        type: "",
-                                },
-                                availableFilters: null,
-                                currentCategory: "all",
-                                currentSubCategory: "",
-                                currentPage: 1,
-                                totalPages: 1,
-                                searchQuery: "",
+				featuredHomeProducts: [],
+				featuredHomePagination: {
+					currentPage: 1,
+					totalPages: 1,
+					totalProducts: 0,
+				},
+				filters: {
+					categories: [],
+					priceRange: [0, 10000],
+					stockStatus: "all",
+					discount: 0,
+					type: "",
+				},
+				availableFilters: null,
+				currentCategory: "all",
+				currentSubCategory: "",
+				currentPage: 1,
+				totalPages: 1,
+				searchQuery: "",
 				isLoading: false,
+				isLoadingFeaturedHome: false,
 				error: null,
 				sortBy: "createdAt",
 				sortOrder: "desc",
@@ -33,38 +40,35 @@ export const useProductStore = create(
 					set({ isLoading: true, error: null });
 
 					try {
-                                                const {
-                                                        currentCategory,
-                                                        currentSubCategory,
-                                                        searchQuery,
-                                                        filters,
-                                                        currentPage,
-                                                        sortBy,
-                                                        sortOrder,
-                                                } = get();
+						const {
+							currentCategory,
+							currentSubCategory,
+							searchQuery,
+							filters,
+							currentPage,
+							sortBy,
+							sortOrder,
+						} = get();
 
-                                                const params = new URLSearchParams({
-                                                        page: currentPage.toString(),
-                                                        limit: "12",
-                                                        sort: sortBy,
-                                                        order: sortOrder,
-                                                });
+						const params = new URLSearchParams({
+							page: currentPage.toString(),
+							limit: "12",
+							sort: sortBy,
+							order: sortOrder,
+						});
 
-                                                // When specific categories are selected via filters, use them
-                                                if (filters.categories.length > 0) {
-                                                        params.append(
-                                                                "categories",
-                                                                filters.categories.join(",")
-                                                        );
-                                                } else {
-                                                        if (currentCategory !== "all") {
-                                                                params.append("category", currentCategory);
-                                                        }
+						// When specific categories are selected via filters, use them
+						if (filters.categories.length > 0) {
+							params.append("categories", filters.categories.join(","));
+						} else {
+							if (currentCategory !== "all") {
+								params.append("category", currentCategory);
+							}
 
-                                                        if (currentSubCategory) {
-                                                                params.append("subCategory", currentSubCategory);
-                                                        }
-                                                }
+							if (currentSubCategory) {
+								params.append("subCategory", currentSubCategory);
+							}
+						}
 
 						if (searchQuery) {
 							params.append("search", searchQuery);
@@ -74,13 +78,13 @@ export const useProductStore = create(
 							params.append("minPrice", filters.priceRange[0].toString());
 						}
 
-                                                if (filters.priceRange[1] < 10000) {
-                                                        params.append("maxPrice", filters.priceRange[1].toString());
-                                                }
+						if (filters.priceRange[1] < 10000) {
+							params.append("maxPrice", filters.priceRange[1].toString());
+						}
 
-                                                if (filters.stockStatus !== "all") {
-                                                        params.append("stockStatus", filters.stockStatus);
-                                                }
+						if (filters.stockStatus !== "all") {
+							params.append("stockStatus", filters.stockStatus);
+						}
 
 						if (filters.discount > 0) {
 							params.append("discount", filters.discount.toString());
@@ -111,39 +115,85 @@ export const useProductStore = create(
 					}
 				},
 
+				fetchFeaturedProductsForHome: async (category = null, page = 1) => {
+					set({ isLoadingFeaturedHome: true, error: null });
+
+					try {
+						const params = new URLSearchParams({
+							page: page.toString(),
+							limit: "10",
+							sort: "createdAt",
+							order: "desc",
+						});
+
+						if (category && category !== "all") {
+							params.append("category", category);
+						}
+
+						const response = await fetch(`/api/products?${params}`);
+						const data = await response.json();
+
+						if (data.success) {
+							set({
+								featuredHomeProducts: data.products,
+								featuredHomePagination: {
+									currentPage: data.pagination.currentPage,
+									totalPages: data.pagination.totalPages,
+									totalProducts: data.pagination.totalProducts,
+								},
+								isLoadingFeaturedHome: false,
+							});
+						} else {
+							set({ error: data.message, isLoadingFeaturedHome: false });
+						}
+					} catch (error) {
+						set({
+							error: "Failed to fetch featured products",
+							isLoadingFeaturedHome: false,
+						});
+					}
+				},
+
+				setFeaturedHomePage: (page) => {
+					const { featuredHomePagination } = get();
+					if (page >= 1 && page <= featuredHomePagination.totalPages) {
+						get().fetchFeaturedProductsForHome(null, page);
+					}
+				},
+
 				fetchFilters: async () => {
 					try {
 						const response = await fetch("/api/products/filters");
 						const data = await response.json();
 
-                                                if (data.success) {
-                                                        set({
-                                                                availableFilters: data.filters,
-                                                                filters: {
-                                                                        ...get().filters,
-                                                                        priceRange: [
-                                                                                data.filters.priceRange.min,
-                                                                                data.filters.priceRange.max,
-                                                                        ],
-                                                                        stockStatus: "all",
-                                                                },
-                                                        });
-                                                }
+						if (data.success) {
+							set({
+								availableFilters: data.filters,
+								filters: {
+									...get().filters,
+									priceRange: [
+										data.filters.priceRange.min,
+										data.filters.priceRange.max,
+									],
+									stockStatus: "all",
+								},
+							});
+						}
 					} catch (error) {
 						console.error("Failed to fetch filters:", error);
 					}
 				},
 
-                                setCurrentCategory: (category, subCategory = "") => {
-                                        // Only update state here. Fetching will be handled explicitly
-                                        // after related filters are applied to avoid race conditions
-                                        // where outdated filters could lead to empty product lists.
-                                        set({
-                                                currentCategory: category,
-                                                currentSubCategory: subCategory,
-                                                currentPage: 1,
-                                        });
-                                },
+				setCurrentCategory: (category, subCategory = "") => {
+					// Only update state here. Fetching will be handled explicitly
+					// after related filters are applied to avoid race conditions
+					// where outdated filters could lead to empty product lists.
+					set({
+						currentCategory: category,
+						currentSubCategory: subCategory,
+						currentPage: 1,
+					});
+				},
 
 				setCurrentPage: (page) => {
 					set({ currentPage: page });
@@ -179,7 +229,7 @@ export const useProductStore = create(
 					return get().products.find((product) => product.id === id);
 				},
 
-                                // Get up to three featured products optionally filtered by current category.
+				// Get up to three featured products optionally filtered by current category.
 				// The result is memoized to prevent returning a new array on each call, which
 				// can trigger React's "getSnapshot should be cached" warning when used with
 				// `useSyncExternalStore`.
@@ -208,7 +258,26 @@ export const useProductStore = create(
 
 						lastProducts = products;
 						lastCategory = currentCategory;
-                                                cached = featured.slice(0, 3);
+						cached = featured.slice(0, 3);
+
+						return cached;
+					};
+				})(),
+
+				// New method for home page featured products with caching
+				getFeaturedProductsForHome: (() => {
+					let lastFeaturedHomeProducts = null;
+					let cached = [];
+
+					return () => {
+						const { featuredHomeProducts } = get();
+
+						if (featuredHomeProducts === lastFeaturedHomeProducts) {
+							return cached;
+						}
+
+						lastFeaturedHomeProducts = featuredHomeProducts;
+						cached = [...featuredHomeProducts];
 
 						return cached;
 					};

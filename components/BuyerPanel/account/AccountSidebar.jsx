@@ -50,14 +50,14 @@ const itemVariants = {
 };
 
 export function AccountSidebar({ activeTab, onTabChange }) {
-        const router = useRouter();
-        const pathname = usePathname();
-        const [logoutOpen, setLogoutOpen] = useState(false);
+	const router = useRouter();
+	const pathname = usePathname();
+	const [logoutOpen, setLogoutOpen] = useState(false);
 
-        const handleTabClick = (item) => {
-                onTabChange(item.id);
-                router.push(item.href);
-        };
+	const handleTabClick = (item) => {
+		onTabChange(item.id);
+		router.push(item.href);
+	};
 
 	const isActive = (item) => {
 		if (pathname === "/account" && item.id === "my-profile") {
@@ -66,70 +66,70 @@ export function AccountSidebar({ activeTab, onTabChange }) {
 		return pathname === item.href || activeTab === item.id;
 	};
 
-        return (
-                <div className="fixed left-0 top-[68px] w-72 h-[calc(100vh-68px)] bg-white border-r border-gray-200 overflow-y-auto z-10">
-                        <div className="px-6 py-8 h-full flex flex-col">
-                                <nav className="space-y-2 flex-1">
-                                        {sidebarItems.map((item, index) => (
-                                                <motion.div
-                                                        key={item.id}
-                                                        custom={index}
-                                                        initial="hidden"
-                                                        animate="visible"
-                                                        variants={itemVariants}
-                                                >
-                                                        <button
-                                                                onClick={() => handleTabClick(item)}
-                                                                className={`w-full text-left p-4 rounded-lg transition-all duration-200 group hover:bg-gray-50 ${
-                                                                        isActive(item)
-                                                                                ? "bg-yellow-50 border-l-4 border-l-yellow-600"
-                                                                                : "hover:bg-gray-50"
-                                                                }`}
-                                                        >
-                                                                <div className="flex items-center gap-3 mb-1">
-                                                                        <item.icon
-                                                                                className={`h-5 w-5 transition-colors ${
-                                                                                        isActive(item)
-                                                                                                ? "text-yellow-600"
-                                                                                                : "text-gray-500 group-hover:text-gray-700"
-                                                                                }`}
-                                                                        />
-                                                                        <span
-                                                                                className={`font-medium transition-colors ${
-                                                                                        isActive(item)
-                                                                                                ? "text-yellow-900"
-                                                                                                : "text-gray-900 group-hover:text-gray-900"
-                                                                                }`}
-                                                                        >
-                                                                                {item.title}
-                                                                        </span>
-                                                                </div>
-                                                                <p
-                                                                        className={`text-sm ml-8 transition-colors ${
-                                                                                isActive(item)
-                                                                                        ? "text-yellow-700"
-                                                                                        : "text-gray-500 group-hover:text-gray-600"
-                                                                        }`}
-                                                                >
-                                                                        {item.description}
-                                                                </p>
-                                                        </button>
-                                                </motion.div>
-                                        ))}
-                                </nav>
-                                <button
-                                        onClick={() => setLogoutOpen(true)}
-                                        className="w-full text-left p-4 rounded-lg transition-all duration-200 group hover:bg-gray-50 mt-4"
-                                >
-                                        <div className="flex items-center gap-3">
-                                                <LogOut className="h-5 w-5 text-gray-500 group-hover:text-gray-700" />
-                                                <span className="font-medium text-gray-900 group-hover:text-gray-900">
-                                                        Logout
-                                                </span>
-                                        </div>
-                                </button>
-                        </div>
-                        <LogoutPopup open={logoutOpen} onOpenChange={setLogoutOpen} />
-                </div>
-        );
+	return (
+		<div className="fixed left-0 top-[68px] w-72 h-[calc(100vh-68px)] bg-white overflow-y-auto z-10">
+			<div className="px-6 py-8 h-full flex flex-col">
+				<nav className="space-y-2 flex-1">
+					{sidebarItems.map((item, index) => (
+						<motion.div
+							key={item.id}
+							custom={index}
+							initial="hidden"
+							animate="visible"
+							variants={itemVariants}
+						>
+							<button
+								onClick={() => handleTabClick(item)}
+								className={`w-full text-left p-4 rounded-lg transition-all duration-200 group hover:bg-gray-50 ${
+									isActive(item)
+										? "bg-yellow-50 border-l-4 border-l-yellow-600"
+										: "hover:bg-gray-50"
+								}`}
+							>
+								<div className="flex items-center gap-3 mb-1">
+									<item.icon
+										className={`h-5 w-5 transition-colors ${
+											isActive(item)
+												? "text-yellow-600"
+												: "text-gray-500 group-hover:text-gray-700"
+										}`}
+									/>
+									<span
+										className={`font-medium transition-colors ${
+											isActive(item)
+												? "text-yellow-900"
+												: "text-gray-900 group-hover:text-gray-900"
+										}`}
+									>
+										{item.title}
+									</span>
+								</div>
+								<p
+									className={`text-sm ml-8 transition-colors ${
+										isActive(item)
+											? "text-yellow-700"
+											: "text-gray-500 group-hover:text-gray-600"
+									}`}
+								>
+									{item.description}
+								</p>
+							</button>
+						</motion.div>
+					))}
+				</nav>
+				<button
+					onClick={() => setLogoutOpen(true)}
+					className="w-full text-left p-4 rounded-lg transition-all duration-200 group hover:bg-gray-50 mt-4"
+				>
+					<div className="flex items-center gap-3">
+						<LogOut className="h-5 w-5 text-gray-500 group-hover:text-gray-700" />
+						<span className="font-medium text-gray-900 group-hover:text-gray-900">
+							Logout
+						</span>
+					</div>
+				</button>
+			</div>
+			<LogoutPopup open={logoutOpen} onOpenChange={setLogoutOpen} />
+		</div>
+	);
 }
