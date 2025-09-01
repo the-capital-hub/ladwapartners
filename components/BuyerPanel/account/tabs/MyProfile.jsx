@@ -387,14 +387,16 @@ export function MyProfile() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Addresses</CardTitle>
+              <CardTitle>Ship To Addresses</CardTitle>
               <CardDescription>
+
                 Manage your billing and shipping addresses
+
               </CardDescription>
             </div>
             <Button size="sm" onClick={openNewAddress}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Address
+              Add Ship To Address
             </Button>
           </CardHeader>
           <CardContent>

@@ -487,7 +487,9 @@ export const useCheckoutStore = create(
 
                                                 // Prepare order data
                                                 const defaultBilling =
+
                                                         get().billingAddress ||
+
                                                         get().savedAddresses.find((addr) => addr.isDefault) ||
                                                         selectedAddress;
 
