@@ -116,13 +116,16 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 									</span>
 								)}
 							</Button>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="bg-white rounded-full"
-							>
-								<Heart className="h-5 w-5 md:h-6 md:w-6" />
-							</Button>
+                                                       <Button
+                                                               asChild
+                                                               variant="ghost"
+                                                               size="icon"
+                                                               className="bg-white rounded-full"
+                                                       >
+                                                               <Link href="/wishlist">
+                                                                       <Heart className="h-5 w-5 md:h-6 md:w-6" />
+                                                               </Link>
+                                                       </Button>
 
 							{isAuthenticated ? (
 								<div className="flex items-center space-x-2 md:space-x-4">
