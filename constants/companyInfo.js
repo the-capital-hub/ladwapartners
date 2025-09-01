@@ -3,6 +3,8 @@ export const companyInfo = {
     logo: "/ladwapartners.png",
     website: "https://ladwapartners.com",
     email: "contact@ladwapartners.com",
+    ccEmails: [],
+    bccEmails: [],
     phone: "+91 8971815400",
     address: [
         "Beside St. Anne's Church, Mestrhi Palya, Rachenahalli",
