@@ -15,7 +15,7 @@ export function ImageUpload({
 	const [imageMetadata, setImageMetadata] = useState([]); // Store metadata separately
 	const fileInputRef = useRef(null);
 
-	const MAX_IMAGES = 5;
+	const MAX_IMAGES = 10;
 	const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 	const VALID_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
