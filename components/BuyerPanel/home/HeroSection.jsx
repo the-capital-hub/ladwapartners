@@ -1,215 +1,265 @@
-"use client";
+ "use client";
 
+
+// import Image from "next/image";
+// import { motion } from "framer-motion";
+// import { Button } from "@/components/ui/button";
+// import hero1 from "@/public/images/home/hero1.png";
+// import hero2 from "@/public/images/home/her02.png";
+// import hero3 from "@/public/images/home/hero3.png";
+// import HeroImgNew from "@/public/images/home/HeroImgNew.png";
+import HeroImg1 from "@/public/Picture2.46f68a6d.png";
+import HeroImg2 from "@/public/Picture3.a54a8aab.png";
+import HeroImg3 from "@/public/Picture4.ff4c57ed-2.png";
+import HeroImg4 from "@/public/Picture4.ff4c57ed.png";
+import HeroImg5 from "@/public/Picture5.9054f320.png";
+import HeroImg6 from "@/public/Picture6.81d7eeb4.png";
+// import mobileimg from "@/public/images/home/heroimg.png";
+// import { Outfit } from "next/font/google";
+
+
+// const outfit = Outfit({
+// 	variable: "--font-outift",
+// 	subsets: ["latin"],
+// });
+
+// const HeroSection = () => {
+// 	return (
+// 	  <section className="relative bg-gradient-to-r from-blue-50 to-white overflow-hidden">
+// 		<div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 grid grid-cols-1 lg:grid-cols-2 items-center gap-12">
+		  
+// 		  {/* Left Content */}
+// 		  <div className="relative z-10">
+// 			<span className="text-sm font-semibold text-blue-600 tracking-wide">
+// 			  #1 Platform for Safety Products
+// 			</span>
+// 			<h1 className="mt-4 text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+// 			  MAKING THE WORLD <span className="text-blue-600">SAFER</span>
+// 			</h1>
+// 			<p className="mt-6 text-lg text-gray-600 leading-relaxed">
+// 			  Ladwa Partners is an online portal by Ladwa Safety Inc., a pioneer in
+// 			  the manufacture, supply, and export of Traffic Safety Equipment,
+// 			  Industrial Safety Equipment, Security Equipment, Barrication &
+// 			  Retro reflective signages.
+// 			</p>
+  
+// 			{/* CTA Button */}
+// 			<div className="mt-6">
+// 			  <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition">
+// 				Get Started
+// 			  </button>
+// 			</div>
+  
+// 			{/* Stats */}
+// 			<div className="mt-10 flex space-x-10">
+// 			  <div>
+// 				<p className="text-2xl font-bold text-gray-900">8K+</p>
+// 				<p className="text-sm text-gray-500">Projects Completed</p>
+// 			  </div>
+// 			  <div>
+// 				<p className="text-2xl font-bold text-gray-900">5.5K+</p>
+// 				<p className="text-sm text-gray-500">Customers Happy</p>
+// 			  </div>
+// 			</div>
+// 		  </div>
+  
+// 		  {/* Right Image Section */}
+// 		  <div className="relative flex justify-center lg:justify-end">
+// 			<motion.div
+// 			  initial={{ y: 40, opacity: 0 }}
+// 			  animate={{ y: 0, opacity: 1 }}
+// 			  transition={{ duration: 1, ease: "easeOut" }}
+// 			  className="relative"
+// 			>
+// 			  {/* Background Circle */}
+// 			  <div className="absolute inset-0 w-[350px] h-[350px] bg-blue-100 rounded-full blur-3xl opacity-40"></div>
+  
+// 			  {/* Floating Product Images */}
+// 			  <div className="relative flex gap-6">
+// 				<motion.div
+// 				  animate={{ y: [0, -15, 0] }}
+// 				  transition={{ duration: 3, repeat: Infinity }}
+// 				>
+// 				  <Image
+// 					src={HeroImg3}
+// 					alt="Safety Cone"
+// 					width={140}
+// 					height={140}
+// 					className="drop-shadow-xl"
+// 				  />
+// 				</motion.div>
+  
+// 				<motion.div
+// 				  animate={{ y: [0, -20, 0] }}
+// 				  transition={{ duration: 3.5, repeat: Infinity }}
+// 				>
+// 				  <Image
+// 					src={HeroImg2}
+// 					alt="Fire Extinguisher"
+// 					width={140}
+// 					height={140}
+// 					className="drop-shadow-xl"
+// 				  />
+// 				</motion.div>
+// 			  </div>
+// 			</motion.div>
+// 		  </div>
+// 		</div>
+// 	  </section>
+// 	);
+//   };
+  
+//   export default HeroSection;
+
+
+// "use client";
+
+//1AeEv7M61qyMHTqMRfIihE3joz3mCIUKT
+
+
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import hero1 from "@/public/images/home/hero1.png";
-import hero2 from "@/public/images/home/her02.png";
-import hero3 from "@/public/images/home/hero3.png";
-import HeroImgNew from "@/public/images/home/HeroImgNew.png";
-import HeroImg1 from "@/public/images/home/HeroImg1.png";
-import HeroImg2 from "@/public/images/home/HeroImg2.png";
-import HeroImg3 from "@/public/images/home/HeroImg3.png";
-import mobileimg from "@/public/images/home/heroimg.png";
-import { Outfit } from "next/font/google";
 
-const outfit = Outfit({
-	variable: "--font-outift",
-	subsets: ["latin"],
-});
+//https://drive.google.com/file/d/1-PilweKLxiJHlxBS3kGOMIzUYXp-rvMQ/view?usp=drive_link
+//https://drive.google.com/file/d/1-EfqlzZ8l1QqYWWYdRe1Dar-Ig4rErGW/view?usp=drive_link
+//https://drive.google.com/file/d/1JrYdgWz1PzhV1DHsHJL28wETGQcOifMY/view?usp=drive_link
+// https://drive.google.com/file/d/1OvtLrN0PPVJ-HJONambofmupRLi8E8yf/view?usp=drive_link
+// https://drive.google.com/file/d/1guQtQ0yi_PmlWEW5rMu7Ef7AkrCio9JK/view?usp=drive_link
+// https://drive.google.com/file/d/1NMtE6Wkrdl6rNSrYi9tr7ENIUqGJog-w/view?usp=drive_link
 
-export default function HeroSection() {
+const productImages = [
+"https://drive.google.com/uc?export=view&id=1AeEv7M61qyMHTqMRfIihE3joz3mCIUKT",
+"https://drive.google.com/uc?export=view&id=1-PilweKLxiJHlxBS3kGOMIzUYXp-rvMQ",
+"https://drive.google.com/uc?export=view&id=1-EfqlzZ8l1QqYWWYdRe1Dar-Ig4rErGW",
+"https://drive.google.com/uc?export=view&id=1JrYdgWz1PzhV1DHsHJL28wETGQcOifMY",
+"https://drive.google.com/uc?export=view&id=1OvtLrN0PPVJ-HJONambofmupRLi8E8yf",
+"https://drive.google.com/uc?export=view&id=1guQtQ0yi_PmlWEW5rMu7Ef7AkrCio9JK",
+"https://drive.google.com/uc?export=view&id=1NMtE6Wkrdl6rNSrYi9tr7ENIUqGJog-w",
+
+ 
+ 
+];
+
+const Hero = () => {
+	const [index, setIndex] = useState(0);
+  
+	// Auto change every 3.5s
+	useEffect(() => {
+	  const interval = setInterval(() => {
+		setIndex((prev) => (prev + 1) % productImages.length);
+	  }, 3500);
+	  return () => clearInterval(interval);
+	}, []);
+  
+	// Helper: get circular index
+	const getImage = (pos) => {
+	  const newIndex = (index + pos + productImages.length) % productImages.length;
+	  return productImages[newIndex];
+	};
+  
 	return (
-		<section className="relative w-full min-h-[calc(100vh-80px)] md:min-h-screen flex flex-col items-center justify-center text-white overflow-hidden">
-			<div className="absolute inset-0 pointer-events-none w-screen left-1/2 transform -translate-x-1/2 hidden md:block">
-				{/* First Section - Highest */}
-				<div
-					className="absolute h-[90%] left-0 border-r border-white/10"
-					style={{
-						top: "0px",
-						bottom: "80px",
-						width: "33.333%",
-						backgroundColor: "rgba(255, 255, 255, 0.08)",
-					}}
-				>
-					<Image
-						src={HeroImg1}
-						alt="HeroImage"
-						className="h-full w-full object-cover"
-					/>
-					{/* Black overlay */}
-					<div className="absolute inset-0 bg-black/20"></div>
-				</div>
-
-				{/* Second Section - Medium height */}
-				<div
-					className="absolute h-[85%] border-r border-r-[50%] border-white/30"
-					style={{
-						top: "0px",
-						bottom: "100px",
-						left: "33.333%",
-						width: "33.333%",
-						backgroundColor: "rgba(255, 255, 255, 0.05)",
-						borderRight: "1px solid rgba(255, 255, 255, 0.3)",
-					}}
-				>
-					<Image
-						src={HeroImg2}
-						alt="HeroImage"
-						className="h-full w-full object-cover"
-					/>
-
-					<div className="absolute inset-0 bg-black/20"></div>
-					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
-						<span className="text-blue-600 text-xl font-bold">
-							SAFETY FIRST
-						</span>
-					</div>
-				</div>
-
-				{/* Third Section - Smallest */}
-				<div
-					className="absolute h-[81%]"
-					style={{
-						top: "0px",
-						bottom: "200px",
-						left: "66.666%",
-						width: "33.334%",
-						backgroundColor: "rgba(255, 255, 255, 0.05)",
-					}}
-				>
-					<Image
-						src={HeroImg3}
-						alt="HeroImage"
-						className="h-full w-full object-cover"
-					/>
-					<div className="absolute inset-0 bg-black/20"></div>
-					<div className="absolute bottom-0 left-0 right-0 h-16 bg-black/20 backdrop-blur-sm flex items-center justify-center z-10">
-						<span className="text-blue-600 text-xl font-bold">
-							FIRST AID KIT
-						</span>
-					</div>
-				</div>
-
-				<div
-					style={{
-						position: "absolute",
-						bottom: "160px",
-						left: "33.333%",
-						width: "33.333%",
-						height: "1px",
-						backgroundColor: "rgba(255, 255, 255, 0.3)",
-					}}
-				></div>
-				<div
-					style={{
-						position: "absolute",
-						bottom: "185px",
-						left: "66.666%",
-						width: "33.334%",
-						height: "1px",
-						backgroundColor: "rgba(255, 255, 255, 0.3)",
-					}}
-				></div>
+	  <section className="relative bg-gradient-to-r from-blue-50 to-white overflow-hidden">
+		<div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 grid grid-cols-1 lg:grid-cols-2 items-center gap-12 relative z-10">
+		  
+		  {/* Left Content */}
+		  <div className="relative z-20">
+			<span className="text-sm font-semibold text-blue-600 tracking-wide">
+			  #1 Platform for Safety Products
+			</span>
+			<h1 className="mt-4 text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+			  MAKING THE WORLD <span className="text-blue-600">SAFER</span>
+			</h1>
+			<p className="mt-6 text-lg text-gray-600 leading-relaxed">
+			  Ladwa Partners is an online portal by Ladwa Safety Inc., a pioneer in
+			  the manufacture, supply, and export of Traffic Safety Equipment,
+			  Industrial Safety Equipment, Security Equipment, Barrication &
+			  Retro reflective signages.
+			</p>
+  
+			{/* CTA Button */}
+			<div className="mt-6">
+			  <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition">
+				Get Started
+			  </button>
 			</div>
-
-			{/* Mobile background image */}
-			<div className="md:hidden w-[300px]">
+  
+			{/* Stats */}
+			<div className="mt-10 flex space-x-10">
+			  <div>
+				<p className="text-2xl font-bold text-gray-900">8K+</p>
+				<p className="text-sm text-gray-500">Projects Completed</p>
+			  </div>
+			  <div>
+				<p className="text-2xl font-bold text-gray-900">5.5K+</p>
+				<p className="text-sm text-gray-500">Customers Happy</p>
+			  </div>
+			</div>
+		  </div>
+  
+		  {/* Right Carousel */}
+		  <div className="relative flex justify-center lg:justify-end items-center">
+			<div className="relative w-[400px] h-[320px] flex items-center justify-center">
+			  {/* Left (blur preview) */}
+			  <motion.div
+				key={`left-${index}`}
+				initial={{ opacity: 0, x: -60 }}
+				animate={{ opacity: 0.5, x: -60 }}
+				exit={{ opacity: 0 }}
+				transition={{ duration: 0.8 }}
+				className="absolute left-0 blur-sm scale-75"
+			  >
 				<Image
-					src={HeroImg3}
-					alt="HeroImage"
-					className="h-full w-full object-contain"
+				  src={getImage(-1)}
+				  alt="Prev Product"
+				  width={160}
+				  height={160}
+				  className="rounded-xl shadow-md object-contain"
 				/>
-				{/* Black overlay for mobile */}
-				<div className="absolute inset-0 bg-black/30"></div>
+			  </motion.div>
+  
+			  {/* Center (main image) */}
+			  <AnimatePresence mode="wait">
+				<motion.div
+				  key={index}
+				  initial={{ opacity: 0, scale: 0.9 }}
+				  animate={{ opacity: 1, scale: 1 }}
+				  exit={{ opacity: 0, scale: 1.1 }}
+				  transition={{ duration: 0.8 }}
+				  className="z-10"
+				>
+				  <Image
+					src={getImage(0)}
+					alt="Main Product"
+					width={280}
+					height={280}
+					className="rounded-xl shadow-xl object-contain"
+				  />
+				</motion.div>
+			  </AnimatePresence>
+  
+			  {/* Right (blur preview) */}
+			  <motion.div
+				key={`right-${index}`}
+				initial={{ opacity: 0, x: 60 }}
+				animate={{ opacity: 0.5, x: 60 }}
+				exit={{ opacity: 0 }}
+				transition={{ duration: 0.8 }}
+				className="absolute right-0 blur-sm scale-75"
+			  >
+				<Image
+				  src={getImage(1)}
+				  alt="Next Product"
+				  width={160}
+				  height={160}
+				  className="rounded-xl shadow-md object-contain"
+				/>
+			  </motion.div>
 			</div>
-
-			{/* Content - max-w-7xl */}
-			<div className="relative z-20 w-full px-10 lg:px-12 grid grid-cols-1 gap-8 mx-auto">
-				<div className="flex flex-col justify-center space-y-4 md:space-y-6">
-					<motion.span
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6 }}
-						className={`bg-blue-600 text-white text-xs md:text-sm font-medium px-3 py-1 md:px-4 md:py-1 rounded-full w-fit ${outfit.className}`}
-						// className={`bg-white/10 text-black border border-t-[#FFB82D] text-xs md:text-sm font-medium px-3 py-1 md:px-4 md:py-1 rounded-full w-fit ${outfit.className}`}
-					>
-						#1 Platform for Safety Products
-					</motion.span>
-
-					<motion.h1
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className="text-2xl text-blue-600 md:text-3xl lg:text-6xl font-extrabold leading-tight"
-					>
-						{/* DELIVERING SUPERIOR ROAD <br className="hidden md:block" />
-						<span className="md:hidden">CONSTRUCTION SOLUTIONS</span>
-						<span className="hidden md:inline">CONSTRUCTION SOLUTIONS</span> */}
-						MAKING THE WORLD SAFER
-					</motion.h1>
-
-					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className={`${outfit.className} text-blue-600 text-lg md:text-3xl max-w-3xl`}
-					>
-						Ladwa Partners is an online portal by Ladwa Safety Inc.
-					</motion.p>
-
-					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className={`${outfit.className} text-blue-600 text-sm md:text-base mt-4 md:mt-10 max-w-xl`}
-					>
-						{/* Safety is the most basic yet the most important rule of life. It is
-						the sum of safety precautions that determines the safety of the
-						people working near you. */}
-						Ladwa Partner is an online dealer portal by Ladwa Safety Inc., a
-						pioneer in the manufacture, supply, and export of Traffic Safety
-						Equipment, Industrial Safety Equipment, Security Equipment,
-						Barrication & Retro reflective signages.
-					</motion.p>
-
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className={`${outfit.className} flex flex-wrap items-center gap-4`}
-					>
-						<Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 md:px-6 md:py-2 rounded-md text-sm md:text-base">
-							Get Started
-						</Button>
-					</motion.div>
-
-					{/* Stats */}
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.8 }}
-						className="flex items-center gap-6 md:gap-10 pt-4"
-					>
-						<div>
-							<h3 className="text-blue-600 text-xl md:text-2xl font-bold text-center mb-1">
-								8K+
-							</h3>
-							<p className="text-blue-600 text-sm md:text-base">
-								Project Completed
-							</p>
-						</div>
-						<div>
-							<h3 className="text-blue-600 text-xl md:text-2xl font-bold text-center mb-1">
-								5.5K+
-							</h3>
-							<p className="text-blue-600 text-sm md:text-base">
-								Customers Happy
-							</p>
-						</div>
-					</motion.div>
-				</div>
-			</div>
-		</section>
+		  </div>
+		</div>
+	  </section>
 	);
-}
+  };
+  
+  export default Hero;
