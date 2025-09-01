@@ -46,9 +46,22 @@ export async function PUT(request, { params }) {
 
     Object.assign(address, body);
 
+    if (body.addressType === "billTo") {
+      user.addresses.forEach((addr) => {
+        if (addr._id.toString() !== addressId && addr.addressType === "billTo") {
+          addr.addressType = "shipTo";
+        }
+      });
+    }
+
     if (body.isDefault) {
       user.addresses.forEach((addr) => {
-        if (addr._id.toString() !== addressId) addr.isDefault = false;
+        if (
+          addr._id.toString() !== addressId &&
+          addr.addressType === address.addressType
+        ) {
+          addr.isDefault = false;
+        }
       });
     }
 

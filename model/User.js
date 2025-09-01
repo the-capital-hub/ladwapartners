@@ -16,6 +16,11 @@ const AddressSchema = new mongoose.Schema(
     zipCode: { type: String, required: true },
     country: { type: String, default: "India" },
     isDefault: { type: Boolean, default: false },
+    addressType: {
+      type: String,
+      enum: ["billTo", "shipTo"],
+      default: "shipTo",
+    },
   },
   { timestamps: true }
 );

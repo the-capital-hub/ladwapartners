@@ -106,19 +106,21 @@ export const useCheckoutStore = create(
 					mobile: "",
 				},
 
-				// Delivery Address Management
-				savedAddresses: [],
-				selectedAddressId: null,
-				newAddress: {
-					tag: "home",
-					name: "",
-					street: "",
-					city: "",
-					state: "",
-					zipCode: "",
-					country: "India",
-					isDefault: false,
-				},
+                                // Delivery Address Management
+                                savedAddresses: [],
+                                billingAddress: null,
+                                selectedAddressId: null,
+                                newAddress: {
+                                        tag: "home",
+                                        name: "",
+                                        street: "",
+                                        city: "",
+                                        state: "",
+                                        zipCode: "",
+                                        country: "India",
+                                        isDefault: false,
+                                        addressType: "shipTo",
+                                },
 				isAddingNewAddress: false,
 
 				// Order Summary
@@ -234,28 +236,38 @@ export const useCheckoutStore = create(
                                 },
 
 				// Load user addresses
-				loadUserAddresses: async () => {
-					set({ isLoading: true });
-					try {
-						const data = await paymentAPI.getUserAddresses();
-						if (data.success) {
-							set({ savedAddresses: data.addresses });
+                                loadUserAddresses: async () => {
+                                        set({ isLoading: true });
+                                        try {
+                                                const data = await paymentAPI.getUserAddresses();
+                                                if (data.success) {
+                                                        const billing = data.addresses.find(
+                                                                (addr) => addr.addressType === "billTo"
+                                                        );
+                                                        const shipping = data.addresses.filter(
+                                                                (addr) => addr.addressType === "shipTo"
+                                                        );
 
-							// Auto-select default address if available
-							const defaultAddress = data.addresses.find(
-								(addr) => addr.isDefault
-							);
-							if (defaultAddress) {
-								set({ selectedAddressId: defaultAddress._id });
-							}
-						}
-					} catch (error) {
-						console.error("Failed to load addresses:", error);
-						toast.error("Failed to load saved addresses");
-					} finally {
-						set({ isLoading: false });
-					}
-				},
+                                                        set({
+                                                                savedAddresses: shipping,
+                                                                billingAddress: billing || null,
+                                                        });
+
+                                                        // Auto-select default shipping address if available
+                                                        const defaultAddress = shipping.find(
+                                                                (addr) => addr.isDefault
+                                                        );
+                                                        if (defaultAddress) {
+                                                                set({ selectedAddressId: defaultAddress._id });
+                                                        }
+                                                }
+                                        } catch (error) {
+                                                console.error("Failed to load addresses:", error);
+                                                toast.error("Failed to load saved addresses");
+                                        } finally {
+                                                set({ isLoading: false });
+                                        }
+                                },
 
 				// Add new address
 				addNewAddress: async () => {
@@ -274,23 +286,24 @@ export const useCheckoutStore = create(
 
 					set({ isLoading: true });
 					try {
-						const data = await paymentAPI.addUserAddress(newAddress);
+                                                const data = await paymentAPI.addUserAddress(newAddress);
 						if (data.success) {
 							// Reload addresses
 							await get().loadUserAddresses();
 
 							// Reset new address form
 							set({
-								newAddress: {
-									tag: "home",
-									name: "",
-									street: "",
-									city: "",
-									state: "",
-									zipCode: "",
-									country: "India",
-									isDefault: false,
-								},
+                                                                newAddress: {
+                                                                        tag: "home",
+                                                                        name: "",
+                                                                        street: "",
+                                                                        city: "",
+                                                                        state: "",
+                                                                        zipCode: "",
+                                                                        country: "India",
+                                                                        isDefault: false,
+                                                                        addressType: "shipTo",
+                                                                },
 								isAddingNewAddress: false,
 							});
 
@@ -474,6 +487,9 @@ export const useCheckoutStore = create(
 
                                                 // Prepare order data
                                                 const defaultBilling =
+
+                                                        get().billingAddress ||
+
                                                         get().savedAddresses.find((addr) => addr.isDefault) ||
                                                         selectedAddress;
 
