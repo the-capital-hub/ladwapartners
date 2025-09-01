@@ -260,6 +260,9 @@ export const useCheckoutStore = create(
                                                         if (defaultAddress) {
                                                                 set({ selectedAddressId: defaultAddress._id });
                                                         }
+
+                                                        // Recalculate totals to apply correct GST
+                                                        get().recalculateTotal();
                                                 }
                                         } catch (error) {
                                                 console.error("Failed to load addresses:", error);
@@ -327,9 +330,11 @@ export const useCheckoutStore = create(
 				},
 
 				// Select address
-				selectAddress: (addressId) => {
-					set({ selectedAddressId: addressId });
-				},
+                                selectAddress: (addressId) => {
+                                        set({ selectedAddressId: addressId });
+                                        // Update totals when user changes address
+                                        get().recalculateTotal();
+                                },
 
 				// Toggle add new address form
 				toggleAddNewAddress: () => {
