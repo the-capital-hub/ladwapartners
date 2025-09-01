@@ -14,9 +14,9 @@ export default function ShippingPolicyPage() {
         provided once the order is dispatched.
       </p>
       <p>
-        Shipping charges are calculated at checkout based on order weight and
-        destination. Free shipping promotions, if available, will be clearly
-        indicated. Currently, we do not support international shipping.
+        Shipping is free on all orders across India and no shipping charges are
+        applied at checkout. Currently, we do not support international
+        shipping.
       </p>
     </main>
   );
