@@ -18,7 +18,7 @@ export default function ProductCard({ product, compact = false }) {
   const fallbackImage =
     "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
   const imageSrc = getDirectGoogleDriveImageUrl(
-    product.image || fallbackImage
+    product.mainImageLink || product.image || fallbackImage
   );
 
   const handleViewProduct = () => {
@@ -43,7 +43,9 @@ export default function ProductCard({ product, compact = false }) {
         description: product.description,
         price: product.price,
         originalPrice: product.originalPrice,
-        image: getDirectGoogleDriveImageUrl(product.image),
+        image: getDirectGoogleDriveImageUrl(
+          product.mainImageLink || product.image
+        ),
         inStock: product.inStock,
       },
       quantity

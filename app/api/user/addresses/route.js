@@ -100,23 +100,32 @@ export async function POST(request) {
 			);
 		}
 
-		const {
-			tag,
-			name,
-			street,
-			city,
-			state,
-			zipCode,
-			country = "India",
-			isDefault = false,
-		} = addressData;
+                const {
+                        tag,
+                        name,
+                        street,
+                        city,
+                        state,
+                        zipCode,
+                        country = "India",
+                        isDefault = false,
+                        addressType = "shipTo",
+                } = addressData;
 
-		if (!tag || !name || !street || !city || !state || !zipCode) {
-			return NextResponse.json(
-				{ success: false, message: "All address fields are required" },
-				{ status: 400 }
-			);
-		}
+                if (
+                        !tag ||
+                        !name ||
+                        !street ||
+                        !city ||
+                        !state ||
+                        !zipCode ||
+                        !addressType
+                ) {
+                        return NextResponse.json(
+                                { success: false, message: "All address fields are required" },
+                                { status: 400 }
+                        );
+                }
 
 		const user = await User.findById(decoded.id);
 		if (!user) {
@@ -126,14 +135,25 @@ export async function POST(request) {
 			);
 		}
 
-		// If this is set as default, unset other default addresses
-		if (isDefault) {
-			user.addresses.forEach((addr) => {
-				addr.isDefault = false;
-			});
-		}
+                // If this is set as default, unset other default addresses within same type
+                if (isDefault) {
+                        user.addresses.forEach((addr) => {
+                                if (addr.addressType === addressType) {
+                                        addr.isDefault = false;
+                                }
+                        });
+                }
 
-		// Add new address
+                // Ensure only one bill to address exists
+                if (addressType === "billTo") {
+                        user.addresses.forEach((addr) => {
+                                if (addr.addressType === "billTo") {
+                                        addr.addressType = "shipTo";
+                                }
+                        });
+                }
+
+                // Add new address
                 const newAddress = {
                         tag,
                         name,
@@ -143,6 +163,7 @@ export async function POST(request) {
                         zipCode,
                         country,
                         isDefault,
+                        addressType,
                 };
 
                 user.addresses.push(newAddress);

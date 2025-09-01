@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Script from "next/script";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -43,8 +42,18 @@ import Image from "next/image";
 export default function CheckoutPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
-	const [couponCode, setCouponCode] = useState("");
+        const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
+        const [couponCode, setCouponCode] = useState("");
+
+        // Load Razorpay script on mount
+        useEffect(() => {
+                const script = document.createElement("script");
+                script.src = "https://checkout.razorpay.com/v1/checkout.js";
+                script.onload = () => setIsRazorpayLoaded(true);
+                script.onerror = () =>
+                        toast.error("Failed to load payment gateway. Please refresh and try again.");
+                document.body.appendChild(script);
+        }, []);
 
 	// Auth store
 	const user = useLoggedInUser();
@@ -179,12 +188,7 @@ export default function CheckoutPage() {
 		router,
 	]);
 
-	// Handle Razorpay script load
-	const handleRazorpayLoad = useCallback(() => {
-		setIsRazorpayLoaded(true);
-	}, []);
-
-	// Handle address selection
+        // Handle address selection
 	const handleAddressSelect = useCallback(
 		(addressId) => {
 			selectAddress(addressId);
@@ -233,10 +237,10 @@ export default function CheckoutPage() {
                         return;
                 }
 
-		if (!getSelectedAddress()) {
-			toast.error("Please select a delivery address");
-			return;
-		}
+                if (!getSelectedAddress()) {
+                        toast.error("Please select a ship to address");
+                        return;
+                }
 
 		try {
 			const userId = user?._id || user?.id;
@@ -267,15 +271,15 @@ export default function CheckoutPage() {
 			<Card>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
-						<MapPin className="h-5 w-5" />
-						Delivery Address
+                                                <MapPin className="h-5 w-5" />
+                                                Ship To Address
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-4">
 					{/* Saved Addresses */}
-					{savedAddresses.length > 0 && (
-						<div className="space-y-3">
-							<h4 className="font-medium">Saved Addresses</h4>
+                                        {savedAddresses.length > 0 && (
+                                                <div className="space-y-3">
+                                                        <h4 className="font-medium">Saved Ship To Addresses</h4>
 							{savedAddresses.map((address) => (
 								<div
 									key={address._id}
@@ -329,16 +333,16 @@ export default function CheckoutPage() {
 					)}
 
 					{/* Add New Address Button */}
-					{!isAddingNewAddress && (
-						<Button
-							variant="outline"
-							onClick={toggleAddNewAddress}
-							className="w-full"
-						>
-							<Plus className="h-4 w-4 mr-2" />
-							Add New Address
-						</Button>
-					)}
+                                        {!isAddingNewAddress && (
+                                                <Button
+                                                        variant="outline"
+                                                        onClick={toggleAddNewAddress}
+                                                        className="w-full"
+                                                >
+                                                        <Plus className="h-4 w-4 mr-2" />
+                                                        Add Ship To Address
+                                                </Button>
+                                        )}
 
 					{/* New Address Form */}
 					{isAddingNewAddress && (
@@ -636,18 +640,32 @@ export default function CheckoutPage() {
 	);
 
 	// Order Summary Component
-	const OrderSummary = useMemo(() => {
-		const currentCoupon =
-			checkoutType === "cart" ? cartAppliedCoupon : appliedCoupon;
+        const OrderSummary = useMemo(() => {
+                const currentCoupon =
+                        checkoutType === "cart" ? cartAppliedCoupon : appliedCoupon;
+                const selectedAddress = getSelectedAddress();
 
-		return (
-			<Card className="sticky top-4">
-				<CardHeader>
-					<CardTitle>Order Summary</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					{/* Items */}
-					<div className="space-y-3">
+                return (
+                        <Card className="sticky top-4">
+                                <CardHeader>
+                                        <CardTitle>Order Summary</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                        {selectedAddress && (
+                                                <>
+                                                        <div className="text-sm">
+                                                                <p className="font-medium">Ship To</p>
+                                                                <p>{selectedAddress.name}</p>
+                                                                <p className="text-gray-600">
+                                                                        {selectedAddress.street}, {selectedAddress.city}, {selectedAddress.state} - {selectedAddress.zipCode}
+                                                                </p>
+                                                        </div>
+                                                        <Separator />
+                                                </>
+                                        )}
+
+                                        {/* Items */}
+                                        <div className="space-y-3">
 						{orderSummary.items.map((item, index) => (
 							<div key={index} className="flex items-center gap-3">
 								<div className="relative w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
@@ -741,16 +759,6 @@ export default function CheckoutPage() {
 							<span>Subtotal</span>
 							<span>₹{orderSummary.subtotal.toLocaleString()}</span>
 						</div>
-						<div className="flex justify-between">
-							<span>Shipping</span>
-							<span>
-								{orderSummary.shippingCost === 0 ? (
-									<Badge variant="secondary">FREE</Badge>
-								) : (
-									`₹${orderSummary.shippingCost}`
-								)}
-							</span>
-						</div>
                                                 {orderSummary.discount > 0 && (
                                                         <div className="flex justify-between text-green-600">
                                                                 <span>Discount</span>
@@ -790,37 +798,25 @@ export default function CheckoutPage() {
                                                 </div>
 					</div>
 
-					{/* Free shipping message */}
-					{orderSummary.subtotal < 500 && (
-						<div className="p-3 bg-yellow-50 rounded-lg">
-							<p className="text-sm text-yellow-800">
-								Add ₹{(500 - orderSummary.subtotal).toLocaleString()} more for
-								free shipping!
-							</p>
-						</div>
-					)}
 				</CardContent>
 			</Card>
 		);
-	}, [
-		orderSummary,
-		appliedCoupon,
-		cartAppliedCoupon,
-		checkoutType,
-		couponCode,
-		handleApplyCoupon,
-		removeCoupon,
-		isLoading,
-	]);
+        }, [
+                orderSummary,
+                appliedCoupon,
+                cartAppliedCoupon,
+                checkoutType,
+                couponCode,
+                handleApplyCoupon,
+                removeCoupon,
+                isLoading,
+                getSelectedAddress,
+                selectedAddressId,
+        ]);
 
 	return (
 		<>
-			<Script
-				src="https://checkout.razorpay.com/v1/checkout.js"
-				onLoad={handleRazorpayLoad}
-			/>
-
-			<div className="min-h-screen bg-gray-50 py-8">
+                        <div className="min-h-screen bg-gray-50 py-8">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 					{/* Header */}
 					<div className="mb-8">

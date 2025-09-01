@@ -145,7 +145,7 @@ export default function CartSummary() {
 				{/* Note about shipping */}
 				<div className="text-center pt-4">
 					<p className="text-xs text-gray-500">
-						Shipping and taxes calculated at checkout
+                                                Taxes calculated at checkout
 					</p>
 					<div className="flex items-center justify-center gap-2 text-xs text-gray-500 mt-2">
 						<div className="w-3 h-3 bg-green-500 rounded-full" />

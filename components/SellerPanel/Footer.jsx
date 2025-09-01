@@ -22,16 +22,22 @@ export default function Footer() {
 				{ label: "Shop", href: "/shop" },
 			],
 		},
-		quickLinks: {
-			title: "Quick Link",
-			links: [
-				{ label: "Privacy Policy", href: "/privacy" },
-				{ label: "Terms Of Use", href: "/terms" },
-				{ label: "FAQ", href: "/faq" },
-				{ label: "Contact", href: "/contact" },
-			],
-		},
-	};
+                quickLinks: {
+                        title: "Quick Link",
+                        links: [
+                                { label: "Pricing Policy", href: "/pricing-policy" },
+                                { label: "Shipping Policy", href: "/shipping-policy" },
+                                { label: "Terms and Conditions", href: "/terms-and-conditions" },
+                                { label: "Privacy Policy", href: "/privacy-policy" },
+                                {
+                                        label: "Cancellation & Refund",
+                                        href: "/cancellation-refund-policy",
+                                },
+                                { label: "FAQ", href: "/faq" },
+                                { label: "Contact", href: "/contact" },
+                        ],
+                },
+        };
 
 	return (
 		<footer className="bg-[#211F1D] text-white">

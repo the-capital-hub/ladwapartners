@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, redirect } from "next/navigation";
+import Image from "next/image";
+import Logo from "@/public/ladwapartners.png";
 
 const Home = () => {
 	const router = useRouter();
@@ -11,7 +13,15 @@ const Home = () => {
 		router.push("/home");
 	});
 
-	return <div>Redirecting to home page</div>;
+	return (
+		<div className="flex items-center justify-center h-screen">
+			<Image src={Logo} alt="Logo" width={400} height={400} />
+		</div>
+	);
 };
+
+// const Home = () => {
+// 	redirect("/home");
+// };
 
 export default Home;

@@ -87,53 +87,71 @@ export function InvoicePopup({ open, onOpenChange, order, downloadInvoice: downl
 
 					<Separator />
 
-					{/* Invoice Details */}
-					<div className="grid grid-cols-2 gap-8">
-						<div>
-							<h3 className="font-semibold mb-3">Bill To</h3>
-							<div className="space-y-1">
-								<p className="font-medium">{order.customerName}</p>
-								<p className="text-sm text-gray-600">{order.customerEmail}</p>
-								<p className="text-sm text-gray-600">{order.customerMobile}</p>
-								{order.deliveryAddress && (
-									<div className="text-sm text-gray-600">
-										<p>{order.deliveryAddress.street}</p>
-										<p>
-											{order.deliveryAddress.city},{" "}
-											{order.deliveryAddress.state}
-										</p>
-										<p>
-											{order.deliveryAddress.zipCode},{" "}
-											{order.deliveryAddress.country}
-										</p>
-									</div>
-								)}
-							</div>
-						</div>
-						<div className="text-right space-y-4">
-							<div>
-								<p className="text-sm text-gray-600">Invoice Number</p>
-								<p className="font-semibold">{order.orderNumber}</p>
-							</div>
-							<div>
-								<p className="text-sm text-gray-600">Order Date</p>
-								<p className="font-semibold">
-									{new Date(order.orderDate).toLocaleDateString()}
-								</p>
-							</div>
-							<div>
-								<p className="text-sm text-gray-600">Status</p>
-								<Badge className={getStatusColor(order.status)}>
-									{order.status.toUpperCase()}
-								</Badge>
-							</div>
-							<div className="text-right">
+                                        {/* Invoice Details */}
+                                        <div className="grid grid-cols-2 gap-8">
+                                                <div>
+                                                        <h3 className="font-semibold mb-3">Bill To</h3>
+                                                        {order.billToAddress ? (
+                                                                <div className="space-y-1 text-sm text-gray-600">
+                                                                        <p className="font-medium text-gray-800">{order.billToAddress.name}</p>
+                                                                        <p>{order.billToAddress.street}</p>
+                                                                        <p>
+                                                                                {order.billToAddress.city}, {order.billToAddress.state}
+                                                                        </p>
+                                                                        <p>
+                                                                                {order.billToAddress.zipCode}, {order.billToAddress.country}
+                                                                        </p>
+                                                                </div>
+                                                        ) : (
+                                                                <div className="space-y-1">
+                                                                        <p className="font-medium">{order.customerName}</p>
+                                                                        <p className="text-sm text-gray-600">{order.customerEmail}</p>
+                                                                        <p className="text-sm text-gray-600">{order.customerMobile}</p>
+                                                                </div>
+                                                        )}
+                                                </div>
+                                                <div>
+                                                        <h3 className="font-semibold mb-3">Ship To</h3>
+                                                        {order.shipToAddress && (
+                                                                <div className="space-y-1 text-sm text-gray-600">
+                                                                        <p className="font-medium text-gray-800">{order.shipToAddress.name}</p>
+                                                                        <p>{order.shipToAddress.street}</p>
+                                                                        <p>
+                                                                                {order.shipToAddress.city}, {order.shipToAddress.state}
+                                                                        </p>
+                                                                        <p>
+                                                                                {order.shipToAddress.zipCode}, {order.shipToAddress.country}
+                                                                        </p>
+                                                                </div>
+                                                        )}
+                                                </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-8 mt-4">
+                                                <div></div>
+                                                <div className="text-right space-y-4">
+                                                        <div>
+                                                                <p className="text-sm text-gray-600">Invoice Number</p>
+                                                                <p className="font-semibold">{order.orderNumber}</p>
+                                                        </div>
+                                                        <div>
+                                                                <p className="text-sm text-gray-600">Order Date</p>
+                                                                <p className="font-semibold">
+                                                                        {new Date(order.orderDate).toLocaleDateString()}
+                                                                </p>
+                                                        </div>
+                                                        <div>
+                                                                <p className="text-sm text-gray-600">Status</p>
+                                                                <Badge className={getStatusColor(order.status)}>
+                                                                        {order.status.toUpperCase()}
+                                                                </Badge>
+                                                        </div>
+                                                        <div className="text-right">
                                                                <p className="text-3xl font-bold text-orange-500">
                                                                        ₹{order.totalAmount.toFixed(2)}
                                                                </p>
-							</div>
-						</div>
-					</div>
+                                                        </div>
+                                                </div>
+                                        </div>
 
 					{/* Payment Information */}
 					<div className="grid grid-cols-2 gap-8">

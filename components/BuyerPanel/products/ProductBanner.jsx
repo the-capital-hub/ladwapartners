@@ -97,7 +97,7 @@ function MainBanner({ product, style, onClick }) {
         >
           <div className="relative">
             <motion.img
-              src={product.image}
+              src={product.mainImageLink || product.image}
               alt={product.name}
               className="w-80 h-64 object-contain"
               whileHover={{ scale: 1.05, rotate: 2 }}
@@ -158,7 +158,7 @@ function CompactBanner({ product, style, onClick }) {
         <motion.div className="w-32 h-auto" variants={imageVariants}>
           <div className="relative">
             <motion.img
-              src={product.image}
+              src={product.mainImageLink || product.image}
               alt={product.name}
               className="w-24 h-20 lg:w-32 lg:h-28 object-contain"
               whileHover={{ scale: 1.1, rotate: 5 }}

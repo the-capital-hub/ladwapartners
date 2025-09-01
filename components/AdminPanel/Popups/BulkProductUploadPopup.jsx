@@ -22,7 +22,10 @@ import {
         TableHeader,
         TableRow,
 } from "@/components/ui/table";
-import { getDirectGoogleDriveImageUrl } from "@/lib/utils";
+import {
+        getDirectGoogleDriveImageUrl,
+        getGoogleDriveFolderImageUrls,
+} from "@/lib/utils";
 
 export function BulkUploadPopup({ open, onOpenChange }) {
         const { bulkUploadProducts } = useAdminProductStore();
@@ -88,32 +91,74 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                 if (!file) return;
 
                 const reader = new FileReader();
-                reader.onload = (event) => {
+                reader.onload = async (event) => {
                         const text = event.target.result;
                         const rows = parseCSV(text);
-                        const mapped = rows.map((row) => ({
-                                title: row["Product Name"],
-                                description: row["Description"],
-                                category: row["Product Category"],
-                                subCategory: row["Sub Category"] || row["Sub-Category"],
-                                hsnCode: row["HSN Code"],
-                                price: row["Price"],
-                                mrp: row["MRP"],
-                                featureImage: getDirectGoogleDriveImageUrl(
-                                        row["Feature Image"]
-                                ),
-                                mainImageLink: getDirectGoogleDriveImageUrl(
-                                        row["Main Image Link"]
-                                ),
-                                length: row["Length (mm)"],
-                                width: row["Width (mm)"],
-                                height: row["height (mm)"],
-                                weight: row["Weight (gms)"],
-                                colour: row["Colour"],
-                                material: row["Material used / Made Of"],
-                                brand: row["brand"],
-                                size: row["size"],
-                        }));
+                        const mapped = rows.map((row) => {
+                                const singleImage =
+                                        row["Main Image Link"] ||
+                                        row["Feature Image"] ||
+                                        row["Image"] ||
+                                        row["Image Link"];
+
+                                return {
+                                        title: row["Product Name"] || row["Title"] || row["Name"],
+                                        description: row["Description"] || row["Desc"],
+                                        category:
+                                                row["Product Category"] ||
+                                                row["Category"],
+                                        subCategory:
+                                                row["Sub Category"] ||
+                                                row["Sub-Category"] ||
+                                                row["SubCategory"],
+                                        hsnCode: row["HSN Code"] || row["HSN"],
+                                        price: row["Price"],
+                                        mrp: row["MRP"] || row["Mrp"],
+                                        featureImage:
+                                                getDirectGoogleDriveImageUrl(singleImage),
+                                        mainImageLink:
+                                                getDirectGoogleDriveImageUrl(singleImage),
+                                        imageFolder:
+                                                row["Images URL Link (7 images)"] ||
+                                                row["Images Folder"] ||
+                                                row["Image Folder"] ||
+                                                row["Image Folder Link"] ||
+                                                row["Google Drive Folder Link"],
+                                        length: row["Length (mm)"] || row["Length"],
+                                        width: row["Width (mm)"] || row["Width"],
+                                        height:
+                                                row["height (mm)"] ||
+                                                row["Height (mm)"] ||
+                                                row["Height"],
+                                        weight:
+                                                row["Weight (gms)"] ||
+                                                row["Weight"],
+                                        colour: row["Colour"] || row["Color"],
+                                        material:
+                                                row["Material used / Made Of"] ||
+                                                row["Material"],
+                                        brand: row["brand"] || row["Brand"],
+                                        size: row["size"] || row["Size"],
+                                };
+                        });
+
+                        // Fetch images from provided Google Drive folders and populate images array
+                        for (const prod of mapped) {
+                                if (prod.imageFolder) {
+                                        try {
+                                                const links = await getGoogleDriveFolderImageUrls(
+                                                        prod.imageFolder
+                                                );
+                                                if (Array.isArray(links) && links.length) {
+                                                        // Limit to 7 images as per template column
+                                                        prod.images = links.slice(0, 7);
+                                                }
+                                        } catch (err) {
+                                                // Ignore errors and leave images undefined
+                                                // Errors will surface during upload if needed
+                                        }
+                                }
+                        }
 
                         const requiredFields = ["title", "price", "mrp", "category"];
                         const invalid = [];
@@ -155,7 +200,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
 
         const downloadTemplate = () => {
                 const headers = [
-                        "SL .No",
                         "Product Category",
                         "Sub Category",
                         "HSN Code",
@@ -163,7 +207,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Description",
                         "Price",
                         "MRP",
-                        "Feature Image",
                         "Main Image Link",
                         "Images URL Link (7 images)",
                         "Length (mm)",
@@ -176,7 +219,6 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "size",
                 ];
                 const sampleRow = [
-                        "1",
                         "Sample Category",
                         "Sample Sub",
                         "HSN001",
@@ -184,9 +226,8 @@ export function BulkUploadPopup({ open, onOpenChange }) {
                         "Sample description",
                         "100",
                         "120",
-                        "https://example.com/image.jpg",
-                        "https://drive.google.com/sample",
-                        "",
+                        "https://example.com/main-image.jpg",
+                        "https://drive.google.com/drive/folders/sample",
                         "10",
                         "5",
                         "3",

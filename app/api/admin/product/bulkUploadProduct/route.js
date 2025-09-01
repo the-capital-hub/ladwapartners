@@ -3,6 +3,7 @@
 import { dbConnect } from "@/lib/dbConnect";
 import Product from "@/model/Product";
 import Category from "@/model/Category";
+import { getGoogleDriveFolderImageUrls } from "@/lib/utils";
 
 export async function POST(request) {
 	await dbConnect();
@@ -74,13 +75,6 @@ export async function POST(request) {
                                         let existingCategory = await Category.findOne({ slug: categorySlug });
 
                                         if (existingCategory) {
-                                                // Track duplicate category product
-                                                results.duplicates = results.duplicates || [];
-                                                results.duplicates.push({
-                                                        title,
-                                                        category: existingCategory.name,
-                                                });
-
                                                 if (subCategory) {
                                                         await Category.updateOne(
                                                                 { _id: existingCategory._id },
@@ -103,7 +97,25 @@ export async function POST(request) {
 
                                 const finalCategory = productData.category || category;
 
-                                const featureImageUrl = featureImage || mainImageLink || "";
+                                let images = productData.images || [];
+                                if (images.length === 0 && productData.imageFolder) {
+
+                                        images = (
+                                                await getGoogleDriveFolderImageUrls(
+                                                        productData.imageFolder
+                                                )
+                                        ).slice(0, 7);
+
+                                }
+
+                                const featureImageUrl =
+                                        mainImageLink ||
+                                        featureImage ||
+                                        images[0] ||
+                                        "";
+
+                                const finalMainImageLink =
+                                        mainImageLink || featureImageUrl;
 
                                 const parsedLength =
                                         length !== undefined && length !== ""
@@ -131,7 +143,7 @@ export async function POST(request) {
                                         price: parsedPrice,
                                         mrp: parsedMrp,
                                         featureImage: featureImageUrl,
-                                        mainImageLink,
+                                        mainImageLink: finalMainImageLink,
                                         hsnCode,
                                         length: Number.isNaN(parsedLength)
                                                 ? undefined
@@ -149,7 +161,7 @@ export async function POST(request) {
                                         material,
                                         brand,
                                         size,
-                                        images: featureImageUrl ? [featureImageUrl] : [],
+                                        images,
                                         published:
                                                 productData.published !== undefined ? productData.published : true,
                                         stocks: productData.stocks ? Number.parseInt(productData.stocks) : 0,

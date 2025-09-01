@@ -1,5 +1,6 @@
  "use client";
 
+
 // import Image from "next/image";
 // import { motion } from "framer-motion";
 // import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import HeroImg5 from "@/public/Picture5.9054f320.png";
 import HeroImg6 from "@/public/Picture6.81d7eeb4.png";
 // import mobileimg from "@/public/images/home/heroimg.png";
 // import { Outfit } from "next/font/google";
+
 
 // const outfit = Outfit({
 // 	variable: "--font-outift",
@@ -109,9 +111,11 @@ import HeroImg6 from "@/public/Picture6.81d7eeb4.png";
   
 //   export default HeroSection;
 
+
 // "use client";
 
 //1AeEv7M61qyMHTqMRfIihE3joz3mCIUKT
+
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";

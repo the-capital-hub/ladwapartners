@@ -383,7 +383,7 @@ export function BulkUpdateProductsPopup({
 									onImagesChange={(images) =>
 										setFormData({ ...formData, images })
 									}
-									maxImages={5}
+                                                                    maxImages={10}
 									label="New Product Images"
 									required={false}
 								/>
