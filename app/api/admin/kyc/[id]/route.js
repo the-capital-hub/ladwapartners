@@ -16,12 +16,16 @@ export async function PUT(request, { params }) {
   try {
     await dbConnect();
     const { status, remark = "" } = await request.json();
-    if (!status || !["approved", "rejected"].includes(status)) {
-      return NextResponse.json({ success: false, message: "Invalid status" }, { status: 400 });
+    const normalized = status?.toLowerCase();
+    if (!normalized || !["approved", "rejected"].includes(normalized)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid status" },
+        { status: 400 }
+      );
     }
     const kyc = await UserKYC.findByIdAndUpdate(
       params.id,
-      { status, adminRemark: remark },
+      { status: normalized, adminRemark: remark },
       { new: true }
     ).populate("user", "email");
     if (!kyc) {
@@ -29,15 +33,16 @@ export async function PUT(request, { params }) {
     }
 
     if (kyc.user?._id) {
-      const verificationStatus = status === "approved" ? "APPROVED" : "REJECTED";
+      const verificationStatus =
+        normalized === "approved" ? "APPROVED" : "REJECTED";
       await User.findByIdAndUpdate(kyc.user._id, {
-        gstVerified: status === "approved",
+        gstVerified: normalized === "approved",
         gstVerificationStatus: verificationStatus,
       });
     }
     if (kyc.user?.email) {
-      const subject = `KYC ${status}`;
-      const text = status === "approved"
+      const subject = `KYC ${normalized}`;
+      const text = normalized === "approved"
         ? "Your KYC has been approved."
         : `Your KYC has been rejected. ${remark ? "Reason: " + remark : ""}`;
       try {
