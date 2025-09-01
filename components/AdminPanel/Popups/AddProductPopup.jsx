@@ -218,7 +218,7 @@ export function AddProductPopup({ open, onOpenChange }) {
 									onImagesChange={(images) =>
 										setFormData({ ...formData, images })
 									}
-									maxImages={5}
+                                                                    maxImages={10}
 									label="Product Images"
 									required={true}
 								/>
