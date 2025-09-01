@@ -81,8 +81,10 @@ export async function GET(request) {
                                         ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
                                         : 0,
                         image:
+                                product.mainImageLink ||
                                 product.images?.[0] ||
                                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                        mainImageLink: product.mainImageLink,
                         images: product.images || [],
                         gallery: product.images || [],
                         category: product.category,

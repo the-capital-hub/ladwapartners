@@ -145,9 +145,10 @@ export const useCartStore = create(
 									description: item.product.description,
                                                                         price: item.product.price,
                                                                         originalPrice: item.product.mrp,
-									image:
-										item.product.images?.[0] ||
-										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                                                                        image:
+                                                                                item.product.mainImageLink ||
+                                                                                item.product.images?.[0] ||
+                                                                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 									quantity: item.quantity,
 									inStock: item.product.inStock,
 								}));
@@ -214,9 +215,10 @@ export const useCartStore = create(
 									description: item.product.description,
                                                                         price: item.product.price,
                                                                         originalPrice: item.product.mrp,
-									image:
-										item.product.images?.[0] ||
-										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                                                                        image:
+                                                                                item.product.mainImageLink ||
+                                                                                item.product.images?.[0] ||
+                                                                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 									quantity: item.quantity,
 									inStock: item.product.inStock,
 								}));
@@ -265,9 +267,10 @@ export const useCartStore = create(
 									description: item.product.description,
                                                                         price: item.product.price,
                                                                         originalPrice: item.product.mrp,
-									image:
-										item.product.images?.[0] ||
-										"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                                                                        image:
+                                                                                item.product.mainImageLink ||
+                                                                                item.product.images?.[0] ||
+                                                                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 									quantity: item.quantity,
 									inStock: item.product.inStock,
 								}));
@@ -354,9 +357,10 @@ export const useCartStore = create(
 								description: item.product.description,
                                                                         price: item.product.price,
                                                                         originalPrice: item.product.mrp,
-								image:
-									item.product.images?.[0] ||
-									"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                                                                image:
+                                                                        item.product.mainImageLink ||
+                                                                        item.product.images?.[0] ||
+                                                                        "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 								quantity: item.quantity,
 								inStock: item.product.inStock,
 							}));
