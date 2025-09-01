@@ -25,10 +25,12 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 					<div className="flex flex-col sm:flex-row gap-6">
 						<div className="relative w-full sm:w-48 h-48 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
 							<Image
-								src={
-									product.images[0] ||
-									"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
-								}
+                                                                src={
+                                                                        product.mainImageLink ||
+                                                                        product.images?.[0] ||
+                                                                        product.image ||
+                                                                        "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
+                                                                }
 								alt={product.title}
 								fill
 								className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
@@ -133,10 +135,11 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 					<div className="relative overflow-hidden">
 						<div className="relative h-64 bg-gray-50 rounded-t-xl overflow-hidden">
 							<Image
-								src={
-									product.image ||
-									"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
-								}
+                                                                src={
+                                                                        product.mainImageLink ||
+                                                                        product.image ||
+                                                                        "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
+                                                                }
 								alt={product.title}
 								fill
 								className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"

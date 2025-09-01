@@ -74,15 +74,15 @@ export default function FeaturedBanner() {
 					className="relative h-64 lg:h-96 cursor-pointer"
 					onClick={handleRedirect}
 				>
-					<Image
-						src={product.image}
-						alt={product.name}
-						width={500}
-						height={500}
-						className="w-full h-full object-contain p-8"
-					/>
-				</div>
-			</div>
+                                        <Image
+                                                src={product.mainImageLink || product.image}
+                                                alt={product.name}
+                                                width={500}
+                                                height={500}
+                                                className="w-full h-full object-contain p-8"
+                                        />
+                               </div>
+                       </div>
 			{featuredProducts.length > 1 && (
 				<div className="absolute inset-y-0 left-0 flex items-center pl-4">
 					<Button

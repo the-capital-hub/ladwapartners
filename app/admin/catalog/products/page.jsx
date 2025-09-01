@@ -449,13 +449,17 @@ export default function AdminProductsPage() {
 												<TableCell className="font-medium">
 													<div className="flex items-center gap-3">
 														<div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-															{product.images?.[0] ? (
-																<img
-																	src={product.images[0] || "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"}
-																	alt={product.title}
-																	className="w-full h-full object-cover rounded-lg"
-																/>
-															) : (
+                                                                                                               {product.mainImageLink || product.images?.[0] ? (
+                                                                                                                               <img
+                                                                                                                               src={
+                                                                                                                                        product.mainImageLink ||
+                                                                                                                                                product.images[0] ||
+                                                                                                                                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
+                                                                                                                               }
+                                                                                                                               alt={product.title}
+                                                                                                                               className="w-full h-full object-cover rounded-lg"
+                                                                                                                               />
+                                                                                                                        ) : (
 																<div className="text-xs text-gray-400">IMG</div>
 															)}
 														</div>

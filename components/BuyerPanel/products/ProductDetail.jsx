@@ -70,9 +70,12 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 				description: product.description,
 				price: product.price,
 				originalPrice: product.originalPrice,
-				image: getDirectGoogleDriveImageUrl(
-					product.images?.[0] || product.image || fallbackThumbImage
-				),
+                                image: getDirectGoogleDriveImageUrl(
+                                        product.mainImageLink ||
+                                                product.images?.[0] ||
+                                                product.image ||
+                                                fallbackThumbImage
+                                ),
 				inStock: product.inStock,
 			});
 			toast.success("Added to wishlist");
@@ -95,14 +98,20 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 		}
 	};
 
-	const fallbackMainImage =
-		"https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
-	const fallbackThumbImage =
-		"https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
+        const fallbackMainImage =
+                "https://res.cloudinary.com/drjt9guif/image/upload/v1755168534/safetyonline_fks0th.png";
+        const fallbackThumbImage =
+                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png";
 
-	const mainImageSrc = getDirectGoogleDriveImageUrl(
-		product.images?.[selectedImage] || product.image || fallbackMainImage
-	);
+        const images = [
+                product.mainImageLink,
+                ...(product.images || []),
+                product.image,
+        ].filter(Boolean);
+
+        const mainImageSrc = getDirectGoogleDriveImageUrl(
+                images[selectedImage] || fallbackMainImage
+        );
 	const isMainImageUnoptimized = mainImageSrc.includes("google");
 
 	useEffect(() => {
@@ -159,9 +168,11 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 				description: product.description,
 				price: product.price,
 				originalPrice: product.originalPrice,
-				image: getDirectGoogleDriveImageUrl(
-					product.images?.[0] || product.image
-				),
+                                image: getDirectGoogleDriveImageUrl(
+                                        product.mainImageLink ||
+                                                product.images?.[0] ||
+                                                product.image
+                                ),
 				inStock: product.inStock,
 			},
 			quantity
@@ -287,10 +298,10 @@ export default function ProductDetail({ product, relatedProducts = [] }) {
 
 							{/* Thumbnail Images */}
 							<div className="flex gap-2 mt-4">
-								{product.images?.slice(0, 4).map((image, index) => {
-									const src = getDirectGoogleDriveImageUrl(
-										image || fallbackThumbImage
-									);
+                                                                {images.slice(0, 4).map((image, index) => {
+                                                                        const src = getDirectGoogleDriveImageUrl(
+                                                                                image || fallbackThumbImage
+                                                                        );
 									const unopt = src.includes("google");
 									return (
 										<button

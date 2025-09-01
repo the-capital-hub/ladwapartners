@@ -182,7 +182,7 @@ export const useCheckoutStore = create(
 							{
 								productId: product.id,
 								productName: product.name || product.title,
-								productImage: product.image,
+                                                                productImage: product.mainImageLink || product.image,
 								quantity: quantity,
 								price: product.price,
 								totalPrice: product.price * quantity,

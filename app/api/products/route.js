@@ -132,11 +132,13 @@ export async function GET(request) {
 			longDescription: product.longDescription,
                         price: product.price,
                         originalPrice: product.mrp,
+                        mainImageLink: product.mainImageLink,
                         discountPercentage:
                                 product.mrp && product.mrp > product.price
                                         ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
                                         : 0,
                         image:
+                                product.mainImageLink ||
                                 product.images?.[0] ||
                                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
                         images: product.images || [],

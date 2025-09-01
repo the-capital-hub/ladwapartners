@@ -50,7 +50,10 @@ export async function GET(req, { params }) {
                         featureImage: product.featureImage,
                         images: product.images || [],
                         gallery: product.images || [],
-			image: product.images?.[0] || "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
+                        image:
+                                product.mainImageLink ||
+                                product.images?.[0] ||
+                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png",
 			inStock: product.stocks > 0,
 			stocks: product.stocks,
 			status: product.stocks > 0 ? "In Stock" : "Out of Stock",

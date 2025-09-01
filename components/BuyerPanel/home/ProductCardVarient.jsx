@@ -41,7 +41,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
         description: product?.description,
         price: product?.price,
         originalPrice: product?.originalPrice,
-        image: product?.image,
+        image: product?.mainImageLink || product?.image,
         inStock: product?.inStock,
       },
       quantity
@@ -179,6 +179,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
           <div className="flex-1 w-full h-[300px] overflow-hidden">
             <Image
               src={
+                product?.mainImageLink ||
                 product?.image ||
                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
               }
@@ -269,6 +270,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
           <div className="w-full h-full overflow-hidden">
             <img
               src={
+                product?.mainImageLink ||
                 product?.image ||
                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
               }
