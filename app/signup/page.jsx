@@ -15,9 +15,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
+
 import { useAuthStore } from "@/store/authStore";
 import Logo from "@/public/ladwapartners.png";
 import LoginModel from "@/public/images/login/LoginModel.png";
@@ -40,6 +41,7 @@ const SignupPage = () => {
         const [verificationCode, setVerificationCode] = useState("");
         const [isLoading, setIsLoading] = useState(false);
         const router = useRouter();
+
         const { setUser } = useAuthStore();
 
         const handleInputChange = (e) => {
@@ -170,6 +172,7 @@ const SignupPage = () => {
                                                                         await userResponse.json();
                                                                 setUser(userData.user);
                                                         }
+
                                                         await Swal.fire({
                                                                 icon: "success",
                                                                 title: "Signup successful!",
@@ -178,6 +181,7 @@ const SignupPage = () => {
                                                                 showConfirmButton: false,
                                                         });
                                                         router.push("/home");
+
                                                 } else {
                                                         toast.error("Automatic login failed");
                                                         router.push("/login");
