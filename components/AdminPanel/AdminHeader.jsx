@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -17,19 +17,15 @@ import { Search, User, Settings, LogOut } from "lucide-react";
 import { NotificationDropdown } from "@/components/AdminPanel/NotificationDropdown.jsx";
 import { LogoutPopup } from "@/components/Shared/Popups/LogoutPopup.jsx";
 import {
-	useUserFullName,
-	useUserEmail,
-	useUserProfilePic,
-	useIsAuthenticated,
+        useUserFullName,
+        useUserEmail,
 } from "@/store/adminAuthStore.js";
 
 export function AdminHeader() {
 	const [showLogoutPopup, setShowLogoutPopup] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
-	const fullName = useUserFullName();
+        const fullName = useUserFullName();
         const email = useUserEmail();
-        const profilePic = useUserProfilePic();
-        const isAuthenticated = useIsAuthenticated();
 
         const initials =
                 fullName
@@ -84,11 +80,8 @@ export function AdminHeader() {
 
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                                                        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                                                                 <Avatar className="h-8 w-8">
-                                                                        {profilePic && (
-                                                                                <AvatarImage src={profilePic} alt="Admin" />
-                                                                        )}
                                                                         <AvatarFallback className={`${colorClass} text-black`}>
                                                                                 {initials}
                                                                         </AvatarFallback>
@@ -100,9 +93,6 @@ export function AdminHeader() {
 							{/* User Info Header */}
                                                         <div className="flex items-center gap-3 p-3">
                                                                 <Avatar className="h-10 w-10">
-                                                                        {profilePic && (
-                                                                                <AvatarImage src={profilePic} alt={fullName || "Admin"} />
-                                                                        )}
                                                                         <AvatarFallback className={`${colorClass} text-black`}>
                                                                                 {initials}
                                                                         </AvatarFallback>

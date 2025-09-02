@@ -6,20 +6,18 @@ import Logo from "@/public/ladwapartners.png";
 
 import { Button } from "@/components/ui/button";
 import { Menu, ShoppingCart, Heart, User, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useCartStore } from "@/store/cartStore";
 import MiniCart from "./cart/MiniCart";
 import {
         useUserFullName,
         useUserEmail,
-        useUserProfilePic,
         useIsAuthenticated,
 } from "@/store/authStore.js";
 
 export default function Header({ onMenuToggle, isMenuOpen }) {
-	const fullName = useUserFullName();
-	const email = useUserEmail();
-	const profilePic = useUserProfilePic();
+        const fullName = useUserFullName();
+        const email = useUserEmail();
         const isAuthenticated = useIsAuthenticated();
 
         const initials =
@@ -129,21 +127,19 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 
 							{isAuthenticated ? (
 								<div className="flex items-center space-x-2 md:space-x-4">
-									<Link href="/account">
-										<div className="flex items-center space-x-2">
-											<Image
-												src={profilePic}
-												alt="Profile"
-												width={40}
-												height={40}
-												className="h-6 w-6 md:h-8 md:w-8 rounded-full"
-											/>
-											<div className="hidden md:block text-black">
-												<p className="text-sm font-medium">{fullName}</p>
-												<p className="text-xs text-gray-400">{email}</p>
-											</div>
-										</div>
-									</Link>
+                                                                        <Link href="/account">
+                                                                                <div className="flex items-center space-x-2">
+                                                                                        <Avatar className="h-6 w-6 md:h-8 md:w-8">
+                                                                                                <AvatarFallback className={`${colorClass} text-black text-xs md:text-sm font-medium`}>
+                                                                                                        {initials}
+                                                                                                </AvatarFallback>
+                                                                                        </Avatar>
+                                                                                        <div className="hidden md:block text-black">
+                                                                                                <p className="text-sm font-medium">{fullName}</p>
+                                                                                                <p className="text-xs text-gray-400">{email}</p>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </Link>
 								</div>
 							) : (
 								<Link href="/account">
