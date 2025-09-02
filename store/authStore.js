@@ -32,4 +32,9 @@ export const useUserProfilePic = () =>
 
 export const useIsAuthenticated = () => useAuthStore((state) => !!state.user);
 
-export const useIsGstVerified = () => useAuthStore((state)=> !!state.user?.gstVerified)
+export const useIsGstVerified = () =>
+        useAuthStore(
+                (state) =>
+                        state.user?.gstVerified === true ||
+                        state.user?.gstVerificationStatus === "APPROVED"
+        );
