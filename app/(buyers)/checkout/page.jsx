@@ -237,10 +237,10 @@ export default function CheckoutPage() {
                         return;
                 }
 
-		if (!getSelectedAddress()) {
-			toast.error("Please select a delivery address");
-			return;
-		}
+                if (!getSelectedAddress()) {
+                        toast.error("Please select a ship to address");
+                        return;
+                }
 
 		try {
 			const userId = user?._id || user?.id;
@@ -271,15 +271,15 @@ export default function CheckoutPage() {
 			<Card>
 				<CardHeader>
 					<CardTitle className="flex items-center gap-2">
-						<MapPin className="h-5 w-5" />
-						Delivery Address
+                                                <MapPin className="h-5 w-5" />
+                                                Ship To Address
 					</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-4">
 					{/* Saved Addresses */}
-					{savedAddresses.length > 0 && (
-						<div className="space-y-3">
-							<h4 className="font-medium">Saved Addresses</h4>
+                                        {savedAddresses.length > 0 && (
+                                                <div className="space-y-3">
+                                                        <h4 className="font-medium">Saved Ship To Addresses</h4>
 							{savedAddresses.map((address) => (
 								<div
 									key={address._id}
@@ -333,16 +333,16 @@ export default function CheckoutPage() {
 					)}
 
 					{/* Add New Address Button */}
-					{!isAddingNewAddress && (
-						<Button
-							variant="outline"
-							onClick={toggleAddNewAddress}
-							className="w-full"
-						>
-							<Plus className="h-4 w-4 mr-2" />
-							Add New Address
-						</Button>
-					)}
+                                        {!isAddingNewAddress && (
+                                                <Button
+                                                        variant="outline"
+                                                        onClick={toggleAddNewAddress}
+                                                        className="w-full"
+                                                >
+                                                        <Plus className="h-4 w-4 mr-2" />
+                                                        Add Ship To Address
+                                                </Button>
+                                        )}
 
 					{/* New Address Form */}
 					{isAddingNewAddress && (
@@ -640,18 +640,32 @@ export default function CheckoutPage() {
 	);
 
 	// Order Summary Component
-	const OrderSummary = useMemo(() => {
-		const currentCoupon =
-			checkoutType === "cart" ? cartAppliedCoupon : appliedCoupon;
+        const OrderSummary = useMemo(() => {
+                const currentCoupon =
+                        checkoutType === "cart" ? cartAppliedCoupon : appliedCoupon;
+                const selectedAddress = getSelectedAddress();
 
-		return (
-			<Card className="sticky top-4">
-				<CardHeader>
-					<CardTitle>Order Summary</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					{/* Items */}
-					<div className="space-y-3">
+                return (
+                        <Card className="sticky top-4">
+                                <CardHeader>
+                                        <CardTitle>Order Summary</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                        {selectedAddress && (
+                                                <>
+                                                        <div className="text-sm">
+                                                                <p className="font-medium">Ship To</p>
+                                                                <p>{selectedAddress.name}</p>
+                                                                <p className="text-gray-600">
+                                                                        {selectedAddress.street}, {selectedAddress.city}, {selectedAddress.state} - {selectedAddress.zipCode}
+                                                                </p>
+                                                        </div>
+                                                        <Separator />
+                                                </>
+                                        )}
+
+                                        {/* Items */}
+                                        <div className="space-y-3">
 						{orderSummary.items.map((item, index) => (
 							<div key={index} className="flex items-center gap-3">
 								<div className="relative w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
@@ -753,24 +767,20 @@ export default function CheckoutPage() {
                                                 )}
                                                 {orderSummary.tax > 0 && (
                                                         <div className="space-y-1">
-                                                                <div className="flex justify-between">
-                                                                        <span>GST (18%)</span>
-                                                                        <span>₹{orderSummary.tax.toLocaleString()}</span>
-                                                                </div>
                                                                 {orderSummary.gst.cgst > 0 && (
-                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                        <div className="flex justify-between">
                                                                                 <span>CGST (9%)</span>
                                                                                 <span>₹{orderSummary.gst.cgst.toLocaleString()}</span>
                                                                         </div>
                                                                 )}
                                                                 {orderSummary.gst.sgst > 0 && (
-                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                        <div className="flex justify-between">
                                                                                 <span>SGST (9%)</span>
                                                                                 <span>₹{orderSummary.gst.sgst.toLocaleString()}</span>
                                                                         </div>
                                                                 )}
                                                                 {orderSummary.gst.igst > 0 && (
-                                                                        <div className="flex justify-between text-xs pl-2">
+                                                                        <div className="flex justify-between">
                                                                                 <span>IGST (18%)</span>
                                                                                 <span>₹{orderSummary.gst.igst.toLocaleString()}</span>
                                                                         </div>
@@ -787,16 +797,18 @@ export default function CheckoutPage() {
 				</CardContent>
 			</Card>
 		);
-	}, [
-		orderSummary,
-		appliedCoupon,
-		cartAppliedCoupon,
-		checkoutType,
-		couponCode,
-		handleApplyCoupon,
-		removeCoupon,
-		isLoading,
-	]);
+        }, [
+                orderSummary,
+                appliedCoupon,
+                cartAppliedCoupon,
+                checkoutType,
+                couponCode,
+                handleApplyCoupon,
+                removeCoupon,
+                isLoading,
+                getSelectedAddress,
+                selectedAddressId,
+        ]);
 
 	return (
 		<>

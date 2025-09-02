@@ -4,7 +4,7 @@ import Product from "@/model/Product";
 import Cart from "@/model/Cart";
 import User from "@/model/User";
 import { dbConnect } from "@/lib/dbConnect.js";
-import nodemailer from "nodemailer";
+import { sendMail } from "@/lib/mail";
 
 export async function POST(req) {
 	try {
@@ -49,14 +49,6 @@ export async function POST(req) {
                                 prefs?.channels?.email &&
                                 prefs?.settings?.["order-placed"]?.email
                         ) {
-                                const transporter = nodemailer.createTransport({
-                                        service: "gmail",
-                                        auth: {
-                                                user: process.env.MAIL_USER,
-                                                pass: process.env.MAIL_PASS,
-                                        },
-                                });
-
                                 const html = `
                                         <div style="font-family:Arial,sans-serif;font-size:16px;color:#333;">
                                                 <h2 style="color:#4f46e5;">Thank you for your order!</h2>
@@ -67,9 +59,7 @@ export async function POST(req) {
                                                 <p style="margin-top:20px;">Best regards,<br/>Ladwa Partners</p>
                                         </div>
                                 `;
-
-                                await transporter.sendMail({
-                                        from: process.env.MAIL_USER,
+                                await sendMail({
                                         to: user.email,
                                         subject: `Order Confirmed - ${order.orderNumber}`,
                                         html,

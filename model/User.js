@@ -16,6 +16,11 @@ const AddressSchema = new mongoose.Schema(
     zipCode: { type: String, required: true },
     country: { type: String, default: "India" },
     isDefault: { type: Boolean, default: false },
+    addressType: {
+      type: String,
+      enum: ["billTo", "shipTo"],
+      default: "shipTo",
+    },
   },
   { timestamps: true }
 );
@@ -52,10 +57,10 @@ const UserSchema = new mongoose.Schema(
         },
       },
     },
-    legalName: { type: String, required: true },
-    tradeName: { type: String, required: true },
-    pan: { type: String, required: true },
-    gstin: { type: String, required: true },
+    legalName: { type: String },
+    tradeName: { type: String },
+    pan: { type: String },
+    gstin: { type: String },
     gstStatus: { type: String },
     gstType: { type: String },
     gstStateCode: { type: String },
