@@ -44,6 +44,7 @@ import {
         Eye,
         Palette,
         Cog,
+        Mail,
 
 } from "lucide-react";
 import Logo from "@/public/ladwapartners.png";
@@ -75,11 +76,16 @@ const menuItems = [
 		icon: Users,
 		href: "/admin/sellers",
 	},
-	{
-		title: "Orders",
-		icon: ShoppingCart,
-		href: "/admin/orders",
-	},
+        {
+                title: "Orders",
+                icon: ShoppingCart,
+                href: "/admin/orders",
+        },
+        {
+                title: "Contact Us",
+                icon: Mail,
+                href: "/admin/contact-us",
+        },
 
 	// {
 	// 	title: "Our Staff",
