@@ -139,19 +139,31 @@ export async function POST(req) {
                                         </div>
                                 `;
 
-                                const invoicePdf = await generateInvoicePDF(orderObj);
-
                                 try {
-                                        await sendMail({
-                                                to: user.email,
-                                                subject: `Order Confirmed - ${orderObj.orderNumber}`,
-                                                html,
-                                                attachments: [
+                                        let attachments;
+                                        try {
+                                                const invoicePdf = await generateInvoicePDF(orderObj);
+                                                attachments = [
                                                         {
                                                                 filename: `invoice-${orderObj.orderNumber}.pdf`,
                                                                 content: invoicePdf,
                                                         },
-                                                ],
+                                                ];
+                                        } catch (pdfError) {
+                                                console.error(
+                                                        "Failed to generate invoice PDF:",
+                                                        pdfError
+                                                );
+                                        }
+
+
+                                        await sendMail({
+                                                to: user.email,
+                                                subject: `Order Confirmed - ${orderObj.orderNumber}`,
+                                                html,
+
+                                                attachments,
+
                                         });
                                 } catch (mailError) {
                                         console.error(
