@@ -4,17 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
 import Logo from "@/public/ladwapartners.png";
+import { useCartStore } from "@/store/cartStore";
 
 export default function Footer() {
-	const footerSections = {
-		support: {
-			title: "Support",
-			items: ["sales@ladwaspartner.com", "+91 9945234161"],
-		},
-		account: {
-			title: "Account",
-			items: ["My Account", "Login / Register", "Cart", "Wishlist", "Shop"],
-		},
+        const { openCart } = useCartStore();
+
+        const footerSections = {
+                support: {
+                        title: "Support",
+                        items: ["sales@ladwaspartner.com", "+91 9945234161"],
+                },
+                account: {
+                        title: "Account",
+                        items: [
+                                { label: "My Account", href: "/account/profile" },
+                                { label: "Login / Register", href: "/login" },
+                                { label: "Cart", onClick: openCart },
+                                { label: "Wishlist", href: "/wishlist" },
+                        ],
+                },
                 quickLinks: {
                         title: "Quick Link",
                         items: [
@@ -26,7 +34,6 @@ export default function Footer() {
                                         label: "Cancellation & Refund",
                                         href: "/cancellation-refund-policy",
                                 },
-                                { label: "FAQ", href: "/faq" },
                                 { label: "Contact Us", href: "/contact" },
                         ],
                 },
@@ -78,17 +85,28 @@ export default function Footer() {
 						<h3 className="text-xl font-bold mb-4">
 							{footerSections.account.title}
 						</h3>
-						<div className="space-y-3 text-gray-400">
-							{footerSections.account.items.map((item, index) => (
-								<p
-									key={index}
-									className="hover:text-white cursor-pointer transition-colors"
-								>
-									{item}
-								</p>
-							))}
-						</div>
-					</div>
+                                                <div className="space-y-3 text-gray-400">
+                                                        {footerSections.account.items.map((item, index) =>
+                                                                item.href ? (
+                                                                        <Link
+                                                                                key={index}
+                                                                                href={item.href}
+                                                                                className="hover:text-white cursor-pointer transition-colors block"
+                                                                        >
+                                                                                {item.label}
+                                                                        </Link>
+                                                                ) : (
+                                                                        <p
+                                                                                key={index}
+                                                                                onClick={item.onClick}
+                                                                                className="hover:text-white cursor-pointer transition-colors"
+                                                                        >
+                                                                                {item.label}
+                                                                        </p>
+                                                                )
+                                                        )}
+                                                </div>
+                                        </div>
 
                                        {/* Quick Links */}
                                        <div>

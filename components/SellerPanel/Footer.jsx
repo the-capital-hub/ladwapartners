@@ -1,27 +1,31 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "@/public/ladwapartners.png";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
 
 export default function Footer() {
-	const footerSections = {
-		support: {
-			title: "Support",
-			links: [
-				{ label: "help@ladwapartners.com", href: "mailto:help@ladwapartners.com" },
-				{ label: "9945234161", href: "#" },
-			],
-		},
-		account: {
-			title: "Account",
-			links: [
-				{ label: "My Account", href: "/account" },
-				{ label: "Login / Register", href: "/auth" },
-				{ label: "Cart", href: "/cart" },
-				{ label: "Wishlist", href: "/wishlist" },
-				{ label: "Shop", href: "/shop" },
-			],
-		},
+        const { openCart } = useCartStore();
+
+        const footerSections = {
+                support: {
+                        title: "Support",
+                        links: [
+                                { label: "help@ladwapartners.com", href: "mailto:help@ladwapartners.com" },
+                                { label: "9945234161", href: "#" },
+                        ],
+                },
+                account: {
+                        title: "Account",
+                        links: [
+                                { label: "My Account", href: "/account/profile" },
+                                { label: "Login / Register", href: "/login" },
+                                { label: "Cart", href: "#", onClick: openCart },
+                                { label: "Wishlist", href: "/wishlist" },
+                        ],
+                },
                 quickLinks: {
                         title: "Quick Link",
                         links: [
@@ -33,7 +37,6 @@ export default function Footer() {
                                         label: "Cancellation & Refund",
                                         href: "/cancellation-refund-policy",
                                 },
-                                { label: "FAQ", href: "/faq" },
                                 { label: "Contact", href: "/contact" },
                         ],
                 },
@@ -98,6 +101,7 @@ export default function Footer() {
                                                                                 <li key={index}>
                                                                                         <Link
                                                                                                 href={link.href}
+                                                                                                onClick={link.onClick}
                                                                                                 className="hover:text-gray-400 transition-colors duration-200"
                                                                                         >
                                                                                                 {link.label}
