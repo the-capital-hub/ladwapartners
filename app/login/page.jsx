@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 import Logo from "@/public/ladwapartners.png";
 import LoginModel from "@/public/images/login/LoginModel.png";
 
@@ -127,8 +127,9 @@ const LoginPage = () => {
 		},
 	};
 
-	return (
-		<div className="max-w-7xl mx-auto h-screen grid grid-cols-2 lg:px-10">
+        return (
+                <>
+                <div className="max-w-7xl mx-auto h-screen grid grid-cols-2 lg:px-10">
 			{/* Left side - Image and branding */}
 			<motion.div
 				className="hidden lg:flex justify-center items-center overflow-hidden p-8"
@@ -297,9 +298,11 @@ const LoginPage = () => {
 						</Card>
 					</motion.div>
 				</div>
-			</motion.div>
-		</div>
-	);
+                        </motion.div>
+                </div>
+                <Toaster toastOptions={{ duration: 3000 }} />
+                </>
+        );
 };
 
 export default LoginPage;

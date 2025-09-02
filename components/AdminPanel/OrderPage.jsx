@@ -22,7 +22,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import {
         Calendar,
         Search,
@@ -651,21 +651,14 @@ function OrderPage() {
 				itemName={popups.delete.order?.orderNumber}
 				onConfirm={async () => {
 					const result = await deleteOrder(popups.delete.order._id);
-					if (result.success) {
-						toast({
-							title: "Success",
-							description: "Order deleted successfully",
-						});
-					} else {
-						toast({
-							title: "Error",
-							description: result.message,
-							variant: "destructive",
-						});
-					}
-					closePopup("delete");
-				}}
-			/>
+                                        if (result.success) {
+                                                toast.success("Order deleted successfully");
+                                        } else {
+                                                toast.error(result.message);
+                                        }
+                                        closePopup("delete");
+                                }}
+                        />
 
 			<InvoicePopup
 				open={popups.invoice.open}
