@@ -110,7 +110,7 @@ export default function Footer() {
                </div>
 
                                <div className="border-t border-white/20 mt-8 md:mt-12 pt-8 text-center text-gray-400">
-                                       <p>© Copyright LADWA Group 2022. All right reserved</p>
+                                       <p>© Copyright LADWA Group 2025. All right reserved</p>
                                </div>
 			</div>
 		</footer>
