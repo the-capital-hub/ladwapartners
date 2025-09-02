@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, ChevronDown } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	DropdownMenu,
@@ -21,14 +21,15 @@ export default function NavigationBar({
 }) {
 	const [localSearch, setLocalSearch] = useState("");
 	const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-	const [categoryData, setCategoryData] = useState(categories);
-	const router = useRouter();
-	const {
-		setSearchQuery: setGlobalSearch,
-		searchQuery: globalSearch,
-		currentCategory,
-		setCurrentCategory,
-	} = useProductStore();
+        const [categoryData, setCategoryData] = useState(categories);
+        const router = useRouter();
+        const pathname = usePathname();
+        const {
+                setSearchQuery: setGlobalSearch,
+                searchQuery: globalSearch,
+                currentCategory,
+                setCurrentCategory,
+        } = useProductStore();
 
 	useEffect(() => {
 		setLocalSearch(globalSearch);
@@ -82,24 +83,34 @@ export default function NavigationBar({
 		setLocalSearch("");
 
 		if (href.includes("#")) {
-			// Extract ID from href
-			const id = href.split("#")[1];
-			const element = document.getElementById(id);
+			const [path, id] = href.split("#");
 
-			if (element) {
-				const headerOffset = 230;
-				const elementPosition =
-					element.getBoundingClientRect().top + window.pageYOffset;
-				const offsetPosition = elementPosition - headerOffset;
+			// Navigate to the correct page if we're not already there
+			if (path && pathname !== path) {
+				router.push(href);
+			} else {
+				const element = document.getElementById(id);
 
-				window.scrollTo({
-					top: offsetPosition,
-					behavior: "smooth",
-				});
+				if (element) {
+					const headerOffset = 230;
+					const elementPosition =
+							element.getBoundingClientRect().top + window.pageYOffset;
+					const offsetPosition = elementPosition - headerOffset;
+
+					window.scrollTo({
+						top: offsetPosition,
+						behavior: "smooth",
+					});
+				} else {
+					router.push(href);
+				}
 			}
-			// 		window.location.href = href;
 		} else {
-			router.push(href);
+			if (pathname === href) {
+				window.scrollTo({ top: 0, behavior: "smooth" });
+			} else {
+				router.push(href);
+			}
 		}
 
 		if (onMenuClose) onMenuClose();
