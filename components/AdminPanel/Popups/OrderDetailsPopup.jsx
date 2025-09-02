@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 export function OrderDetailsPopup({ open, onOpenChange, order }) {
-	if (!order) return null;
+        if (!order) return null;
 
 	const getStatusColor = (status) => {
 		const colors = {
@@ -37,15 +37,20 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
 		return colors[status] || "bg-gray-100 text-gray-800";
 	};
 
-	const getPaymentStatusColor = (status) => {
-		const colors = {
-			paid: "bg-green-100 text-green-800",
-			pending: "bg-yellow-100 text-yellow-800",
-			failed: "bg-red-100 text-red-800",
-			refunded: "bg-gray-100 text-gray-800",
-		};
-		return colors[status] || "bg-gray-100 text-gray-800";
-	};
+        const getPaymentStatusColor = (status) => {
+                const colors = {
+                        paid: "bg-green-100 text-green-800",
+                        pending: "bg-yellow-100 text-yellow-800",
+                        failed: "bg-red-100 text-red-800",
+                        refunded: "bg-gray-100 text-gray-800",
+                };
+                return colors[status] || "bg-gray-100 text-gray-800";
+        };
+
+        const formatCurrency = (value) =>
+                typeof value === "number" && !Number.isNaN(value)
+                        ? value.toFixed(2)
+                        : "0.00";
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
@@ -194,43 +199,46 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
 
 						{/* Products */}
 						<Card>
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<Package className="w-5 h-5" />
-									Products ({order.products.length} items)
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									{order.products.map((product, index) => (
-										<div
-											key={index}
-											className="flex items-center gap-4 p-4 border rounded-lg"
-										>
-											{product.productImage && (
-												<img
-													src={product.productImage || "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"}
-													alt={product.productName}
-													className="w-16 h-16 object-cover rounded"
-												/>
-											)}
-											<div className="flex-1">
-												<h4 className="font-medium">{product.productName}</h4>
-												<p className="text-sm text-gray-600">
+                                                        <CardHeader>
+                                                                <CardTitle className="flex items-center gap-2">
+                                                                        <Package className="w-5 h-5" />
+                                                                        Products ({order.products?.length || 0} items)
+                                                                </CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent>
+                                                                <div className="space-y-4">
+                                                                        {order.products?.map((product, index) => (
+                                                                                <div
+                                                                                        key={index}
+                                                                                        className="flex items-center gap-4 p-4 border rounded-lg"
+                                                                                >
+                                                                                        {product.productImage && (
+                                                                                                <img
+                                                                                                        src={
+                                                                                                                product.productImage ||
+                                                                                                                "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
+                                                                                                        }
+                                                                                                        alt={product.productName}
+                                                                                                        className="w-16 h-16 object-cover rounded"
+                                                                                                />
+                                                                                        )}
+                                                                                        <div className="flex-1">
+                                                                                                <h4 className="font-medium">{product.productName}</h4>
+                                                                                                <p className="text-sm text-gray-600">
                                                                                                        Quantity: {product.quantity} × ₹
-                                                                                                        {product.price.toFixed(2)}
-												</p>
-											</div>
-											<div className="text-right">
+                                                                                                        {formatCurrency(product.price)}
+                                                                                                </p>
+                                                                                        </div>
+                                                                                        <div className="text-right">
                                                                                                <p className="font-medium">
-                                                                                                       ₹{product.totalPrice.toFixed(2)}
+                                                                                                       ₹{formatCurrency(product.totalPrice)}
                                                                                                </p>
-											</div>
-										</div>
-									))}
-								</div>
-							</CardContent>
-						</Card>
+                                                                                        </div>
+                                                                                </div>
+                                                                        ))}
+                                                                </div>
+                                                        </CardContent>
+                                                </Card>
 
 						{/* Payment Information */}
 						<Card>
@@ -265,61 +273,61 @@ export function OrderDetailsPopup({ open, onOpenChange, order }) {
 							</CardHeader>
 							<CardContent>
 								<div className="space-y-3">
-									<div className="flex justify-between">
-										<span>Subtotal</span>
-                                                                               <span>₹{order.subtotal.toFixed(2)}</span>
-									</div>
+                                                                        <div className="flex justify-between">
+                                                                                <span>Subtotal</span>
+                                                                                <span>₹{formatCurrency(order.subtotal)}</span>
+                                                                        </div>
                                                                         {order.tax > 0 && (
                                                                                 <div className="space-y-1">
                                                                                         <div className="flex justify-between">
-                                                                                                <span>GST (18%)</span>
-                                                                                                <span>₹{order.tax.toFixed(2)}</span>
+                                                                                                <span>Total Tax</span>
+                                                                                                <span>₹{formatCurrency(order.tax)}</span>
                                                                                         </div>
                                                                                         {order.gst?.cgst > 0 && (
                                                                                                 <div className="flex justify-between text-xs pl-2">
-                                                                                                        <span>CGST (9%)</span>
-                                                                                                        <span>₹{order.gst.cgst.toFixed(2)}</span>
+                                                                                                        <span>CGST 9%</span>
+                                                                                                        <span>₹{formatCurrency(order.gst.cgst)}</span>
                                                                                                 </div>
                                                                                         )}
                                                                                         {order.gst?.sgst > 0 && (
                                                                                                 <div className="flex justify-between text-xs pl-2">
-                                                                                                        <span>SGST (9%)</span>
-                                                                                                        <span>₹{order.gst.sgst.toFixed(2)}</span>
+                                                                                                        <span>SGST 9%</span>
+                                                                                                        <span>₹{formatCurrency(order.gst.sgst)}</span>
                                                                                                 </div>
                                                                                         )}
                                                                                         {order.gst?.igst > 0 && (
                                                                                                 <div className="flex justify-between text-xs pl-2">
-                                                                                                        <span>IGST (18%)</span>
-                                                                                                        <span>₹{order.gst.igst.toFixed(2)}</span>
+                                                                                                        <span>IGST 18%</span>
+                                                                                                        <span>₹{formatCurrency(order.gst.igst)}</span>
                                                                                                 </div>
                                                                                         )}
                                                                                 </div>
                                                                         )}
 									{order.shippingCost > 0 && (
-										<div className="flex justify-between">
-											<span>Shipping</span>
-                                                                                       <span>₹{order.shippingCost.toFixed(2)}</span>
-										</div>
+                                                                                <div className="flex justify-between">
+                                                                                        <span>Shipping</span>
+                                                                                        <span>₹{formatCurrency(order.shippingCost)}</span>
+                                                                                </div>
 									)}
 									{order.discount > 0 && (
-										<div className="flex justify-between text-green-600">
-											<span>Discount</span>
-                                                                                       <span>-₹{order.discount.toFixed(2)}</span>
-										</div>
+                                                                                <div className="flex justify-between text-green-600">
+                                                                                        <span>Discount</span>
+                                                                                        <span>-₹{formatCurrency(order.discount)}</span>
+                                                                                </div>
 									)}
-									{order.couponApplied && (
-										<div className="flex justify-between text-blue-600">
-											<span>Coupon ({order.couponApplied.couponCode})</span>
-											<span>
-                                                                                               -₹{order.couponApplied.discountAmount.toFixed(2)}
-											</span>
-										</div>
-									)}
+                                                                        {order.couponApplied?.discountAmount > 0 && (
+                                                                                <div className="flex justify-between text-blue-600">
+                                                                                        <span>Coupon ({order.couponApplied.couponCode})</span>
+                                                                                        <span>
+                                                                                                -₹{formatCurrency(order.couponApplied.discountAmount)}
+                                                                                        </span>
+                                                                                </div>
+                                                                        )}
 									<Separator />
-									<div className="flex justify-between text-lg font-bold">
-										<span>Total Amount</span>
-                                                                               <span>₹{order.totalAmount.toFixed(2)}</span>
-									</div>
+                                                                        <div className="flex justify-between text-lg font-bold">
+                                                                                <span>Total Amount</span>
+                                                                                <span>₹{formatCurrency(order.totalAmount)}</span>
+                                                                        </div>
 								</div>
 							</CardContent>
 						</Card>

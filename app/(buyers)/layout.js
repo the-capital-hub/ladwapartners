@@ -2,6 +2,8 @@ import BuyersLayoutClient from "@/components/BuyerPanel/BuyersLayoutClient";
 import { dbConnect } from "@/lib/dbConnect";
 import Category from "@/model/Category";
 
+export const revalidate = 0;
+
 export default async function BuyersLayout({ children }) {
   const categories = await getCategories();
   return <BuyersLayoutClient categories={categories}>{children}</BuyersLayoutClient>;

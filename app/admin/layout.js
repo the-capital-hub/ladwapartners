@@ -28,7 +28,7 @@ export default function AdminLayout({ children }) {
 					</motion.main>
 				</div>
 			</div>
-			<Toaster />
+                        <Toaster toastOptions={{ duration: 3000 }} />
 		</SidebarProvider>
 	);
 }

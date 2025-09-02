@@ -16,8 +16,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "sonner";
-import Swal from "sweetalert2";
+import { Toaster, toast } from "react-hot-toast";
 
 import { useAuthStore } from "@/store/authStore";
 import Logo from "@/public/ladwapartners.png";
@@ -173,13 +172,7 @@ const SignupPage = () => {
                                                                 setUser(userData.user);
                                                         }
 
-                                                        await Swal.fire({
-                                                                icon: "success",
-                                                                title: "Signup successful!",
-                                                                text: "Welcome to Ladwa Partners",
-                                                                timer: 2000,
-                                                                showConfirmButton: false,
-                                                        });
+                                                        toast.success("Signup successful! Welcome to Ladwa Partners");
                                                         router.push("/home");
 
                                                 } else {
@@ -227,7 +220,8 @@ const SignupPage = () => {
 	};
 
 	return (
-		<div className="max-w-7xl mx-auto min-h-screen grid grid-cols-2 lg:px-10">
+                <>
+                <div className="max-w-7xl mx-auto min-h-screen grid grid-cols-2 lg:px-10">
 			{/* Left side - Image and branding */}
 			<motion.div
 				className="hidden lg:flex justify-center items-center overflow-hidden my-12 px-8"
@@ -581,8 +575,10 @@ const SignupPage = () => {
 					</motion.div>
 				</div>
 			</motion.div>
-		</div>
-	);
+                </div>
+                <Toaster toastOptions={{ duration: 3000 }} />
+                </>
+        );
 };
 
 export default SignupPage;

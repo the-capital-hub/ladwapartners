@@ -39,7 +39,7 @@ export default function ProductCard({ product, compact = false }) {
     await addItem(
       {
         id: product.id || product._id,
-        name: product.title,
+        name: product.title || product.name,
         description: product.description,
         price: product.price,
         originalPrice: product.originalPrice,
@@ -78,7 +78,7 @@ export default function ProductCard({ product, compact = false }) {
                 compact ? "text-sm md:text-base" : "text-base md:text-lg"
               } mb-1`}
             >
-              {product.title}
+              {product.title || product.name}
             </h3>
             {product.subtitle && (
               <p className="text-gray-600 text-xs md:text-sm">
@@ -124,7 +124,7 @@ export default function ProductCard({ product, compact = false }) {
         <div className="mb-3">
           <img
             src={imageSrc}
-            alt={product.title}
+            alt={product.title || product.name}
             className={`w-full ${
               compact ? "h-24 md:h-32" : "h-32 md:h-48"
             } object-contain rounded`}

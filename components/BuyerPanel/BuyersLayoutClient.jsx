@@ -5,6 +5,7 @@ import NavigationBar from "@/components/BuyerPanel/NavigationBar";
 import Footer from "@/components/BuyerPanel/Footer.jsx";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 
 export default function BuyersLayoutClient({ children, categories }) {
 	const pathname = usePathname();
@@ -12,7 +13,6 @@ export default function BuyersLayoutClient({ children, categories }) {
 	const hideNavbar = [
 		"/account/profile",
 		"/account/orders",
-		"/account/notifications",
 		"/account/help",
 	].includes(pathname);
 	const [isMenuOpen, setIsMenuOpen] = useState(true);
@@ -22,7 +22,7 @@ export default function BuyersLayoutClient({ children, categories }) {
 	}, []);
 
 	return (
-		<div className="relative">
+                <div className="relative">
 			{/* Navbar fixed over HeroSection */}
 			<Header
 				onMenuToggle={() => setIsMenuOpen((prev) => !prev)}
@@ -44,7 +44,8 @@ export default function BuyersLayoutClient({ children, categories }) {
 			</main>
 
 			{/* Footer only on specific pages */}
-			{showFooter && <Footer />}
-		</div>
-	);
+                        {showFooter && <Footer />}
+                        <Toaster toastOptions={{ duration: 3000 }} />
+                </div>
+        );
 }

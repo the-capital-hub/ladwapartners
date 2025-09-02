@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Download, Printer } from "lucide-react";
 import { useAdminOrderStore } from "@/store/adminOrderStore.js";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import { companyInfo } from "@/constants/companyInfo.js";
 
 export function InvoicePopup({ open, onOpenChange, order, downloadInvoice: downloadInvoiceProp }) {
@@ -222,25 +222,25 @@ export function InvoicePopup({ open, onOpenChange, order, downloadInvoice: downl
                                                 {order.tax > 0 && (
                                                         <div className="space-y-1">
                                                                 <div className="flex justify-between">
-                                                               <span>GST (18%)</span>
-                                                               <span>₹{order.tax.toFixed(2)}</span>
+                                                                        <span>Total Tax</span>
+                                                                        <span>₹{order.tax.toFixed(2)}</span>
                                                                 </div>
                                                                 {order.gst?.cgst > 0 && (
                                                                         <div className="flex justify-between text-xs pl-2">
-                                                                               <span>CGST (9%)</span>
-                                                                               <span>₹{order.gst.cgst.toFixed(2)}</span>
+                                                                                <span>CGST 9%</span>
+                                                                                <span>₹{order.gst.cgst.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                                 {order.gst?.sgst > 0 && (
                                                                         <div className="flex justify-between text-xs pl-2">
-                                                                               <span>SGST (9%)</span>
-                                                                               <span>₹{order.gst.sgst.toFixed(2)}</span>
+                                                                                <span>SGST 9%</span>
+                                                                                <span>₹{order.gst.sgst.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                                 {order.gst?.igst > 0 && (
                                                                         <div className="flex justify-between text-xs pl-2">
-                                                                               <span>IGST (18%)</span>
-                                                                               <span>₹{order.gst.igst.toFixed(2)}</span>
+                                                                                <span>IGST 18%</span>
+                                                                                <span>₹{order.gst.igst.toFixed(2)}</span>
                                                                         </div>
                                                                 )}
                                                         </div>

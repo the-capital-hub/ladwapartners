@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Trash2, ArrowLeft, ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
+import { toast } from "react-hot-toast";
 
 export default function WishlistPage() {
         const router = useRouter();
@@ -25,6 +26,7 @@ export default function WishlistPage() {
                 if (typeof window !== "undefined") {
                         localStorage.setItem("wishlist", JSON.stringify(updated));
                 }
+                toast.success("Removed from wishlist");
         };
 
        const moveToCart = async (item) => {
@@ -42,6 +44,7 @@ export default function WishlistPage() {
                        1
                );
                removeItem(item.id);
+               toast.success("Moved to cart");
        };
 
         const handleGoBack = () => router.back();

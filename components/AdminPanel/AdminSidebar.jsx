@@ -37,14 +37,14 @@ import {
 	ChevronDown,
 	Sun,
 	Moon,
-	FolderOpen,
-	Tags,
-	Layers,
-	Ticket,
-	Languages,
+        FolderOpen,
+        Tags,
+        Ticket,
+        Languages,
         Eye,
         Palette,
         Cog,
+
 } from "lucide-react";
 import Logo from "@/public/ladwapartners.png";
 import { useIsAuthenticated } from "@/store/adminAuthStore.js";
@@ -57,14 +57,14 @@ const menuItems = [
 	},
 	{
 		title: "Catalog",
-		icon: Package,
-		items: [
-			{ title: "Products", href: "/admin/catalog/products", icon: FolderOpen },
-			{ title: "Categories", href: "/admin/catalog/categories", icon: Tags },
-			{ title: "Attributes", href: "/admin/catalog/attributes", icon: Layers },
-			{ title: "Coupons", href: "/admin/catalog/coupons", icon: Ticket },
-		],
-	},
+
+                icon: Package,
+                items: [
+                        { title: "Products", href: "/admin/catalog/products", icon: FolderOpen },
+                        { title: "Categories", href: "/admin/catalog/categories", icon: Tags },
+                        { title: "Coupons", href: "/admin/catalog/coupons", icon: Ticket },
+                ],
+        },
 	{
 		title: "Customers",
 		icon: Users,
@@ -80,6 +80,7 @@ const menuItems = [
 		icon: ShoppingCart,
 		href: "/admin/orders",
 	},
+
 	// {
 	// 	title: "Our Staff",
 	// 	icon: UserCheck,
@@ -106,24 +107,6 @@ const menuItems = [
 	// 		},
 	// 	],
 	// },
-	{
-		title: "Online Store",
-		icon: Store,
-		items: [
-			{ title: "View Store", href: "/admin/store/view", icon: Eye },
-			{
-				title: "Store Customizations",
-				href: "/admin/store/customizations",
-				icon: Palette,
-			},
-			{ title: "Store Settings", href: "/admin/store/settings", icon: Cog },
-		],
-	},
-	{
-		title: "Sellers Support",
-		icon: HelpCircle,
-		href: "/admin/sellers-support",
-	},
 ];
 
 export function AdminSidebar() {

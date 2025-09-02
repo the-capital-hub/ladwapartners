@@ -26,7 +26,6 @@ export default function AccountLayout({ children }) {
 				"/account": "my-profile",
 				"/account/profile": "my-profile",
 				"/account/orders": "order-history",
-				"/account/notifications": "notification-settings",
 				"/account/help": "help-center",
 			};
 
