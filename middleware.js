@@ -66,6 +66,9 @@ export async function middleware(req) {
         const decoded = token ? await verifyJwt(token) : null;
 
         if (decoded) {
+                if (pathname === "/login") {
+                        return NextResponse.redirect(new URL("/home", req.url));
+                }
                 // Additional checks for admin-only routes
                 if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
                         if (decoded.userType !== "admin") {
@@ -75,6 +78,10 @@ export async function middleware(req) {
                                 return NextResponse.redirect(new URL("/admin/login", req.url));
                         }
                 }
+                return NextResponse.next();
+        }
+
+        if (pathname === "/login") {
                 return NextResponse.next();
         }
 
@@ -99,5 +106,6 @@ export const config = {
                 "/account",
                 "/admin/:path*",
                 "/api/admin/:path*",
+                "/login",
         ],
 };

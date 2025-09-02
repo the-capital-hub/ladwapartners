@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -21,13 +21,41 @@ import Logo from "@/public/ladwapartners.png";
 import LoginModel from "@/public/images/login/LoginModel.png";
 
 const LoginPage = () => {
-	const [emailOrMobile, setEmailOrMobile] = useState("");
-	const [password, setPassword] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-        const { setUser } = useAuthStore();
+        const [emailOrMobile, setEmailOrMobile] = useState("");
+        const [password, setPassword] = useState("");
+        const [isLoading, setIsLoading] = useState(false);
+        const [checkingAuth, setCheckingAuth] = useState(true);
+        const { setUser, user } = useAuthStore();
         const router = useRouter();
         const searchParams = useSearchParams();
         const redirect = searchParams.get("redirect");
+
+        useEffect(() => {
+                async function check() {
+                        if (user) {
+                                router.replace("/home");
+                                return;
+                        }
+                        try {
+                                const res = await fetch("/api/auth/me");
+                                if (res.ok) {
+                                        const data = await res.json();
+                                        setUser(data.user);
+                                        router.replace("/home");
+                                        return;
+                                }
+                        } catch (err) {
+                                // ignore errors
+                        }
+                        setCheckingAuth(false);
+                }
+                check();
+        }, [user, router, setUser]);
+
+        if (checkingAuth) {
+                return null;
+        }
+
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
