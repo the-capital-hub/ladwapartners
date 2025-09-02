@@ -1,9 +1,47 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react"; // icons
+import { toast } from "react-hot-toast";
 
 const ContactUs = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Message sent successfully");
+        setFormData({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+      } else {
+        toast.error(data.message || "Failed to send message");
+      }
+    } catch (err) {
+      toast.error("Failed to send message");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-6 py-12">
       {/* Heading */}
@@ -41,11 +79,14 @@ const ContactUs = () => {
 
         {/* Right - Form */}
         <div className="col-span-2 p-8">
-          <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form className="grid grid-cols-1 md:grid-cols-2 gap-6" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm mb-2">First Name</label>
               <input
                 type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
                 className="w-full border-b border-gray-300 focus:border-teal-500 outline-none py-2"
                 placeholder="First Name"
               />
@@ -54,6 +95,9 @@ const ContactUs = () => {
               <label className="block text-sm mb-2">Last Name</label>
               <input
                 type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
                 className="w-full border-b border-gray-300 focus:border-teal-500 outline-none py-2"
                 placeholder="Last Name"
               />
@@ -62,6 +106,9 @@ const ContactUs = () => {
               <label className="block text-sm mb-2">Email</label>
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full border-b border-gray-300 focus:border-teal-500 outline-none py-2"
                 placeholder="Email"
               />
@@ -70,6 +117,9 @@ const ContactUs = () => {
               <label className="block text-sm mb-2">Phone Number</label>
               <input
                 type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
                 className="w-full border-b border-gray-300 focus:border-teal-500 outline-none py-2"
                 placeholder="Phone Number"
               />
@@ -78,6 +128,9 @@ const ContactUs = () => {
               <label className="block text-sm mb-2">Message</label>
               <textarea
                 rows={4}
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
                 className="w-full border-b border-gray-300 focus:border-teal-500 outline-none py-2"
                 placeholder="Write your message..."
               ></textarea>
@@ -85,9 +138,10 @@ const ContactUs = () => {
             <div className="md:col-span-2">
               <button
                 type="submit"
-                className="bg-teal-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-teal-700 transition"
+                disabled={submitting}
+                className="bg-teal-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-teal-700 transition disabled:opacity-50"
               >
-                Send Message
+                {submitting ? "Sending..." : "Send Message"}
               </button>
             </div>
           </form>
