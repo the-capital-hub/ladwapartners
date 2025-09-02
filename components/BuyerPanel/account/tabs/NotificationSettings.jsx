@@ -21,7 +21,7 @@ import {
   ShoppingCart,
   CreditCard,
 } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { apiRequest } from "@/lib/api";
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -78,15 +78,17 @@ export function NotificationSettings() {
   useEffect(() => {
     const fetchPreferences = async () => {
       try {
-        const res = await fetch("/api/user/notifications");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.preferences) {
-            setPreferences((prev) => ({ ...prev, ...data.preferences }));
+        const data = await apiRequest(
+          "/api/user/notifications",
+          {},
+          {
+            successMessage: null,
+            errorMessage: "Unable to load notification settings.",
           }
+        );
+        if (data.preferences) {
+          setPreferences((prev) => ({ ...prev, ...data.preferences }));
         }
-      } catch (error) {
-        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -120,16 +122,20 @@ export function NotificationSettings() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("/api/user/notifications", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ preferences }),
-      });
-      const data = await res.json();
-      if (!res.ok || !data.success) throw new Error();
-      toast.success("Notification settings saved");
+      await apiRequest(
+        "/api/user/notifications",
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ preferences }),
+        },
+        {
+          successMessage: "Notification settings saved.",
+          errorMessage: "Failed to save settings. Please try again.",
+        }
+      );
     } catch (error) {
-      toast.error("Failed to save settings");
+      // apiRequest handles the alert
     }
   };
 
