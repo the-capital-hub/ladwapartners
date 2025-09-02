@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -30,16 +31,17 @@ export default function Signup() {
         body: JSON.stringify({ email, password, firstName, lastName }),
       });
 
-      if (!res.ok) {
-        throw new Error("Failed to register");
-      }
-
       const data = await res.json();
 
-      router.push("/admin/login");
+      if (res.ok) {
+        toast.success("Registration successful!");
+        router.push("/admin/login");
+      } else {
+        toast.error(data.message || "Signup failed");
+      }
     } catch (err) {
       console.error(err);
-      alert("Signup failed. Please try again.");
+      toast.error("Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
