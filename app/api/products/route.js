@@ -47,8 +47,13 @@ export async function GET(request) {
                                 .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
                                 .join("[^a-zA-Z0-9]+");
 
+                        // Allow optional non-alphanumeric characters at the start and end so that
+                        // values with accidental leading/trailing spaces or punctuation still match.
                         query.subCategory = {
-                                $regex: new RegExp(`^${regexPattern}$`, "i"),
+                                $regex: new RegExp(
+                                        `^[^a-zA-Z0-9]*${regexPattern}[^a-zA-Z0-9]*$`,
+                                        "i"
+                                ),
                         };
                 }
 
