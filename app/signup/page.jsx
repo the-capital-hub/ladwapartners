@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import Swal from "sweetalert2";
+import { useAuthStore } from "@/store/authStore";
 import Logo from "@/public/ladwapartners.png";
 import LoginModel from "@/public/images/login/LoginModel.png";
 
@@ -35,9 +37,10 @@ const SignupPage = () => {
                 confirmPassword: "",
                 terms: false,
         });
-	const [verificationCode, setVerificationCode] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
-	const router = useRouter();
+        const [verificationCode, setVerificationCode] = useState("");
+        const [isLoading, setIsLoading] = useState(false);
+        const router = useRouter();
+        const { setUser } = useAuthStore();
 
         const handleInputChange = (e) => {
                 const { name, value, type, checked } = e.target;
@@ -134,13 +137,54 @@ const SignupPage = () => {
 				const signupData = await signupResponse.json();
 
                                 if (signupResponse.ok) {
+                                        if (signupData.status === "REJECTED") {
+                                                toast.error(signupData.message || "Signup rejected");
+                                                return;
+                                        }
+
                                         if (signupData.status === "APPROVED") {
                                                 toast.success("Account approved successfully!");
-                                                router.push("/login");
                                         } else if (signupData.status === "PENDING") {
                                                 toast("Application pending manual review");
-                                        } else {
-                                                toast.error(signupData.message || "Signup rejected");
+                                        }
+
+                                        try {
+                                                const loginResponse = await fetch("/api/auth/login", {
+                                                        method: "POST",
+                                                        headers: {
+                                                                "Content-Type": "application/json",
+                                                        },
+                                                        body: JSON.stringify({
+                                                                emailOrMobile:
+                                                                        formData.email || formData.mobile,
+                                                                password: formData.password,
+                                                        }),
+                                                });
+
+                                                if (loginResponse.ok) {
+                                                        const userResponse = await fetch(
+                                                                "/api/auth/me",
+                                                        );
+                                                        if (userResponse.ok) {
+                                                                const userData =
+                                                                        await userResponse.json();
+                                                                setUser(userData.user);
+                                                        }
+                                                        await Swal.fire({
+                                                                icon: "success",
+                                                                title: "Signup successful!",
+                                                                text: "Welcome to Ladwa Partners",
+                                                                timer: 2000,
+                                                                showConfirmButton: false,
+                                                        });
+                                                        router.push("/home");
+                                                } else {
+                                                        toast.error("Automatic login failed");
+                                                        router.push("/login");
+                                                }
+                                        } catch (err) {
+                                                toast.error("Automatic login failed");
+                                                router.push("/login");
                                         }
                                 } else {
                                         toast.error(signupData.message || "Signup failed");
