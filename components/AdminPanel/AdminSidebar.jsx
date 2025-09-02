@@ -25,26 +25,21 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import {
-	LayoutDashboard,
-	Package,
-	Users,
-	ShoppingCart,
-	UserCheck,
-	Settings,
-	Globe,
-	Store,
-	HelpCircle,
-	ChevronDown,
-	Sun,
-	Moon,
-	FolderOpen,
-	Tags,
-	Layers,
-	Ticket,
-	Languages,
-        Eye,
-        Palette,
-        Cog,
+        LayoutDashboard,
+        Package,
+        Users,
+        ShoppingCart,
+        UserCheck,
+        Settings,
+        Globe,
+        ChevronDown,
+        Sun,
+        Moon,
+        FolderOpen,
+        Tags,
+        Layers,
+        Ticket,
+        Languages,
 } from "lucide-react";
 import Logo from "@/public/ladwapartners.png";
 import { useIsAuthenticated } from "@/store/adminAuthStore.js";
@@ -65,21 +60,16 @@ const menuItems = [
 			{ title: "Coupons", href: "/admin/catalog/coupons", icon: Ticket },
 		],
 	},
-	{
-		title: "Customers",
-		icon: Users,
-		href: "/admin/customers",
-	},
-	{
-		title: "Sellers",
-		icon: Users,
-		href: "/admin/sellers",
-	},
-	{
-		title: "Orders",
-		icon: ShoppingCart,
-		href: "/admin/orders",
-	},
+        {
+                title: "Customers",
+                icon: Users,
+                href: "/admin/customers",
+        },
+        {
+                title: "Orders",
+                icon: ShoppingCart,
+                href: "/admin/orders",
+        },
 	// {
 	// 	title: "Our Staff",
 	// 	icon: UserCheck,
@@ -106,24 +96,6 @@ const menuItems = [
 	// 		},
 	// 	],
 	// },
-	{
-		title: "Online Store",
-		icon: Store,
-		items: [
-			{ title: "View Store", href: "/admin/store/view", icon: Eye },
-			{
-				title: "Store Customizations",
-				href: "/admin/store/customizations",
-				icon: Palette,
-			},
-			{ title: "Store Settings", href: "/admin/store/settings", icon: Cog },
-		],
-	},
-	{
-		title: "Sellers Support",
-		icon: HelpCircle,
-		href: "/admin/sellers-support",
-	},
 ];
 
 export function AdminSidebar() {
