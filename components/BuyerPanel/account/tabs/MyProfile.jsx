@@ -477,54 +477,64 @@ export function MyProfile() {
 
       {/* GST / KYC Section */}
       <motion.div custom={2} initial="hidden" animate="visible" variants={cardVariants}>
-        <Card>
-          <CardHeader>
-            <CardTitle>GST Verification</CardTitle>
-            <CardDescription>
-              Submit your GST details for KYC verification
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {kyc.status === "approved" && kyc.kyc ? (
-              <div className="text-sm space-y-2">
-                <div><span className="font-medium">GSTIN:</span> {kyc.kyc.gstin}</div>
-                <div>
-                  <span className="font-medium">Business Name:</span>{" "}
-                  {kyc.kyc.details?.businessName}
+        {kyc.status === "approved" && kyc.kyc ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Your GST is verified</CardTitle>
+              <CardDescription>All GST details are shown below</CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm space-y-2">
+              <div><span className="font-medium">GSTIN:</span> {kyc.kyc.gstin}</div>
+              {Object.entries(kyc.kyc.details || {}).map(([key, value]) => (
+                <div key={key}>
+                  <span className="font-medium">
+                    {key
+                      .replace(/([A-Z])/g, " $1")
+                      .replace(/^./, (str) => str.toUpperCase())}:
+                  </span>{" "}
+                  {String(value)}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle>GST Verification</CardTitle>
+              <CardDescription>
+                Submit your GST details for KYC verification
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {kyc.status === "rejected" && (
+                <div className="text-red-500 text-sm">
+                  Last submission rejected {kyc.kyc?.adminRemark && `: ${kyc.kyc.adminRemark}`}
+                </div>
+              )}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="gstin">GSTIN</Label>
+                  <Input
+                    id="gstin"
+                    value={kycForm.gstin}
+                    onChange={(e) => setKycForm({ ...kycForm, gstin: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="businessName">Business Name</Label>
+                  <Input
+                    id="businessName"
+                    value={kycForm.businessName}
+                    onChange={(e) =>
+                      setKycForm({ ...kycForm, businessName: e.target.value })
+                    }
+                  />
                 </div>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {kyc.status === "rejected" && (
-                  <div className="text-red-500 text-sm">
-                    Last submission rejected {kyc.kyc?.adminRemark && `: ${kyc.kyc.adminRemark}`}
-                  </div>
-                )}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="gstin">GSTIN</Label>
-                    <Input
-                      id="gstin"
-                      value={kycForm.gstin}
-                      onChange={(e) => setKycForm({ ...kycForm, gstin: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="businessName">Business Name</Label>
-                    <Input
-                      id="businessName"
-                      value={kycForm.businessName}
-                      onChange={(e) =>
-                        setKycForm({ ...kycForm, businessName: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-                <Button onClick={submitKyc}>Submit for Approval</Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              <Button onClick={submitKyc}>Submit for Approval</Button>
+            </CardContent>
+          </Card>
+        )}
       </motion.div>
 
       {/* Language & Region */}
