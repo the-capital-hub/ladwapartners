@@ -40,6 +40,7 @@ export async function POST(req) {
                         );
                 }
 
+
                 // Send order placed email notification with invoice unless user opted out
                 if (userId) {
                         const user = await User.findById(userId).select(
