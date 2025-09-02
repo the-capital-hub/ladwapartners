@@ -47,10 +47,10 @@ export function LogoutPopup({ open, onOpenChange }) {
 						<DialogTitle className="text-xl font-semibold">
 							Are You Trying Logging Out ?
 						</DialogTitle>
-						<DialogDescription className="text-gray-600">
+						{/* <DialogDescription className="text-gray-600">
 							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
 							eiusmod tempor incididunt ut labore et dolore
-						</DialogDescription>
+						</DialogDescription> */}
 					</DialogHeader>
 					<DialogFooter className="flex gap-3 mt-6">
 						<Button
