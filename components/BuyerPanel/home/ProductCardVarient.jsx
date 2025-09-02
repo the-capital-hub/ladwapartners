@@ -37,7 +37,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
     await addItem(
       {
         id: product?.id || product?._id,
-        name: product?.title,
+        name: product?.title || product?.name,
         description: product?.description,
         price: product?.price,
         originalPrice: product?.originalPrice,
@@ -72,7 +72,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h3 className="font-bold text-lg md:text-xl mb-2 line-clamp-2">
-                    {product?.title}
+                    {product?.title || product?.name}
                   </h3>
                   {product?.subtitle && (
                     <p className="text-gray-600 text-sm mb-2">
@@ -183,7 +183,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
                 product?.image ||
                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
               }
-              alt={product?.title}
+              alt={product?.title || product?.name}
               width={300}
               height={300}
               className="w-full h-[300px] object-contain"
@@ -205,7 +205,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
         <div className="flex justify-between items-start p-4 md:p-6 flex-shrink-0">
           <div className="flex-1">
             <h3 className="font-bold text-base md:text-lg mb-1 line-clamp-2">
-              {product?.title}
+                    {product?.title || product?.name}
             </h3>
             {product?.subtitle && (
               <p className="text-gray-600 text-sm line-clamp-1">
@@ -274,7 +274,7 @@ function ProductCardVarient({ product, variant = "vertical" }) {
                 product?.image ||
                 "https://res.cloudinary.com/drjt9guif/image/upload/v1755848946/ladwapartnersfallback_s5zjgs.png"
               }
-              alt={product?.title}
+              alt={product?.title || product?.name}
               className="w-full h-full object-cover rounded-lg"
             />
           </div>

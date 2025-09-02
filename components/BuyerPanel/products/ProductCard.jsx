@@ -61,7 +61,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 		await addItem(
 			{
 				id: product.id || product._id,
-				name: product.title,
+                                name: product.title || product.name,
 				description: product.description,
 				price: product.price,
 				originalPrice: product.originalPrice,
@@ -102,7 +102,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 						<div className="relative w-full sm:w-48 h-48 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0">
 							<Image
 								src={imageSrc}
-								alt={product?.title || "product image"}
+                                                        alt={product.title || product.name || "product image"}
 								fill
 								className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
 								onClick={handleViewProduct}
@@ -123,7 +123,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 						<div className="flex-1 space-y-4">
 							<div onClick={handleViewProduct}>
 								<h3 className="text-xl font-semibold hover:text-blue-600 transition-colors">
-									{product.title}
+                                                                        {product.title || product.name}
 								</h3>
 								<p className="text-gray-600 mt-2 line-clamp-2">
 									{product.description}
@@ -244,7 +244,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 					<div className="relative m-4 h-64 bg-gray-100 rounded-xl overflow-hidden">
 						<Image
 							src={imageSrc}
-							alt={product.title || "Product Image"}
+                                                        alt={product.title || product.name || "Product Image"}
 							fill
 							className="object-contain group-hover:scale-110 transition-transform duration-300 rounded-xl"
 							onClick={handleViewProduct}
@@ -279,7 +279,7 @@ export default function ProductCard({ product, viewMode = "grid" }) {
 					<div className="p-6 flex-1 flex flex-col">
 						<div className="flex-1" onClick={handleViewProduct}>
 							<h3 className="font-bold text-lg mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
-								{product.title}
+                                                                {product.title || product.name}
 							</h3>
 							<p className="text-gray-600 text-sm mb-3 font-normal line-clamp-2">
 								{product.description}

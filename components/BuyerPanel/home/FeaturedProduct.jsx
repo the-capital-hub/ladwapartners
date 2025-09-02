@@ -134,7 +134,7 @@ export default function FeaturedProduct({ product }) {
 								className="text-xl md:text-2xl lg:text-4xl font-bold mb-4 cursor-pointer hover:text-blue-600"
 								onClick={handleViewProduct}
 							>
-								{product.title}
+                                                                {product.title || product.name}
 							</h3>
 
 							<p className="text-gray-600 mb-6 text-sm md:text-base lg:text-lg">
