@@ -84,7 +84,12 @@ export async function middleware(req) {
                 }
                 return NextResponse.redirect(new URL("/admin/login", req.url));
         }
-        return NextResponse.redirect(new URL("/login", req.url));
+        const loginUrl = new URL("/login", req.url);
+        loginUrl.searchParams.set(
+                "redirect",
+                req.nextUrl.pathname + req.nextUrl.search,
+        );
+        return NextResponse.redirect(loginUrl);
 }
 
 // Apply to protected routes

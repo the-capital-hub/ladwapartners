@@ -15,7 +15,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Logo from "@/public/ladwapartners.png";
 import LoginModel from "@/public/images/login/LoginModel.png";
@@ -24,8 +24,10 @@ const LoginPage = () => {
 	const [emailOrMobile, setEmailOrMobile] = useState("");
 	const [password, setPassword] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const { setUser } = useAuthStore();
-	const router = useRouter();
+        const { setUser } = useAuthStore();
+        const router = useRouter();
+        const searchParams = useSearchParams();
+        const redirect = searchParams.get("redirect");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -50,8 +52,8 @@ const LoginPage = () => {
 					setUser(userData.user);
 				}
 
-				toast.success("Login successful!");
-				router.push("/"); // Redirect to dashboard or home page
+                                toast.success("Login successful!");
+                                router.push(redirect || "/home"); // Redirect to original or home page
 			} else {
 				toast.error(data.message || "Login failed");
 			}
@@ -184,12 +186,18 @@ const LoginPage = () => {
 								<motion.div variants={itemVariants}>
 									<CardDescription className="text-gray-600">
 										I don't have an account?{" "}
-										<Link
-											href="/signup"
-											className="text-black hover:text-blue-700 font-medium underline"
-										>
-											Create Account
-										</Link>
+                                                                                <Link
+                                                                                        href={
+                                                                                                redirect
+                                                                                                        ? `/signup?redirect=${encodeURIComponent(
+                                                                                                                  redirect,
+                                                                                                          )}`
+                                                                                                        : "/signup"
+                                                                                        }
+                                                                                        className="text-black hover:text-blue-700 font-medium underline"
+                                                                                >
+                                                                                        Create Account
+                                                                                </Link>
 									</CardDescription>
 								</motion.div>
 							</CardHeader>
