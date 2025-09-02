@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { OrderHistory } from "@/components/account/tabs/OrderHistory.jsx";
 import { MyProfile } from "@/components/account/tabs/MyProfile.jsx";
-import { NotificationSettings } from "@/components/account/tabs/NotificationSettings.jsx";
 import { HelpCenter } from "@/components/account/tabs/HelpCenter.jsx";
 
 const contentVariants = {
@@ -16,7 +15,6 @@ const contentVariants = {
 const tabComponents = {
 	"order-history": OrderHistory,
 	"my-profile": MyProfile,
-	"notification-settings": NotificationSettings,
 	"help-center": HelpCenter,
 };
 

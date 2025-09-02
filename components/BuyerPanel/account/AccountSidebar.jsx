@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
-import { Package, User, Bell, HelpCircle, LogOut } from "lucide-react";
+import { Package, User, HelpCircle, LogOut } from "lucide-react";
 import { LogoutPopup } from "@/components/Shared/Popups/LogoutPopup.jsx";
 
 const sidebarItems = [
@@ -20,13 +20,6 @@ const sidebarItems = [
 		icon: Package,
 		description: "View your past orders",
 		href: "/account/orders",
-	},
-	{
-		id: "notification-settings",
-		title: "Notification Settings",
-		icon: Bell,
-		description: "Manage your notifications",
-		href: "/account/notifications",
 	},
 	{
 		id: "help-center",

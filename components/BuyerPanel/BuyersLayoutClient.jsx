@@ -13,7 +13,6 @@ export default function BuyersLayoutClient({ children, categories }) {
 	const hideNavbar = [
 		"/account/profile",
 		"/account/orders",
-		"/account/notifications",
 		"/account/help",
 	].includes(pathname);
 	const [isMenuOpen, setIsMenuOpen] = useState(true);
