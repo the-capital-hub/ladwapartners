@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
 import { useAuthStore } from "@/store/authStore";
 
 const cardVariants = {
@@ -136,26 +136,14 @@ export function MyProfile() {
       });
       if (res.ok) {
         await loadKyc();
-        Swal.fire({
-          icon: "success",
-          title: "KYC Submitted",
-          text: "Your KYC details have been submitted for review.",
-        });
+        toast.success("Your KYC details have been submitted for review.");
       } else {
         const data = await res.json();
-        Swal.fire({
-          icon: "error",
-          title: "Submission Failed",
-          text: data.message || "Failed to submit KYC.",
-        });
+        toast.error(data.message || "Failed to submit KYC.");
       }
     } catch (error) {
       console.error("Submit KYC failed", error);
-      Swal.fire({
-        icon: "error",
-        title: "Submission Failed",
-        text: "Failed to submit KYC.",
-      });
+      toast.error("Failed to submit KYC.");
     }
   }
 
@@ -182,26 +170,14 @@ export function MyProfile() {
           bio: data.user.bio || "",
         });
         setUser(data.user);
-        Swal.fire({
-          icon: "success",
-          title: "Profile Updated",
-          text: "Your profile has been updated successfully.",
-        });
+        toast.success("Your profile has been updated successfully.");
       } else {
         const data = await res.json();
-        Swal.fire({
-          icon: "error",
-          title: "Update Failed",
-          text: data.message || "Could not update profile.",
-        });
+        toast.error(data.message || "Could not update profile.");
       }
     } catch (error) {
       console.error("Failed to update profile", error);
-      Swal.fire({
-        icon: "error",
-        title: "Update Failed",
-        text: "Failed to update profile.",
-      });
+      toast.error("Failed to update profile.");
     }
   }
 
@@ -256,18 +232,10 @@ export function MyProfile() {
             prev.map((addr) => (addr._id === editingAddressId ? data.address : addr))
           );
           await loadAddresses();
-          Swal.fire({
-            icon: "success",
-            title: "Address Updated",
-            text: "The address has been updated successfully.",
-          });
+          toast.success("The address has been updated successfully.");
         } else {
           const data = await res.json();
-          Swal.fire({
-            icon: "error",
-            title: "Update Failed",
-            text: data.message || "Failed to update address.",
-          });
+          toast.error(data.message || "Failed to update address.");
         }
       } else {
         const res = await fetch("/api/user/addresses", {
@@ -280,28 +248,16 @@ export function MyProfile() {
           const data = await res.json();
           setAddresses((prev) => [...prev, data.address]);
           await loadAddresses();
-          Swal.fire({
-            icon: "success",
-            title: "Address Added",
-            text: "New address has been added successfully.",
-          });
+          toast.success("New address has been added successfully.");
         } else {
           const data = await res.json();
-          Swal.fire({
-            icon: "error",
-            title: "Save Failed",
-            text: data.message || "Failed to add address.",
-          });
+          toast.error(data.message || "Failed to add address.");
         }
       }
       cancelAddressForm();
     } catch (error) {
       console.error("Address save failed", error);
-      Swal.fire({
-      icon: "error",
-      title: "Save Failed",
-      text: "Failed to save address.",
-    });
+      toast.error("Failed to save address.");
   }
 }
 
@@ -314,26 +270,14 @@ export function MyProfile() {
       if (res.ok) {
         setAddresses((prev) => prev.filter((addr) => addr._id !== id));
         await loadAddresses();
-        Swal.fire({
-          icon: "success",
-          title: "Address Deleted",
-          text: "Address deleted successfully.",
-        });
+        toast.success("Address deleted successfully.");
       } else {
         const data = await res.json();
-        Swal.fire({
-          icon: "error",
-          title: "Delete Failed",
-          text: data.message || "Failed to delete address.",
-        });
+        toast.error(data.message || "Failed to delete address.");
       }
     } catch (error) {
       console.error("Delete address failed", error);
-      Swal.fire({
-        icon: "error",
-        title: "Delete Failed",
-        text: "Failed to delete address.",
-      });
+      toast.error("Failed to delete address.");
     }
   }
 
