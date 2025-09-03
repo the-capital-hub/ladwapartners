@@ -86,7 +86,7 @@ export default function Header({ onMenuToggle, isMenuOpen }) {
 							</Button>
 
 							<Link
-								href="/"
+								href="/account/profile"
 								className="flex items-center justify-center space-x-2 text-black font-semibold"
 							>
 								<Image

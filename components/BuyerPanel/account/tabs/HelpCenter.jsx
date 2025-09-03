@@ -19,13 +19,13 @@ import {
 	AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-	Search,
-	MessageCircle,
+	// Search,
 	Phone,
 	Mail,
 	FileText,
 	ExternalLink,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const cardVariants = {
 	hidden: { opacity: 0, y: 20 },
@@ -48,7 +48,7 @@ const faqs = [
 	{
 		question: "What is your return policy?",
 		answer:
-			"We offer a 30-day return policy for most items. Items must be in original condition with tags attached. Some restrictions apply for certain product categories.",
+			"We accept returns only for damaged, defective, short-shipped, or incorrectly supplied items. Change-of-mind returns are not available",
 	},
 	{
 		question: "How do I change my shipping address?",
@@ -63,35 +63,31 @@ const faqs = [
 	{
 		question: "What payment methods do you accept?",
 		answer:
-			"We accept all major credit cards, PayPal, Apple Pay, Google Pay, and various UPI methods. You can manage your payment methods in the Payment Options section.",
+			"We accept all major credit cards, Google Pay, and various UPI methods.",
 	},
 ];
 
 const contactMethods = [
 	{
-		icon: MessageCircle,
-		title: "Live Chat",
-		description: "Chat with our support team",
-		action: "Start Chat",
-		available: "24/7",
-	},
-	{
 		icon: Phone,
 		title: "Phone Support",
-		description: "Call us for immediate assistance",
+		description: "Call us on +91 9945234161 for immediate assistance",
 		action: "Call Now",
 		available: "Mon-Fri 9AM-6PM",
 	},
 	{
 		icon: Mail,
 		title: "Email Support",
-		description: "Send us a detailed message",
+		description: "Send us a detailed message on sales@ladwaspartner.com",
 		action: "Send Email",
 		available: "Response within 24hrs",
 	},
 ];
 
 export function HelpCenter() {
+	const router = useRouter();
+
+
 	return (
 		<div className="space-y-6">
 			{/* Search Help */}
@@ -104,19 +100,7 @@ export function HelpCenter() {
 				<Card>
 					<CardHeader>
 						<CardTitle>How can we help you?</CardTitle>
-						<CardDescription>
-							Search our help center or browse frequently asked questions
-						</CardDescription>
 					</CardHeader>
-					<CardContent>
-						<div className="relative">
-							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-							<Input
-								placeholder="Search for help articles, FAQs, or topics..."
-								className="pl-10"
-							/>
-						</div>
-					</CardContent>
 				</Card>
 			</motion.div>
 
@@ -135,7 +119,7 @@ export function HelpCenter() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							{contactMethods.map((method) => (
 								<div
 									key={method.title}
@@ -199,7 +183,7 @@ export function HelpCenter() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="subject">Subject</Label>
 								<Input id="subject" placeholder="What's this about?" />
@@ -237,23 +221,39 @@ export function HelpCenter() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<div className="grid grid-cols-2 gap-4">
-							<Button variant="outline" className="justify-start">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+							<Button
+								variant="outline"
+								className="justify-start"
+								onClick={() => router.push("/terms-and-conditions")}
+							>
 								<FileText className="h-4 w-4 mr-2" />
 								Terms of Service
 								<ExternalLink className="h-4 w-4 ml-auto" />
 							</Button>
-							<Button variant="outline" className="justify-start">
+							<Button
+								variant="outline"
+								className="justify-start"
+								onClick={() => router.push("/privacy-policy")}
+							>
 								<FileText className="h-4 w-4 mr-2" />
 								Privacy Policy
 								<ExternalLink className="h-4 w-4 ml-auto" />
 							</Button>
-							<Button variant="outline" className="justify-start">
+							<Button
+								variant="outline"
+								className="justify-start"
+								onClick={() => router.push("/shipping-policy")}
+							>
 								<FileText className="h-4 w-4 mr-2" />
 								Shipping Info
 								<ExternalLink className="h-4 w-4 ml-auto" />
 							</Button>
-							<Button variant="outline" className="justify-start">
+							<Button
+								variant="outline"
+								className="justify-start"
+								onClick={() => router.push("/cancellation-refund-policy")}
+							>
 								<FileText className="h-4 w-4 mr-2" />
 								Return Policy
 								<ExternalLink className="h-4 w-4 ml-auto" />
