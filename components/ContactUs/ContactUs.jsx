@@ -53,7 +53,7 @@ const ContactUs = () => {
       {/* Card */}
       <div className="bg-white rounded-2xl shadow-md grid grid-cols-1 md:grid-cols-3 overflow-hidden">
         {/* Left - Contact Info */}
-        <div className="bg-teal-600 text-white p-8 md:col-span-1">
+        <div className="bg-[#2971DC] text-white p-8 md:col-span-1">
           <h2 className="text-xl font-bold mb-2">Contact Information</h2>
           <p className="mb-6 text-sm opacity-90">Say something to start a live chat!</p>
 
@@ -139,7 +139,7 @@ const ContactUs = () => {
               <button
                 type="submit"
                 disabled={submitting}
-                className="bg-teal-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-teal-700 transition disabled:opacity-50"
+                className="bg-[#2971DC] text-white px-6 py-3 rounded-md font-semibold hover:bg-teal-700 transition disabled:opacity-50"
               >
                 {submitting ? "Sending..." : "Send Message"}
               </button>
