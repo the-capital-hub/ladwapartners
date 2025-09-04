@@ -30,6 +30,7 @@ export default function Footer() {
                         title: "Quick Link",
                         links: [
                                 { label: "Pricing Policy", href: "/pricing-policy" },
+                                { label: "Shipping Information", href: "/shipping-information" },
                                 { label: "Shipping Policy", href: "/shipping-policy" },
                                 { label: "Terms and Conditions", href: "/terms-and-conditions" },
                                 { label: "Privacy Policy", href: "/privacy-policy" },
