@@ -9,13 +9,13 @@ import { Toaster } from "react-hot-toast";
 
 export default function BuyersLayoutClient({ children, categories }) {
 	const pathname = usePathname();
-	const showFooter = pathname === "/home" || pathname === "/cart";
-	const hideNavbar = [
-		"/account/profile",
-		"/account/orders",
-		"/account/help",
-	].includes(pathname);
-	const [isMenuOpen, setIsMenuOpen] = useState(true);
+        const showFooter = pathname === "/home" || pathname === "/cart";
+        const hideNavbar = [
+                "/account/profile",
+                "/account/orders",
+                "/account/help",
+        ].includes(pathname);
+        const [isMenuOpen, setIsMenuOpen] = useState(true);
 
 	useEffect(() => {
 		setIsMenuOpen(true);
@@ -24,10 +24,11 @@ export default function BuyersLayoutClient({ children, categories }) {
 	return (
                 <div className="relative">
 			{/* Navbar fixed over HeroSection */}
-			<Header
-				onMenuToggle={() => setIsMenuOpen((prev) => !prev)}
-				isMenuOpen={isMenuOpen}
-			/>
+                        <Header
+                                onMenuToggle={() => setIsMenuOpen((prev) => !prev)}
+                                isMenuOpen={isMenuOpen}
+                                showMenu={!hideNavbar}
+                        />
 
 			{/* Category Navigation */}
 			{!hideNavbar && (
