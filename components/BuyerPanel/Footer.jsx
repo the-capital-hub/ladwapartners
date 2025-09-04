@@ -27,6 +27,7 @@ export default function Footer() {
                         title: "Quick Link",
                         items: [
                                 { label: "Pricing Policy", href: "/pricing-policy" },
+                                { label: "Shipping Information", href: "/shipping-information" },
                                 { label: "Shipping Policy", href: "/shipping-policy" },
                                 { label: "Terms & Conditions", href: "/terms-and-conditions" },
                                 { label: "Privacy Policy", href: "/privacy-policy" },
