@@ -158,7 +158,7 @@ export async function POST(req) {
 
 
                                         await sendMail({
-                                                to: user.email,
+                                                to: [user.email, companyInfo.adminEmail],
                                                 subject: `Order Confirmed - ${orderObj.orderNumber}`,
                                                 html,
 

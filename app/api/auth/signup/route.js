@@ -2,6 +2,8 @@ import { dbConnect } from "@/lib/dbConnect";
 import User from "@/model/User.js";
 import Verification from "@/model/Verification.js";
 import UserGST from "@/model/UserGST.js";
+import { sendMail } from "@/lib/mail";
+import { companyInfo } from "@/constants/companyInfo.js";
 import {
         verifyGSTIN,
         lookupGSTINFromPAN,
@@ -134,6 +136,28 @@ export async function POST(req) {
                         gstin: newUser.gstin,
                         details: gstInfo.details,
                 });
+        }
+
+        if (email) {
+                try {
+                        const html = `
+                                <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333;">
+                                        <h2 style="color:#4f46e5;">Welcome to ${companyInfo.name}!</h2>
+                                        <p>Hi ${firstName || ""},</p>
+                                        <p>Thank you for registering with ${companyInfo.name}. We're excited to have you on board.</p>
+                                        <p>Feel free to explore our platform and place your orders anytime.</p>
+                                        <p>If you have any questions, contact us at ${companyInfo.email}.</p>
+                                        <p style="margin-top:16px;">Best regards,<br/>${companyInfo.name} Team</p>
+                                </div>
+                        `;
+                        await sendMail({
+                                to: [email, companyInfo.adminEmail],
+                                subject: `Welcome to ${companyInfo.name}`,
+                                html,
+                        });
+                } catch (mailErr) {
+                        console.error("Onboarding email error:", mailErr);
+                }
         }
 
         return Response.json({
