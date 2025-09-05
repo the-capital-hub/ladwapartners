@@ -21,15 +21,15 @@ export default function NavigationBar({
 }) {
 	const [localSearch, setLocalSearch] = useState("");
 	const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-        const [categoryData, setCategoryData] = useState(categories);
-        const router = useRouter();
-        const pathname = usePathname();
-        const {
-                setSearchQuery: setGlobalSearch,
-                searchQuery: globalSearch,
-                currentCategory,
-                setCurrentCategory,
-        } = useProductStore();
+	const [categoryData, setCategoryData] = useState(categories);
+	const router = useRouter();
+	const pathname = usePathname();
+	const {
+		setSearchQuery: setGlobalSearch,
+		searchQuery: globalSearch,
+		currentCategory,
+		setCurrentCategory,
+	} = useProductStore();
 
 	useEffect(() => {
 		setLocalSearch(globalSearch);
@@ -40,7 +40,7 @@ export default function NavigationBar({
 	}, [categories]);
 
 	const slugify = (text) =>
-		text
+		String(text || "")
 			.toLowerCase()
 			.replace(/[^a-z0-9]+/g, "-")
 			.replace(/(^-|-$)+/g, "");
@@ -94,7 +94,7 @@ export default function NavigationBar({
 				if (element) {
 					const headerOffset = 230;
 					const elementPosition =
-							element.getBoundingClientRect().top + window.pageYOffset;
+						element.getBoundingClientRect().top + window.pageYOffset;
 					const offsetPosition = elementPosition - headerOffset;
 
 					window.scrollTo({
@@ -157,11 +157,10 @@ export default function NavigationBar({
 								<div key={item.id} className="flex items-center">
 									<Button
 										variant="ghost"
-										className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-											currentCategory === item.id
+										className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentCategory === item.id
 												? "bg-black text-white"
 												: "hover:bg-gray-100"
-										}`}
+											}`}
 										onClick={() => handleCategoryClick(item.id)}
 									>
 										{item.label}
