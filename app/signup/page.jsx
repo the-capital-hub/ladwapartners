@@ -15,7 +15,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Toaster, toast } from "react-hot-toast";
 
 import { useAuthStore } from "@/store/authStore";
@@ -23,16 +23,14 @@ import Logo from "@/public/ladwapartners.png";
 import LoginModel from "@/public/images/login/LoginModel.png";
 
 const SignupPage = () => {
-	const [step, setStep] = useState(1); // 1: signup form, 2: email verification
+        const [step, setStep] = useState(1); // 1: GST verification, 2: signup form, 3: email verification
+        const [gstin, setGstin] = useState("");
+        const [gstData, setGstData] = useState(null);
         const [formData, setFormData] = useState({
                 firstName: "",
                 lastName: "",
                 email: "",
                 mobile: "",
-                legalName: "",
-                tradeName: "",
-                pan: "",
-                gstin: "",
                 password: "",
                 confirmPassword: "",
                 terms: false,
@@ -51,11 +49,36 @@ const SignupPage = () => {
                 }));
         };
 
-	const handleSendVerification = async (e) => {
-		e.preventDefault();
+        const handleGSTVerify = async (e) => {
+                e.preventDefault();
+                setIsLoading(true);
+                try {
+                        const res = await fetch("/api/gst/verify", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ gstin }),
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                                setGstData(data);
+                                toast.success("GST details fetched");
+                                setStep(2);
+                        } else {
+                                toast.error(data.message || "Failed to fetch GST details");
+                        }
+                } catch (error) {
+                        toast.error("GST verification failed");
+                        console.error("GST verify error:", error);
+                } finally {
+                        setIsLoading(false);
+                }
+        };
 
-		if (formData.password !== formData.confirmPassword) {
-			toast.error("Passwords do not match");
+        const handleSendVerification = async (e) => {
+                e.preventDefault();
+
+                if (formData.password !== formData.confirmPassword) {
+                        toast.error("Passwords do not match");
 			return;
 		}
 
@@ -77,10 +100,10 @@ const SignupPage = () => {
 
 			const data = await response.json();
 
-			if (response.ok) {
-				toast.success("Verification code sent to your email!");
-				setStep(2);
-			} else {
+                        if (response.ok) {
+                                toast.success("Verification code sent to your email!");
+                                setStep(3);
+                        } else {
 				toast.error(data.message || "Failed to send verification code");
 			}
 		} catch (error) {
@@ -126,10 +149,10 @@ const SignupPage = () => {
                                                 lastName: formData.lastName,
                                                 email: formData.email,
                                                 mobile: formData.mobile,
-                                                legalName: formData.legalName,
-                                                tradeName: formData.tradeName,
-                                                pan: formData.pan,
-                                                gstin: formData.gstin,
+                                                legalName: gstData?.legalName,
+                                                tradeName: gstData?.tradeName,
+                                                pan: gstData?.pan,
+                                                gstin: gstData?.gstin,
                                                 termsAccepted: formData.terms,
                                                 password: formData.password,
                                         }),
@@ -300,87 +323,135 @@ const SignupPage = () => {
 						<Card className="border-0 shadow-none">
 							<CardHeader className="space-y-1 p-0 mb-6">
 								<motion.div variants={itemVariants}>
-									<CardTitle className="text-2xl font-bold text-gray-800">
-										{step === 1 ? "Create Account" : "Verify Email"}
-									</CardTitle>
+                                                                        <CardTitle className="text-2xl font-bold text-gray-800">
+                                                                                {step === 1
+                                                                                        ? "Verify GST"
+                                                                                        : step === 2
+                                                                                        ? "Create Account"
+                                                                                        : "Verify Email"}
+                                                                        </CardTitle>
 								</motion.div>
 								<motion.div variants={itemVariants}>
-									<CardDescription className="text-gray-600">
-										{step === 1 ? (
-											<>
-												Already have an account?{" "}
-												<Link
-													href="/login"
-													className="text-black hover:text-blue-700 font-medium underline"
-												>
-													Sign In
-												</Link>
-											</>
-										) : (
-											"Enter the verification code sent to your email"
-										)}
-									</CardDescription>
+                                                                        <CardDescription className="text-gray-600">
+                                                                                {step === 1 ? (
+                                                                                        "Enter your GST number to continue"
+                                                                                ) : step === 2 ? (
+                                                                                        <>
+                                                                                                Already have an account?{" "}
+                                                                                                <Link
+                                                                                                        href="/login"
+                                                                                                        className="text-black hover:text-blue-700 font-medium underline"
+                                                                                                >
+                                                                                                        Sign In
+                                                                                                </Link>
+                                                                                        </>
+                                                                                ) : (
+                                                                                        "Enter the verification code sent to your email"
+                                                                                )}
+                                                                        </CardDescription>
 								</motion.div>
 							</CardHeader>
 
-							<CardContent className="p-0">
-								{step === 1 ? (
-									<form onSubmit={handleSendVerification} className="space-y-4">
-										<div className="grid grid-cols-2 gap-4">
-											<motion.div variants={itemVariants} className="space-y-2">
-												<Label
-													htmlFor="firstName"
-													className="text-gray-700 font-medium"
-												>
-													First Name
-												</Label>
-												<Input
-													id="firstName"
-													name="firstName"
-													placeholder="First Name"
-													value={formData.firstName}
-													onChange={handleInputChange}
-													className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-													required
-												/>
-											</motion.div>
-											<motion.div variants={itemVariants} className="space-y-2">
-												<Label
-													htmlFor="lastName"
-													className="text-gray-700 font-medium"
-												>
-													Last Name
-												</Label>
-												<Input
-													id="lastName"
-													name="lastName"
-													placeholder="Last Name"
-													value={formData.lastName}
-													onChange={handleInputChange}
-													className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-													required
-												/>
-											</motion.div>
-										</div>
+                                                        <CardContent className="p-0">
+                                                                {step === 1 ? (
+                                                                        <form onSubmit={handleGSTVerify} className="space-y-4">
+                                                                                <motion.div variants={itemVariants} className="space-y-2">
+                                                                                        <Label htmlFor="gstin" className="text-gray-700 font-medium">
+                                                                                                GSTIN
+                                                                                        </Label>
+                                                                                        <Input
+                                                                                                id="gstin"
+                                                                                                value={gstin}
+                                                                                                onChange={(e) => setGstin(e.target.value)}
+                                                                                                placeholder="GSTIN"
+                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                required
+                                                                                        />
+                                                                                </motion.div>
+                                                                                <motion.div variants={itemVariants}>
+                                                                                        <Button
+                                                                                                type="submit"
+                                                                                                className="w-full h-12 bg-gray-800 hover:bg-gray-900 text-white font-medium text-base"
+                                                                                                disabled={isLoading}
+                                                                                        >
+                                                                                                {isLoading ? (
+                                                                                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                                                                ) : (
+                                                                                                        "Fetch GST Details"
+                                                                                                )}
+                                                                                        </Button>
+                                                                                </motion.div>
+                                                                        </form>
+                                                                ) : step === 2 ? (
+                                                                        <form onSubmit={handleSendVerification} className="space-y-4">
+                                                                                {gstData && (
+                                                                                        <motion.div variants={itemVariants} className="text-sm text-gray-700 space-y-1">
+                                                                                                <p>
+                                                                                                        <strong>GSTIN:</strong> {gstData.gstin}
+                                                                                                </p>
+                                                                                                <p>
+                                                                                                        <strong>Legal Name:</strong> {gstData.legalName}
+                                                                                                </p>
+                                                                                                <p>
+                                                                                                        <strong>Trade Name:</strong> {gstData.tradeName}
+                                                                                                </p>
+                                                                                        </motion.div>
+                                                                                )}
+                                                                                <div className="grid grid-cols-2 gap-4">
+                                                                                        <motion.div variants={itemVariants} className="space-y-2">
+                                                                                                <Label
+                                                                                                        htmlFor="firstName"
+                                                                                                        className="text-gray-700 font-medium"
+                                                                                                >
+                                                                                                        First Name
+                                                                                                </Label>
+                                                                                                <Input
+                                                                                                        id="firstName"
+                                                                                                        name="firstName"
+                                                                                                        placeholder="First Name"
+                                                                                                        value={formData.firstName}
+                                                                                                        onChange={handleInputChange}
+                                                                                                        className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                        required
+                                                                                                />
+                                                                                        </motion.div>
+                                                                                        <motion.div variants={itemVariants} className="space-y-2">
+                                                                                                <Label
+                                                                                                        htmlFor="lastName"
+                                                                                                        className="text-gray-700 font-medium"
+                                                                                                >
+                                                                                                        Last Name
+                                                                                                </Label>
+                                                                                                <Input
+                                                                                                        id="lastName"
+                                                                                                        name="lastName"
+                                                                                                        placeholder="Last Name"
+                                                                                                        value={formData.lastName}
+                                                                                                        onChange={handleInputChange}
+                                                                                                        className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                        required
+                                                                                                />
+                                                                                        </motion.div>
+                                                                                </div>
 
-										<motion.div variants={itemVariants} className="space-y-2">
-											<Label
-												htmlFor="email"
-												className="text-gray-700 font-medium"
-											>
-												Email Address
-											</Label>
-											<Input
-												id="email"
-												name="email"
-												type="email"
-												placeholder="Enter Email Address"
-												value={formData.email}
-												onChange={handleInputChange}
-												className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-												required
-											/>
-										</motion.div>
+                                                                                <motion.div variants={itemVariants} className="space-y-2">
+                                                                                        <Label
+                                                                                                htmlFor="email"
+                                                                                                className="text-gray-700 font-medium"
+                                                                                        >
+                                                                                                Email Address
+                                                                                        </Label>
+                                                                                        <Input
+                                                                                                id="email"
+                                                                                                name="email"
+                                                                                                type="email"
+                                                                                                placeholder="Enter Email Address"
+                                                                                                value={formData.email}
+                                                                                                onChange={handleInputChange}
+                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                required
+                                                                                        />
+                                                                                </motion.div>
 
                                                                                <motion.div variants={itemVariants} className="space-y-2">
                                                                                        <Label
@@ -400,65 +471,6 @@ const SignupPage = () => {
                                                                                        />
                                                                                </motion.div>
 
-                                                                               <motion.div variants={itemVariants} className="grid grid-cols-2 gap-4">
-                                                                                        <div className="space-y-2">
-                                                                                                <Label htmlFor="legalName" className="text-gray-700 font-medium">
-                                                                                                        Business Legal Name
-                                                                                                </Label>
-                                                                                                <Input
-                                                                                                        id="legalName"
-                                                                                                        name="legalName"
-                                                                                                        placeholder="Legal Name"
-                                                                                                        value={formData.legalName}
-                                                                                                        onChange={handleInputChange}
-                                                                                                        className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                                                                                        required
-                                                                                                />
-                                                                                        </div>
-                                                                                        <div className="space-y-2">
-                                                                                                <Label htmlFor="tradeName" className="text-gray-700 font-medium">
-                                                                                                        Trade Name
-                                                                                                </Label>
-                                                                                                <Input
-                                                                                                        id="tradeName"
-                                                                                                        name="tradeName"
-                                                                                                        placeholder="Trade Name"
-                                                                                                        value={formData.tradeName}
-                                                                                                        onChange={handleInputChange}
-                                                                                                        className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                                                                                />
-                                                                                        </div>
-                                                                               </motion.div>
-
-                                                                               <motion.div variants={itemVariants} className="space-y-2">
-                                                                                        <Label htmlFor="pan" className="text-gray-700 font-medium">
-                                                                                                PAN
-                                                                                        </Label>
-                                                                                        <Input
-                                                                                                id="pan"
-                                                                                                name="pan"
-                                                                                                placeholder="PAN"
-                                                                                                value={formData.pan}
-                                                                                                onChange={handleInputChange}
-                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                                                                                required
-                                                                                        />
-                                                                               </motion.div>
-
-                                                                               <motion.div variants={itemVariants} className="space-y-2">
-                                                                                        <Label htmlFor="gstin" className="text-gray-700 font-medium">
-                                                                                                GSTIN 
-                                                                                        </Label>
-                                                                                        <Input
-                                                                                                id="gstin"
-                                                                                                name="gstin"
-                                                                                                placeholder="GSTIN"
-                                                                                                value={formData.gstin}
-                                                                                                onChange={handleInputChange}
-                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                                                                                        />
-                                                                               </motion.div>
-
                                                                                <motion.div variants={itemVariants} className="space-y-2">
                                                                                        <Label
                                                                                                htmlFor="password"
@@ -466,17 +478,17 @@ const SignupPage = () => {
                                                                                        >
                                                                                                Password
                                                                                        </Label>
-											<Input
-												id="password"
-												name="password"
-												type="password"
-												placeholder="Enter Password"
-												value={formData.password}
-												onChange={handleInputChange}
-												className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-												required
-											/>
-										</motion.div>
+                                                                                        <Input
+                                                                                                id="password"
+                                                                                                name="password"
+                                                                                                type="password"
+                                                                                                placeholder="Enter Password"
+                                                                                                value={formData.password}
+                                                                                                onChange={handleInputChange}
+                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                required
+                                                                                        />
+                                                                                </motion.div>
 
                                                                                <motion.div variants={itemVariants} className="space-y-2">
                                                                                        <Label
@@ -485,16 +497,16 @@ const SignupPage = () => {
                                                                                        >
                                                                                                Confirm Password
                                                                                        </Label>
-											<Input
-												id="confirmPassword"
-												name="confirmPassword"
-												type="password"
-												placeholder="Confirm Password"
-												value={formData.confirmPassword}
-												onChange={handleInputChange}
-												className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-												required
-											/>
+                                                                                        <Input
+                                                                                                id="confirmPassword"
+                                                                                                name="confirmPassword"
+                                                                                                type="password"
+                                                                                                placeholder="Confirm Password"
+                                                                                                value={formData.confirmPassword}
+                                                                                                onChange={handleInputChange}
+                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                                                                                required
+                                                                                        />
                                                                                </motion.div>
 
                                                                                <motion.div variants={itemVariants} className="flex items-center space-x-2">
@@ -513,64 +525,64 @@ const SignupPage = () => {
                                                                                         </Label>
                                                                                </motion.div>
 
-										<motion.div variants={itemVariants}>
-											<Button
-												type="submit"
-												className="w-full h-12 bg-gray-800 hover:bg-gray-900 text-white font-medium text-base"
-												disabled={isLoading}
-											>
-												{isLoading ? (
-													<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-												) : (
-													"Send Verification Code"
-												)}
-											</Button>
-										</motion.div>
-									</form>
-								) : (
-									<form onSubmit={handleVerifyAndSignup} className="space-y-6">
-										<motion.div variants={itemVariants} className="space-y-2">
-											<Label
-												htmlFor="verificationCode"
-												className="text-gray-700 font-medium"
-											>
-												Verification Code
-											</Label>
-											<Input
-												id="verificationCode"
-												placeholder="Enter 6-digit code"
-												value={verificationCode}
-												onChange={(e) => setVerificationCode(e.target.value)}
-												className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-center text-lg tracking-widest"
-												maxLength={6}
-												required
-											/>
-										</motion.div>
+                                                                                <motion.div variants={itemVariants}>
+                                                                                        <Button
+                                                                                                type="submit"
+                                                                                                className="w-full h-12 bg-gray-800 hover:bg-gray-900 text-white font-medium text-base"
+                                                                                                disabled={isLoading}
+                                                                                        >
+                                                                                                {isLoading ? (
+                                                                                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                                                                ) : (
+                                                                                                        "Send Verification Code"
+                                                                                                )}
+                                                                                        </Button>
+                                                                                </motion.div>
+                                                                        </form>
+                                                                ) : (
+                                                                        <form onSubmit={handleVerifyAndSignup} className="space-y-6">
+                                                                                <motion.div variants={itemVariants} className="space-y-2">
+                                                                                        <Label
+                                                                                                htmlFor="verificationCode"
+                                                                                                className="text-gray-700 font-medium"
+                                                                                        >
+                                                                                                Verification Code
+                                                                                        </Label>
+                                                                                        <Input
+                                                                                                id="verificationCode"
+                                                                                                placeholder="Enter 6-digit code"
+                                                                                                value={verificationCode}
+                                                                                                onChange={(e) => setVerificationCode(e.target.value)}
+                                                                                                className="h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-center text-lg tracking-widest"
+                                                                                                maxLength={6}
+                                                                                                required
+                                                                                        />
+                                                                                </motion.div>
 
-										<motion.div variants={itemVariants} className="flex gap-4">
-											<Button
-												type="button"
-												variant="outline"
-												className="flex-1 h-12 bg-transparent"
-												onClick={() => setStep(1)}
-											>
-												Back
-											</Button>
-											<Button
-												type="submit"
-												className="flex-1 h-12 bg-gray-800 hover:bg-gray-900 text-white font-medium text-base"
-												disabled={isLoading}
-											>
-												{isLoading ? (
-													<div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-												) : (
-													"Create Account"
-												)}
-											</Button>
-										</motion.div>
-									</form>
-								)}
-							</CardContent>
+                                                                                <motion.div variants={itemVariants} className="flex gap-4">
+                                                                                        <Button
+                                                                                                type="button"
+                                                                                                variant="outline"
+                                                                                                className="flex-1 h-12 bg-transparent"
+                                                                                                onClick={() => setStep(2)}
+                                                                                        >
+                                                                                                Back
+                                                                                        </Button>
+                                                                                        <Button
+                                                                                                type="submit"
+                                                                                                className="flex-1 h-12 bg-gray-800 hover:bg-gray-900 text-white font-medium text-base"
+                                                                                                disabled={isLoading}
+                                                                                        >
+                                                                                                {isLoading ? (
+                                                                                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                                                                                ) : (
+                                                                                                        "Create Account"
+                                                                                                )}
+                                                                                        </Button>
+                                                                                </motion.div>
+                                                                        </form>
+                                                                )}
+                                                        </CardContent>
 						</Card>
 					</motion.div>
 				</div>
