@@ -88,18 +88,18 @@ export default function Header({ onMenuToggle, isMenuOpen, showMenu = true }) {
                                                                         </Button>
 
                                                                         <Link
-                                                                                href="/account/profile"
+                                                                                href="/home"
                                                                                 className="flex items-center justify-center space-x-2 text-black font-semibold"
                                                                         >
-                                                                                <Image
-                                                                                        src={Logo}
-                                                                                        alt="Ladwa Partners Logo"
-                                                                                        width={150}
-                                                                                        height={50}
-                                                                                        priority
-                                                                                        className="w-auto h-auto"
-                                                                                />
-                                                                        </Link>
+                                                                               <Image
+                                                                                       src={Logo}
+                                                                                       alt="Ladwa Partners Logo"
+                                                                                       width={150}
+                                                                                       height={50}
+                                                                                       priority
+                                                                                       className="w-auto h-auto"
+                                                                               />
+                                                                       </Link>
                                                                 </div>
                                                         </>
                                                 ) : (
@@ -143,23 +143,24 @@ export default function Header({ onMenuToggle, isMenuOpen, showMenu = true }) {
                                                                </Link>
                                                        </Button>
 
-							{isAuthenticated ? (
-								<div className="flex items-center space-x-2 md:space-x-4">
-                                                                        <Link href="/account">
-                                                                                <div className="flex items-center space-x-2">
-                                                                                        <Avatar className="h-6 w-6 md:h-8 md:w-8">
-                                                                                                <AvatarFallback className={`${colorClass} text-black text-xs md:text-sm font-medium`}>
-                                                                                                        {initials}
-                                                                                                </AvatarFallback>
-                                                                                        </Avatar>
-                                                                                        <div className="hidden md:block text-black">
-                                                                                                <p className="text-sm font-medium">{fullName}</p>
-                                                                                                <p className="text-xs text-gray-400">{email}</p>
-                                                                                        </div>
+                                                        {isAuthenticated ? (
+                                                                <div className="flex items-center space-x-2 md:space-x-4">
+                                                                        <Link
+                                                                                href="/account"
+                                                                                className="flex items-center space-x-2"
+                                                                        >
+                                                                                <Avatar className="h-6 w-6 md:h-8 md:w-8">
+                                                                                        <AvatarFallback className={`${colorClass} text-black text-xs md:text-sm font-medium`}>
+                                                                                                {initials}
+                                                                                        </AvatarFallback>
+                                                                                </Avatar>
+                                                                                <div className="hidden md:block text-black">
+                                                                                        <p className="text-sm font-medium">{fullName}</p>
+                                                                                        <p className="text-xs text-gray-400">{email}</p>
                                                                                 </div>
                                                                         </Link>
-								</div>
-							) : (
+                                                                </div>
+                                                        ) : (
 								<Link href="/account">
 									<Button
 										variant="ghost"
