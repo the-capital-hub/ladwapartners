@@ -95,13 +95,13 @@ const SignupPage = () => {
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({ email: formData.email }),
+				body: JSON.stringify({ mobile: formData.mobile}),
 			});
 
 			const data = await response.json();
 
                         if (response.ok) {
-                                toast.success("Verification code sent to your email!");
+                                toast.success("Verification code sent to your Mobile!");
                                 setStep(3);
                         } else {
 				toast.error(data.message || "Failed to send verification code");
@@ -130,7 +130,7 @@ const SignupPage = () => {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					email: formData.email,
+					mobile: formData.mobile,
 					code: verificationCode,
 				}),
 			});
